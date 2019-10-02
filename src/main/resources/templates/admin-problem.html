@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <!--jq-->
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <!--Layui-->
+    <link href="https://www.layuicdn.com/layui-v2.5.5/css/layui.css" rel="stylesheet">
+    <script src="https://www.layuicdn.com/layui-v2.5.5/layui.js"></script>
+
+    <script th:src="@{/js/admin-problem.js}" defer="defer"></script>
+    <link th:href="@{/css/add-problem.css}" rel="stylesheet">
+
+    <!--ckeditor-->
+    <script src="https://cdn.ckeditor.com/ckeditor5/12.4.0/classic/ckeditor.js"></script>
+</head>
+<body>
+
+<div class="layui-container" style="margin-top: 100px">
+    <div class="layui-row">
+        <textarea id="editor" name="editor"></textarea>
+    </div>
+</div>
+<script>
+    var myEditor = null;
+    ClassicEditor.create(
+        document.querySelector("#editor")
+    ).then(function (res) {
+        myEditor = res;
+    }).catch(function (reason) {
+        console.log(reason)
+    });
+</script>
+
+<div class="layui-container">
+    <form id="form" class="layui-form layui-form-pane" th:action="@{/updateProblem}" method="post">
+        <!--题目内容-->
+        <input id="problemId" type="hidden" name="problemId" th:value="${problemId}">
+        <input id="problemContent" name="problemContent" type="hidden">
+        <div class="layui-form-item" style="margin-top: 40px">
+            <label class="layui-form-label">题目名称</label>
+            <div class="layui-input-block">
+                <input id="problemName" type="text" name="problemName" required lay-verify="required"
+                       placeholder="请输入题目名称" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <!--时限-->
+        <div class="layui-inline">
+            <label class="layui-form-label">c/c++时限</label>
+            <div class="layui-input-inline" style="width: 100px;">
+                <input id="c_cppTimeLimit" type="text" name="timeLimit.c_cppTimeLimit" autocomplete="off"
+                       class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-inline">
+            <label class="layui-form-label">java时限</label>
+            <div class="layui-input-inline" style="width: 100px;">
+                <input id="javaTimeLimit" type="text" name="timeLimit.javaTimeLimit" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <br>
+        <div class="layui-inline" style="margin-top: 15px">
+            <label class="layui-form-label">c/c++内存</label>
+            <div class="layui-input-inline" style="width: 100px;">
+                <input id="c_cppMemoryLimit" type="text" name="memoryLimit.c_cppMemoryLimit" autocomplete="off"
+                       class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-inline">
+            <label class="layui-form-label" style="margin-top: 15px">java内存</label>
+            <div class="layui-input-inline" style="width: 100px;margin-top: 15px">
+                <input id="javaMemoryLimit" type="text" name="memoryLimit.javaMemoryLimit" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-row" style="margin-top: 15px">
+            <button type="button" class="layui-btn" onclick="updateProblem()">立即提交</button>
+        </div>
+    </form>
+
+    <div id="test-data" th:if="${problemId != null}" class="layui-row" style="margin-top: 15px">
+        <button type="button" class="layui-btn" id="updateTestData">
+            <i class="layui-icon layui-icon-upload"></i>上传数据包
+        </button>
+        <button type="button" class="layui-btn" onclick="downloadTestData()">
+            <strong><i class="layui-icon layui-icon-download-circle"></i></strong>下载数据包(<span id="testDataFile"></span>&nbsp;KB)
+        </button>
+    </div>
+</div>
+
+
+</body>
+</html>

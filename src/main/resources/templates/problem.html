@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <!--vue-->
+    <script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script src="https://cdn.ckeditor.com/ckeditor5/12.4.0/classic/ckeditor.js"></script>
+    <!--Layui-->
+    <link href="https://www.layuicdn.com/layui-v2.5.5/css/layui.css" rel="stylesheet">
+    <script src="https://www.layuicdn.com/layui-v2.5.5/layui.js"></script>
+    <link th:href="@{/css/index.css}" rel="stylesheet">
+    <script th:src="@{/js/problem.js}" defer="defer"></script>
+</head>
+<body>
+<input id="problemId" type="hidden" th:value="${problemId}">
+<div th:insert="~{footer :: head}"></div>
+
+<div class="layui-container" style="margin-top: 100px; padding: 20px 20px 20px;border: solid 1px #1E9FFF">
+    <div class="layui-row">
+        <!--题目内容-->
+        <div id="problem-data"></div>
+    </div>
+
+</div>
+<div class="layui-container" style="margin-top: 20px">
+    <div class="layui-row">
+        <div><button class="layui-btn layui-btn-normal">提交代码</button></div>
+    </div>
+</div>
+
+</body>
+</html>

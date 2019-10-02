@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+<!--    &lt;!&ndash;Layui&ndash;&gt;
+    <link href="https://www.layuicdn.com/layui-v2.5.5/css/layui.css" rel="stylesheet">
+    <script src="https://www.layuicdn.com/layui-v2.5.5/layui.js"></script>-->
+
+
+    <script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<div id="app">
+    <p>{{ message }}</p>
+</div>
+<script>
+    new Vue({
+        el:'#app',
+        data: {
+            message: 'Hello'
+        },
+        mounted() {
+            axios.get('/testData').then(
+                res => (this.message = res.data)
+            ).catch(function (reason) {
+            });
+            console.log(message);
+        }
+    })
+</script>
+</body>
+</html>

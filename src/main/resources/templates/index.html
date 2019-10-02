@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <!--Jq-->
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <!--Layui-->
+    <link href="https://www.layuicdn.com/layui-v2.5.5/css/layui.css" rel="stylesheet">
+    <script src="https://www.layuicdn.com/layui-v2.5.5/layui.js"></script>
+
+    <script th:src="@{/js/index.js}"></script>
+</head>
+<body>
+<div th:insert="~{footer :: head}"></div>
+
+<div class="layui-fluid">
+    <div class="layui-row">
+        <div class="layui-col-lg7">
+            <table class="layui-hide" id="problemList" lay-filter="table-row-event"></table>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>
