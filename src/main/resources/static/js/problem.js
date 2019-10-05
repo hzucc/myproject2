@@ -1,14 +1,7 @@
-new Vue({
-    el: '#problem-data',
-    data: {
-        problemContent: null
-    },
-    mounted() {
-        axios.get('/problem/data/' + $("#problemId").val()).then(function (res) {
-            $("#problem-data").html(res.data.problemContent);
-        }).catch(function () {
-            console.log(error);
-        });
-    }
-})
+$.get("/problem/data/" + $("#problemId").val(), function (res) {
+    $("#problem-data").html(res);
+});
 
+function problemEditor() {
+    window.location.href = "/aceEditor/" + $("#problemId").val();
+}

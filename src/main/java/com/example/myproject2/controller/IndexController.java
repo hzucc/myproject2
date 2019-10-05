@@ -10,16 +10,15 @@ import com.example.myproject2.service.ProblemService;
 import com.example.myproject2.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class IndexController {
@@ -31,24 +30,31 @@ public class IndexController {
     private UserService userService;
 
     @GetMapping("/index")
-    public ModelAndView index() {
+    public ModelAndView index(HttpServletRequest request, ModelAndView modelAndView) {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        boolean isAdmin = userService.loginUserIsAdministrators(user);
+        modelAndView.addObject("isAdmin", isAdmin);
         return new ModelAndView("index");
     }
 
     @GetMapping("/problemList")
-    public List<Problem> problomList() {
+    public Map<String, Object> problomList() {
+        Map<String, Object> map = new HashMap<>();
         List<Problem> problems = problemService.getProlemList(1, 20);
-        return problems;
+        int count = problemService.getProblemCount();
+        map.put("code", 0);
+        map.put("msg", null);
+        map.put("count", count);
+        map.put("data", problems);
+        return map;
     }
+
     @GetMapping("/isAdmin")
     public boolean isAdmin(HttpServletRequest request) {
         boolean isAdmin = false;
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        user = applicationContext.getBean(User.class);
-        user.setUserId(1);
-        user.setUserPassword("78946");
-
         if (userService.loginUserIsAdministrators(user)) {
             isAdmin = true;
         }

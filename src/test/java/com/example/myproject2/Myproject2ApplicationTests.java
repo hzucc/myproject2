@@ -1,10 +1,7 @@
 package com.example.myproject2;
 
-import com.example.myproject2.dao.ProblemDao;
-import com.example.myproject2.dao.UserDao;
-import com.example.myproject2.entity.MemoryLimit;
-import com.example.myproject2.entity.Problem;
-import com.example.myproject2.entity.UpdateTestDataMap;
+import com.example.myproject2.dao.*;
+import com.example.myproject2.entity.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +23,18 @@ public class Myproject2ApplicationTests {
     private UpdateTestDataMap updateTestDataMap;
     @Autowired
     private ApplicationContext applicationContext;
+    @Autowired
+    private TimeLimitDao timeLimitDao;
+    @Autowired
+    private MemoryLimitDao memoryLimitDao;
+    @Autowired
+    private SubmitCodeDao submitCodeDao;
+    @Autowired
+    private TableCountDao tableCountDao;
 
     @Test
     public void contextLoads() {
-
+        tableCountDao.selectTableCount("submit_code");
     }
 
 }

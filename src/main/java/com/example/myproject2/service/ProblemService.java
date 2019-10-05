@@ -24,4 +24,8 @@ public interface ProblemService {
     public String getTestDataPath(int problemId);
 
     public void updateProblem(Problem problem);
+
+    public Map<String, Object> getProblemLimit(int problemId);
+
+    public int getProblemCount();
 }

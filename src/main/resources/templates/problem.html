@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title></title>
+    <!--Jq-->
     <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
-    <!--vue-->
-    <script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
     <script src="https://cdn.ckeditor.com/ckeditor5/12.4.0/classic/ckeditor.js"></script>
     <!--Layui-->
@@ -19,7 +17,7 @@
 <input id="problemId" type="hidden" th:value="${problemId}">
 <div th:insert="~{footer :: head}"></div>
 
-<div class="layui-container" style="margin-top: 100px; padding: 20px 20px 20px;border: solid 1px #1E9FFF">
+<div class="layui-container" style="margin-top: 100px; padding: 20px 20px 20px;border: solid 1px">
     <div class="layui-row">
         <!--题目内容-->
         <div id="problem-data"></div>
@@ -28,7 +26,9 @@
 </div>
 <div class="layui-container" style="margin-top: 20px">
     <div class="layui-row">
-        <div><button class="layui-btn layui-btn-normal">提交代码</button></div>
+        <div>
+            <button class="layui-btn" onclick="problemEditor()">提交代码</button>
+        </div>
     </div>
 </div>
 

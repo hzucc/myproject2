@@ -5,8 +5,10 @@
 package com.example.myproject2.controller;
 
 import com.example.myproject2.entity.Problem;
+import com.example.myproject2.entity.UpdateTestDataMap;
 import com.example.myproject2.service.ProblemService;
 import org.apache.ibatis.annotations.Param;
+import org.omg.CORBA.OBJ_ADAPTER;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -24,6 +26,8 @@ import java.util.Map;
 public class ProblemController {
     @Autowired
     private ProblemService problemService;
+    @Autowired
+    private UpdateTestDataMap updateTestDataMap;
 
     @GetMapping("/problem/{problemId}")
     public ModelAndView problem(@PathVariable("problemId") int problemId) {
@@ -39,12 +43,6 @@ public class ProblemController {
         return problem;
     }
 
-    @PostMapping("/updateTestData")
-    public Map<String, Object> updateTestData(@Param("problemId") int problemId, Part file) throws IOException {
-        Map<String, Object> map = new HashMap<>();
-        problemService.updateTestData(problemId, file);
-        return map;
-    }
     @GetMapping("/downloadTestData/{problemId}")
     public void downloadTestData(@PathVariable("problemId") int problemId, HttpServletResponse response) throws IOException {
         String testDataPath = problemService.getTestDataPath(problemId);
@@ -63,20 +61,32 @@ public class ProblemController {
         }
     }
 
-    @GetMapping("/admin/problem/{problemId}")
-    public ModelAndView updateProblem(@PathVariable("problemId") int problemId, ModelAndView modelAndView) {
-        modelAndView.addObject("problemId", problemId);
-        return new ModelAndView("admin-problem");
-    }
     @GetMapping("/getTestDataMessage/{problemId}")
-    public Map<String, Object> getTestDataMessage(@PathVariable("problemId") int problemId) {
+    public Map<String, Object> getTestDataMessage(@PathVariable(value = "problemId") int problemId) {
         Map<String, Object> testDataMessage = problemService.getTestDataMessage(problemId);
         return testDataMessage;
     }
 
+    @GetMapping("/admin/problem/{problemId}")
+    public ModelAndView updateProblem(@PathVariable(value = "problemId", required = false) int problemId, ModelAndView modelAndView) {
+        modelAndView.addObject("problemId", problemId);
+        return new ModelAndView("admin-problem");
+    }
+
     @PostMapping("/updateProblem")
-    public ModelAndView updateProblem(Problem problem) {
+    public ModelAndView updateProblem(Problem problem, ModelAndView modelAndView) {
         problemService.updateProblem(problem);
-        return new ModelAndView("redirect:/admin/problem/" + problem.getProblemId());
+        return modelAndView;
+    }
+
+    @PostMapping("/updateTestData")
+    public Map<String, Object> updateTestData(@Param("problemId") int problemId, Part file) throws IOException {
+        Map<String, Object> map = new HashMap<>();
+        if (updateTestDataMap.contains(problemId)) {
+            map.put("submitError", "提交失败,等待旧的数据包提交中");
+        } else {
+            problemService.updateTestData(problemId, file);
+        }
+        return map;
     }
 }

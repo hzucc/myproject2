@@ -22,9 +22,9 @@ server:
 
 
 #打印sql语句
-#mybatis:
-#  configuration:
-#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 docker:
   cdk: hzucc/cdk

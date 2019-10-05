@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>ACE Editor</title>
+    <!--Jq-->
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <!--bootstrap-->
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+  <!-- Ace editor主要文件-->
+    <script src="https://cdn.bootcss.com/ace/1.4.6/ace.js"></script>
+    <script src="https://cdn.bootcss.com/ace/1.4.6/ext-language_tools.js"></script>
+
+</head>
+
+<!--problemId-->
+<input id="problemId" type="hidden" th:value="${problemId}">
+
+<div class="container" style="margin-top: 15px;">
+    <div class="row" >
+        <!--语言选择-->
+        <div id="language" class="dropdown">
+            <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
+                语言选择
+            </button>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="#">c</a>
+                <a class="dropdown-item" href="#">c/c++</a>
+                <a class="dropdown-item" href="#">java</a>
+            </div>
+        </div>
+        <!--主题选择-->
+        <div id="theme" class="dropdown">
+            <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
+                主题选择
+            </button>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="#">chrome</a>
+                <a class="dropdown-item" href="#">eclipse</a>
+                <a class="dropdown-item" href="#">twilight</a>
+                <a class="dropdown-item" href="#">gob</a>
+                <a class="dropdown-item" href="#">github</a>
+                <a class="dropdown-item" href="#">chaos</a>
+                <a class="dropdown-item" href="#">cobalt</a>
+                <a class="dropdown-item" href="#">crimson_editor</a>
+                <a class="dropdown-item" href="#">dawn</a>
+                <a class="dropdown-item" href="#">xcode</a>
+            </div>
+        </div>
+        <!--字体大小-->
+        <div id="font-size" class="dropdown">
+            <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
+                字体大小
+            </button>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="#">16</a>
+                <a class="dropdown-item" href="#">18</a>
+                <a class="dropdown-item" href="#">20</a>
+                <a class="dropdown-item" href="#">22</a>
+                <a class="dropdown-item" href="#">24</a>
+                <a class="dropdown-item" href="#">26</a>
+                <a class="dropdown-item" href="#">28</a>
+                <a class="dropdown-item" href="#">30</a>
+                <a class="dropdown-item" href="#">32</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <nav class="breadcrumb">
+            <span id="code-type" class="breadcrumb-item active"></span>&nbsp;
+            <span id="time-limit" class="breadcrumb-item active"></span>&nbsp;s&nbsp;
+            <span id="memory-limit" class="breadcrumb-item active"></span>&nbsp;mb&nbsp;
+            <span class="breadcrumb-item active">64&nbsp;kb</span>
+        </nav>
+    </div>
+
+    <div class="row" style="margin-top: -5px">
+        <pre id="editor" class="ace_editor" style="min-height:600px;height: 500px; width: 99%"><textarea class="ace_text-input"></textarea></pre>
+    </div>
+    <div class="row">
+        <button class="btn btn-success" onclick="submitCode()">提交代码</button>
+    </div>
+</div>
+
+
+</body>
+</html>
+
+<script>
+    editor = ace.edit("editor");
+    //设置只读（true时只读，用于展示代码）
+    editor.setReadOnly(false);
+    //自动换行,设置为off关闭
+    editor.setOption("wrap", "free")
+    //高亮
+    editor.setHighlightActiveLine(false);
+    //启用提示菜单
+    ace.require("ace/ext/language_tools");
+    editor.setOptions({
+        enableBasicAutocompletion: true,
+        enableSnippets: true,
+        enableLiveAutocompletion: true
+    });
+    var editor_data = {
+        problemId: {
+            getProblemId: function() {
+                return $("#problemId").val();
+            }
+        },
+        memoryLimit: {
+            getC_cppMemoryLimit: function() {
+                return sessionStorage.getItem("c_cppMemoryLimit");
+            },
+            setC_cppMemoryLimit: function(c_cppMemoryLimit) {
+                sessionStorage.setItem("c_cppMemoryLimit", c_cppMemoryLimit);
+            },
+            getJavaMemoryLimit: function () {
+                return sessionStorage.getItem("javaMemoryLimit");
+            },
+            setJavaMemoryLimit: function (javaMemoryLimit) {
+                sessionStorage.setItem("javaMemoryLimit", javaMemoryLimit);
+            }
+        },
+        timeLimit: {
+            getC_cppTimeLimit: function() {
+                return sessionStorage.getItem("c_cppTimeLimit");
+            },
+            setC_cppTimeLimit: function(c_cppTimeLimit) {
+                sessionStorage.setItem("c_cppTimeLimit", c_cppTimeLimit);
+            },
+            getJavaTimeLimit: function() {
+                return sessionStorage.getItem("javaTimeLimit");
+            },
+            setJavaTimeLimit: function(javaTimeLimit) {
+                sessionStorage.setItem("javaTimeLimit", javaTimeLimit);
+            }
+        },
+        sMemoryLimit: {
+            getSMemoryLimit: function () {
+                return sessionStorage.getItem("sMemoryLimit");
+            },
+            setSMemoryLimit: function (sMemoryLimit) {
+                sessionStorage.setItem("sMemoryLimit", sMemoryLimit);
+                $("#memory-limit").text(sMemoryLimit);
+            }
+        },
+        sTimeLImit: {
+            getSTimeLImit: function () {
+                return sessionStorage.getItem("sTimeLImit");
+            },
+            setSTimeLImit: function (sTimeLimit) {
+                sessionStorage.setItem("sTimeLImit", sTimeLimit);
+                $("#time-limit").text(sTimeLimit);
+            }
+        },
+        fontSize: {
+            getFontSize: function () {
+                return sessionStorage.getItem("fontSize");
+            },
+            setFontSize: function (fontSize) {
+                sessionStorage.setItem("fontSize", fontSize);
+                editor.setFontSize(fontSize);
+            }
+        },
+        theme: {
+            getTheme: function () {
+                return sessionStorage.getItem("theme");
+            },
+            setTheme: function (theme) {
+                sessionStorage.setItem("theme", theme);
+                editor.setTheme("ace/theme/" + theme);
+            }
+        },
+        codeValue: {
+            getCodeValue: function () {
+                return editor.getValue();
+            },
+            setCodeValue: function (codeValue) {
+                editor.setValue(codeValue);
+            }
+        },
+        codeType: {
+            getCodeType: function () {
+                return sessionStorage.getItem("codeType");
+            },
+            setCodeType: function (codeType) {
+                sessionStorage.setItem("codeType", codeType);
+                $("#code-type").text(codeType);
+                if (codeType == "c" || codeType == "c/c++") {
+                    editor.session.setMode("ace/mode/c_cpp");
+                    editor_data.sTimeLImit.setSTimeLImit(editor_data.timeLimit.getC_cppTimeLimit());
+                    editor_data.sMemoryLimit.setSMemoryLimit(editor_data.memoryLimit.getC_cppMemoryLimit());
+                } else if(codeType == "java"){
+                    editor.session.setMode("ace/mode/java");
+                    editor_data.sTimeLImit.setSTimeLImit(editor_data.timeLimit.getJavaTimeLimit());
+                    editor_data.sMemoryLimit.setSMemoryLimit(editor_data.memoryLimit.getJavaMemoryLimit());
+
+                }
+            }
+        }
+    };
+    //初始化editor_data
+    editor_data.theme.setTheme("chrome");
+    editor_data.fontSize.setFontSize(20)
+    editor_data.sTimeLImit.setSTimeLImit(1);
+    editor_data.sMemoryLimit.setSMemoryLimit(128);
+    editor_data.codeType.setCodeType("c");
+    editor_data.codeValue.setCodeValue("#include<stdio.h>\n" +
+        "int main()\n" +
+        "{\n" +
+        "    printf(\"Hello World\\n\");\n" +
+        "    return 0;\n" +
+        "}");
+    $.getJSON("/problemLimit/" + editor_data.problemId.getProblemId(), function (res) {
+        editor_data.memoryLimit.setC_cppMemoryLimit(res.memoryLimit.c_cppMemoryLimit);
+        editor_data.memoryLimit.setJavaMemoryLimit(res.memoryLimit.javaMemoryLimit);
+        editor_data.timeLimit.setC_cppTimeLimit(res.timeLimit.c_cppTimeLimit);
+        editor_data.timeLimit.setJavaTimeLimit(res.timeLimit.javaTimeLimit);
+        editor_data.sMemoryLimit.setSMemoryLimit(res.memoryLimit.c_cppMemoryLimit);
+        editor_data.sTimeLImit.setSTimeLImit(res.timeLimit.c_cppTimeLimit);
+    });
+
+    $("#language a").click(function () {
+        editor_data.codeType.setCodeType(this.text);
+    });
+
+    $("#theme a").click(function () {
+        editor_data.theme.setTheme(this.text);
+    });
+
+    $("#font-size a").click(function () {
+        editor_data.fontSize.setFontSize(Number(this.text));
+    });
+    function submitCode() {
+        $.post("/judgeCode", {
+            problemId: editor_data.problemId.getProblemId(),
+            fontSize: editor_data.fontSize.getFontSize(),
+            theme: editor_data.theme.getTheme(),
+            codeValue: editor_data.codeValue.getCodeValue(),
+            codeType: editor_data.codeType.getCodeType(),
+        }, function (url) {
+            if (url != null) {
+                window.location.href = url;
+            }
+        });
+    }
+</script>

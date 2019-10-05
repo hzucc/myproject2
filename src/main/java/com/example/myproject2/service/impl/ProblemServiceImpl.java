@@ -4,9 +4,10 @@
  */
 package com.example.myproject2.service.impl;
 
-import com.example.myproject2.dao.ProblemDao;
-import com.example.myproject2.dao.TestDataDao;
+import com.example.myproject2.dao.*;
+import com.example.myproject2.entity.MemoryLimit;
 import com.example.myproject2.entity.Problem;
+import com.example.myproject2.entity.TimeLimit;
 import com.example.myproject2.entity.UpdateTestDataMap;
 import com.example.myproject2.service.ProblemService;
 import com.example.myproject2.util.FileUtil;
@@ -38,6 +39,12 @@ public class ProblemServiceImpl implements ProblemService {
     private TestDataDao testDataDao;
     @Autowired
     private UpdateTestDataMap updateTestDataMap;
+    @Autowired
+    private TimeLimitDao timeLimitDao;
+    @Autowired
+    private MemoryLimitDao memoryLimitDao;
+    @Autowired
+    private TableCountDao tableCountDao;
     @Autowired
     private ApplicationContext applicationContext;
     @Override
@@ -163,5 +170,21 @@ public class ProblemServiceImpl implements ProblemService {
         } else {
             problemDao.updateProbelm(problem);
         }
+    }
+
+    @Override
+    public Map<String, Object> getProblemLimit(int problemId) {
+        Map<String, Object> map = new HashMap<>();
+        TimeLimit timeLimit = timeLimitDao.selectTimeLimit(problemId);
+        MemoryLimit memoryLimit = memoryLimitDao.selectMemoryLimit(problemId);
+        map.put("timeLimit", timeLimit);
+        map.put("memoryLimit", memoryLimit);
+        return map;
+    }
+
+    @Override
+    public int getProblemCount() {
+        int problemCount = tableCountDao.selectTableCount("problem");
+        return problemCount;
     }
 }

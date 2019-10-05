@@ -5,19 +5,19 @@
     <title></title>
 </head>
 <body>
-<ul class="layui-nav layui-bg-cyan" th:fragment="head">
-    <li class="layui-nav-item"><a href="">藏青导航</a></li>
-    <li class="layui-nav-item layui-this"><a href="">产品</a></li>
-    <li class="layui-nav-item"><a href="">大数据</a></li>
-    <li class="layui-nav-item">
-        <a href="javascript:;">解决方案</a>
+<ul id="top" class="layui-nav layui-bg-cyan" th:fragment="head">
+    <li class="layui-nav-item"><a href="@{/index}">首页</a></li>
+    <li class="layui-nav-item layui-this"><a th:href="@{/index}">题库</a></li>
+    <li class="layui-nav-item"><a href="">----</a></li>
+    <li th:if="${isAdmin == true}" class="layui-nav-item">
+        <a href="javascript:;">管理员权限</a>
         <dl class="layui-nav-child">
-            <dd><a href="">移动模块</a></dd>
-            <dd><a href="">后台模版</a></dd>
-            <dd><a href="">电商平台</a></dd>
+            <dd><a th:href="@{/admin/problem/1}">添加题目</a></dd>
+            <dd><a href="">------</a></dd>
+            <dd><a href="">-------</a></dd>
         </dl>
     </li>
-    <li class="layui-nav-item"><a href="">社区</a></li>
+    <li class="layui-nav-item"><a href="">登录</a></li>
 </ul>
 
 </body>
