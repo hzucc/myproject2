@@ -11,30 +11,19 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
+import java.util.Map;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class Myproject2ApplicationTests {
     @Autowired
+    private RunCodeDao runCodeDao;
+    @Autowired
     private ProblemDao problemDao;
-    @Autowired
-    private UserDao userDao;
-    @Autowired
-    private UpdateTestDataMap updateTestDataMap;
-    @Autowired
-    private ApplicationContext applicationContext;
-    @Autowired
-    private TimeLimitDao timeLimitDao;
-    @Autowired
-    private MemoryLimitDao memoryLimitDao;
-    @Autowired
-    private SubmitCodeDao submitCodeDao;
-    @Autowired
-    private TableCountDao tableCountDao;
 
     @Test
     public void contextLoads() {
-        tableCountDao.selectTableCount("submit_code");
+
     }
 
 }

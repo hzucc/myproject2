@@ -8,7 +8,6 @@ import com.example.myproject2.entity.Problem;
 import com.example.myproject2.entity.UpdateTestDataMap;
 import com.example.myproject2.service.ProblemService;
 import org.apache.ibatis.annotations.Param;
-import org.omg.CORBA.OBJ_ADAPTER;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -35,6 +34,12 @@ public class ProblemController {
         modelAndView.addObject("problemId", problemId);
         modelAndView.setViewName("problem");
         return modelAndView;
+    }
+
+    @GetMapping("/problemLimit/{problemId}")
+    public Map<String, Object> getProblemLimit(@PathVariable("problemId") int problemId) {
+        Map<String, Object> map = problemService.getProblemLimit(problemId);
+        return map;
     }
 
     @GetMapping("/problem/data/{problemId}")
@@ -74,9 +79,8 @@ public class ProblemController {
     }
 
     @PostMapping("/updateProblem")
-    public ModelAndView updateProblem(Problem problem, ModelAndView modelAndView) {
+    public void updateProblem(Problem problem, ModelAndView modelAndView) {
         problemService.updateProblem(problem);
-        return modelAndView;
     }
 
     @PostMapping("/updateTestData")

@@ -14,4 +14,6 @@ public interface TestDataDao {
     public void insertTestData(@Param("problemId") int problemId,@Param("testDataPaths") List<String> testDataPaths);
 
     public void deleteTestData(int problemId);
+
+    public List<String> selectTestDataPath(int problemId);
 }

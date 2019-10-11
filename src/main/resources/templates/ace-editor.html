@@ -17,7 +17,7 @@
 </head>
 
 <!--problemId-->
-<input id="problemId" type="hidden" th:value="${problemId}">
+<input id="problem-id" type="hidden" th:value = "${problemId}">
 
 <div class="container" style="margin-top: 15px;">
     <div class="row" >
@@ -68,30 +68,27 @@
             </div>
         </div>
     </div>
+
     <div class="row">
         <nav class="breadcrumb">
             <span id="code-type" class="breadcrumb-item active"></span>&nbsp;
-            <span id="time-limit" class="breadcrumb-item active"></span>&nbsp;s&nbsp;
-            <span id="memory-limit" class="breadcrumb-item active"></span>&nbsp;mb&nbsp;
-            <span class="breadcrumb-item active">64&nbsp;kb</span>
+            <span id="time-limit" class="breadcrumb-item active"></span>&nbsp;S
+            <span id="memory-limit" class="breadcrumb-item active"></span>&nbsp;MB&nbsp;
+            <span class="breadcrumb-item active">64</span>&nbsp;KB
         </nav>
     </div>
 
     <div class="row" style="margin-top: -5px">
         <pre id="editor" class="ace_editor" style="min-height:600px;height: 500px; width: 99%"><textarea class="ace_text-input"></textarea></pre>
     </div>
+
     <div class="row">
-        <button class="btn btn-success" onclick="submitCode()">提交代码</button>
+        <button id="submit" class="btn btn-success">提交代码</button>
     </div>
 </div>
-
-
-</body>
-</html>
-
 <script>
     editor = ace.edit("editor");
-    //设置只读（true时只读，用于展示代码）
+    //设置只读(true时只读，用于展示代码)
     editor.setReadOnly(false);
     //自动换行,设置为off关闭
     editor.setOption("wrap", "free")
@@ -104,147 +101,141 @@
         enableSnippets: true,
         enableLiveAutocompletion: true
     });
-    var editor_data = {
-        problemId: {
-            getProblemId: function() {
-                return $("#problemId").val();
-            }
+    var problemId = {
+        getProblemId: function () {
+            return $("#problem-id").val();
+        }
+    }
+    var codeType = {
+        getCodeType: function () {
+            return $("#code-type").text();
         },
-        memoryLimit: {
-            getC_cppMemoryLimit: function() {
-                return sessionStorage.getItem("c_cppMemoryLimit");
-            },
-            setC_cppMemoryLimit: function(c_cppMemoryLimit) {
-                sessionStorage.setItem("c_cppMemoryLimit", c_cppMemoryLimit);
-            },
-            getJavaMemoryLimit: function () {
-                return sessionStorage.getItem("javaMemoryLimit");
-            },
-            setJavaMemoryLimit: function (javaMemoryLimit) {
-                sessionStorage.setItem("javaMemoryLimit", javaMemoryLimit);
-            }
-        },
-        timeLimit: {
-            getC_cppTimeLimit: function() {
-                return sessionStorage.getItem("c_cppTimeLimit");
-            },
-            setC_cppTimeLimit: function(c_cppTimeLimit) {
-                sessionStorage.setItem("c_cppTimeLimit", c_cppTimeLimit);
-            },
-            getJavaTimeLimit: function() {
-                return sessionStorage.getItem("javaTimeLimit");
-            },
-            setJavaTimeLimit: function(javaTimeLimit) {
-                sessionStorage.setItem("javaTimeLimit", javaTimeLimit);
-            }
-        },
-        sMemoryLimit: {
-            getSMemoryLimit: function () {
-                return sessionStorage.getItem("sMemoryLimit");
-            },
-            setSMemoryLimit: function (sMemoryLimit) {
-                sessionStorage.setItem("sMemoryLimit", sMemoryLimit);
-                $("#memory-limit").text(sMemoryLimit);
-            }
-        },
-        sTimeLImit: {
-            getSTimeLImit: function () {
-                return sessionStorage.getItem("sTimeLImit");
-            },
-            setSTimeLImit: function (sTimeLimit) {
-                sessionStorage.setItem("sTimeLImit", sTimeLimit);
-                $("#time-limit").text(sTimeLimit);
-            }
-        },
-        fontSize: {
-            getFontSize: function () {
-                return sessionStorage.getItem("fontSize");
-            },
-            setFontSize: function (fontSize) {
-                sessionStorage.setItem("fontSize", fontSize);
-                editor.setFontSize(fontSize);
-            }
-        },
-        theme: {
-            getTheme: function () {
-                return sessionStorage.getItem("theme");
-            },
-            setTheme: function (theme) {
-                sessionStorage.setItem("theme", theme);
-                editor.setTheme("ace/theme/" + theme);
-            }
-        },
-        codeValue: {
-            getCodeValue: function () {
-                return editor.getValue();
-            },
-            setCodeValue: function (codeValue) {
-                editor.setValue(codeValue);
-            }
-        },
-        codeType: {
-            getCodeType: function () {
-                return sessionStorage.getItem("codeType");
-            },
-            setCodeType: function (codeType) {
-                sessionStorage.setItem("codeType", codeType);
-                $("#code-type").text(codeType);
-                if (codeType == "c" || codeType == "c/c++") {
-                    editor.session.setMode("ace/mode/c_cpp");
-                    editor_data.sTimeLImit.setSTimeLImit(editor_data.timeLimit.getC_cppTimeLimit());
-                    editor_data.sMemoryLimit.setSMemoryLimit(editor_data.memoryLimit.getC_cppMemoryLimit());
-                } else if(codeType == "java"){
-                    editor.session.setMode("ace/mode/java");
-                    editor_data.sTimeLImit.setSTimeLImit(editor_data.timeLimit.getJavaTimeLimit());
-                    editor_data.sMemoryLimit.setSMemoryLimit(editor_data.memoryLimit.getJavaMemoryLimit());
-
-                }
+        setCodeType: function(codeType) {
+            $("#code-type").text(codeType);
+            if (codeType == 'c' || codeType == 'c/c++') {
+                editor.getSession().setMode("ace/mode/c_cpp");
+            } else if (codeType == 'java'){
+                editor.getSession().setMode("ace/mode/java");
             }
         }
-    };
-    //初始化editor_data
-    editor_data.theme.setTheme("chrome");
-    editor_data.fontSize.setFontSize(20)
-    editor_data.sTimeLImit.setSTimeLImit(1);
-    editor_data.sMemoryLimit.setSMemoryLimit(128);
-    editor_data.codeType.setCodeType("c");
-    editor_data.codeValue.setCodeValue("#include<stdio.h>\n" +
-        "int main()\n" +
-        "{\n" +
-        "    printf(\"Hello World\\n\");\n" +
-        "    return 0;\n" +
-        "}");
-    $.getJSON("/problemLimit/" + editor_data.problemId.getProblemId(), function (res) {
-        editor_data.memoryLimit.setC_cppMemoryLimit(res.memoryLimit.c_cppMemoryLimit);
-        editor_data.memoryLimit.setJavaMemoryLimit(res.memoryLimit.javaMemoryLimit);
-        editor_data.timeLimit.setC_cppTimeLimit(res.timeLimit.c_cppTimeLimit);
-        editor_data.timeLimit.setJavaTimeLimit(res.timeLimit.javaTimeLimit);
-        editor_data.sMemoryLimit.setSMemoryLimit(res.memoryLimit.c_cppMemoryLimit);
-        editor_data.sTimeLImit.setSTimeLImit(res.timeLimit.c_cppTimeLimit);
-    });
-
-    $("#language a").click(function () {
-        editor_data.codeType.setCodeType(this.text);
-    });
-
-    $("#theme a").click(function () {
-        editor_data.theme.setTheme(this.text);
-    });
-
-    $("#font-size a").click(function () {
-        editor_data.fontSize.setFontSize(Number(this.text));
-    });
-    function submitCode() {
-        $.post("/judgeCode", {
-            problemId: editor_data.problemId.getProblemId(),
-            fontSize: editor_data.fontSize.getFontSize(),
-            theme: editor_data.theme.getTheme(),
-            codeValue: editor_data.codeValue.getCodeValue(),
-            codeType: editor_data.codeType.getCodeType(),
-        }, function (url) {
-            if (url != null) {
-                window.location.href = url;
-            }
-        });
     }
+    var theme = {
+        getTheme: function () {
+            var theme =  editor.getTheme();
+            theme = theme.substring(theme.lastIndexOf("/") + 1);
+            return theme;
+        },
+        setTheme: function (theme) {
+            editor.setTheme("ace/theme/" + theme);
+        }
+    }
+    var fontSize = {
+        getFontSize: function () {
+            return sessionStorage.getItem("fontSize");
+        },
+        setFontSize: function (fontSize) {
+            sessionStorage.setItem("fontSize", fontSize);
+            editor.setFontSize(fontSize);
+        }
+    }
+    var c_cppTimeLimit = {
+        getC_cppTimeLimit: function () {
+            return sessionStorage.getItem("c_cppTimeLimit");
+        },
+        setC_cppTimeLimit: function (c_cppTimeLimit) {
+            sessionStorage.setItem("c_cppTimeLimit", c_cppTimeLimit);
+        }
+    }
+    var c_cppMemoryLimit = {
+        getC_cppMemoryLimit: function () {
+            return sessionStorage.getItem("c_cppMemoryLimit");
+        },
+        setC_cppMemoryLimit: function (c_cppMemoryLimit) {
+            sessionStorage.setItem("c_cppMemoryLimit", c_cppMemoryLimit);
+        }
+    }
+    var javaTimeLimit = {
+        getJavaTimeLimit: function () {
+            return sessionStorage.getItem("javaTimeLimit");
+        },
+        setJavaTimeLimit: function (javaTimeLimit) {
+            sessionStorage.setItem("javaTimeLimit", javaTimeLimit);
+        }
+    }
+    var javaMemoryLimit = {
+        getJavaMemoryLimit: function () {
+            return sessionStorage.getItem("javaMemoryLimit");
+        },
+        setJavaMemoryLimit: function (javaMemoryLimit) {
+            sessionStorage.setItem("javaMemoryLimit", javaMemoryLimit);
+        }
+    }
+    var timeLimit = {
+        getTimeLimit: function () {
+            return $("#time-limit").text();
+        },
+        setTimeLimit: function (timeLimit) {
+            $("#time-limit").text(timeLimit);
+        }
+    }
+    var memoryLimit = {
+        getMemoryLimit: function () {
+            return $("#memory-limit").text();
+        },
+        setMemoryLimit: function (memoryLimit) {
+            $("#memory-limit").text(memoryLimit);
+        }
+    }
+    //初始化设定
+    theme.setTheme("chrome");
+    fontSize.setFontSize(20);
+    codeType.setCodeType("c");
+    //获取数据
+    if(problemId.getProblemId() != null) {
+        $.getJSON("/problemLimit/" + problemId.getProblemId(), function (res) {
+            c_cppTimeLimit.setC_cppTimeLimit(res.c_cppTimeLimit);
+            c_cppMemoryLimit.setC_cppMemoryLimit(res.c_cppMemoryLimit);
+            javaTimeLimit.setJavaTimeLimit(res.javaTimeLimit);
+            javaMemoryLimit.setJavaMemoryLimit(res.javaMemoryLimit);
+            timeLimit.setTimeLimit(res.c_cppTimeLimit);
+            memoryLimit.setMemoryLimit(res.c_cppMemoryLimit);
+        })
+    }
+    //更换语言类型事件
+    $("#language a").click(function () {
+        codeType.setCodeType(this.text);
+        if (this.text == 'c' || this.text == 'c/c++') {
+            timeLimit.setTimeLimit(c_cppTimeLimit.getC_cppTimeLimit());
+            memoryLimit.setMemoryLimit(c_cppMemoryLimit.getC_cppMemoryLimit());
+        } else if(this.text == 'java') {
+            timeLimit.setTimeLimit(javaTimeLimit.getJavaTimeLimit());
+            memoryLimit.setMemoryLimit(javaMemoryLimit.getJavaMemoryLimit());
+        }
+    });
+    //更换主题事件
+    $("#theme a").click(function () {
+        theme.setTheme(this.text);
+    })
+    //更换字体大小事件
+    $("#font-size a").click(function () {
+        fontSize.setFontSize(Number(this.text));
+    })
+    //提交代码事件
+    $("#submit").click(function () {
+        $.post("/submitCode", {
+            problemId: problemId.getProblemId(),
+            codeValue: editor.getValue(),
+            codeType: codeType.getCodeType(),
+            funtSize: fontSize.getFontSize(),
+            theme: theme.getTheme()
+        }, function () {
+            alert("提交成功");
+            window.location.href = "/submit_code_list";
+        })
+    })
 </script>
+
+</body>
+</html>
+
+

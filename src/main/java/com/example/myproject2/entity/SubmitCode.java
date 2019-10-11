@@ -20,6 +20,8 @@ public class SubmitCode {
     private String codeType;
     private short fontSize;
     private String theme;
+    private int judgeTestNumber;
+    private int testNumber;
     private String judgeStatus;
 
     public int getSubmitCodeId() {
@@ -94,6 +96,22 @@ public class SubmitCode {
         this.judgeStatus = judgeStatus;
     }
 
+    public int getJudgeTestNumber() {
+        return judgeTestNumber;
+    }
+
+    public void setJudgeTestNumber(int judgeTestNumber) {
+        this.judgeTestNumber = judgeTestNumber;
+    }
+
+    public int getTestNumber() {
+        return testNumber;
+    }
+
+    public void setTestNumber(int testNumber) {
+        this.testNumber = testNumber;
+    }
+
     @Override
     public String toString() {
         return "SubmitCode{" +
@@ -105,6 +123,8 @@ public class SubmitCode {
                 ", codeType='" + codeType + '\'' +
                 ", fontSize=" + fontSize +
                 ", theme='" + theme + '\'' +
+                ", judgeTestNumber=" + judgeTestNumber +
+                ", testNumber=" + testNumber +
                 ", judgeStatus='" + judgeStatus + '\'' +
                 '}';
     }

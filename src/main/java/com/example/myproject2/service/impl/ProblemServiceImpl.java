@@ -58,7 +58,6 @@ public class ProblemServiceImpl implements ProblemService {
         return problem;
     }
 
-    @Async
     @Transactional
     @Override
     public void updateTestData(int problemId, Part part) throws IOException {
@@ -73,6 +72,7 @@ public class ProblemServiceImpl implements ProblemService {
         File workFile = new File(testDataPath + "/problemId_" + problemId);
         workFile.mkdirs();
         String zipFilePath = workFile.getPath() + "/problem_" + problemId + ".zip";
+        System.out.println(part.getSize());
         part.write(zipFilePath);
         problemDao.updateTestDataPath(problemId, zipFilePath);
 
@@ -131,6 +131,7 @@ public class ProblemServiceImpl implements ProblemService {
         }
         if (!testDataPaths.isEmpty()) {
             testDataDao.insertTestData(problemId, testDataPaths);
+
         }
         updateTestDataMap.remove(problemId);
     }
@@ -177,8 +178,10 @@ public class ProblemServiceImpl implements ProblemService {
         Map<String, Object> map = new HashMap<>();
         TimeLimit timeLimit = timeLimitDao.selectTimeLimit(problemId);
         MemoryLimit memoryLimit = memoryLimitDao.selectMemoryLimit(problemId);
-        map.put("timeLimit", timeLimit);
-        map.put("memoryLimit", memoryLimit);
+        map.put("c_cppTimeLimit", timeLimit.getC_cppTimeLimit());
+        map.put("c_cppMemoryLimit", memoryLimit.getC_cppMemoryLimit());
+        map.put("javaTimeLimit", timeLimit.getJavaTimeLimit());
+        map.put("javaMemoryLimit", memoryLimit.getJavaMemoryLimit());
         return map;
     }
 

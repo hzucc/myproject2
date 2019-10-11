@@ -89,4 +89,24 @@
         select problem_id from problem where problem_name = #{problemName};
     </select>
 
+    <select id="selectLimit" resultType="java.util.HashMap">
+        select
+            <if test="codeType == 'c'.toString()">
+                a.c_cpp_time_limit as timeLimit,
+                b.c_cpp_memory_limit as memoryLimit
+            </if>
+            <if test="codeType == 'c/c++'.toString()">
+                a.c_cpp_time_limit as timeLimit,
+                b.c_cpp_memory_limit as memoryLimit
+            </if>
+            <if test="codeType == 'java'.toString()">
+                a.java_time_limit as timeLimit,
+                b.java_memory_limit as memoryLimit
+            </if>
+        from  time_limit a
+        join memory_limit b on a.problem_id = b.problem_id
+        where a.problem_id = #{problemId};
+    </select>
+
+
 </mapper>

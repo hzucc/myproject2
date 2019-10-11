@@ -33,4 +33,6 @@ public interface ProblemDao {
 
     public int selectProblemIdByProblemName(String problemName);
 
+    public Map<String, String> selectLimit(int problemId, String codeType);
+
 }

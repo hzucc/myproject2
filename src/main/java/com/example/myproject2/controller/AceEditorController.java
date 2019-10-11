@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,26 +27,19 @@ public class AceEditorController {
     @Autowired
     private SubmitCodeService submitCodeService;
 
-    @GetMapping("/aceEditor/{problemId}")
+    @GetMapping("/ace-editor/{problemId}")
     public ModelAndView aceEditor(@PathVariable(value = "problemId", required = false) int problemId, ModelAndView modelAndView) {
         modelAndView.addObject("problemId", problemId);
         modelAndView.setViewName("ace-editor");
         return modelAndView;
     }
 
-    @GetMapping("/problemLimit/{problemId}")
-    public Map<String, Object> getProblemLimit(@PathVariable("problemId") int problemId) {
-        Map<String, Object> map = problemService.getProblemLimit(problemId);
-        return map;
-    }
-    @PostMapping("/judgeCode")
-    public String judgeCode(SubmitCode submitCode, HttpServletRequest request) {
+    @PostMapping("/submitCode")
+    public void judgeCode(SubmitCode submitCode, HttpServletRequest request) throws IOException {
         User user = (User) request.getSession().getAttribute("user");
         if (user != null) {
             submitCode.setUserId(user.getUserId());
         }
         submitCodeService.addSubmitCode(submitCode);
-        String url = "/submit_code_list";
-        return url;
     }
 }

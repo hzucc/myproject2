@@ -12,8 +12,15 @@
             (#{problemId}, #{item}, #{index} + 1)
         </foreach>
     </insert>
+    <update id="updateTestNumber">
+        update submit_code set test_number = #{testNumber} where submit_code_id = #{submitCodeId};
+    </update>
 
     <delete id="deleteTestData">
         delete from test_data where problem_id = #{problemId};
     </delete>
+
+    <select id="selectTestDataPath" resultType="java.lang.String">
+        select data_path as dataPath from test_data where problem_id = #{problemId};
+    </select>
 </mapper>
