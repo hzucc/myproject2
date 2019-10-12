@@ -16,11 +16,9 @@ import java.util.Map;
 public interface SubmitCodeDao {
     public void insertSubmitCode(SubmitCode submitCode);
 
-    public List<SubmitCodeListPage> selectSubmitCodeList(int page, int limit);
+    public List<Map<String, String>> selectSubmitCodeList(int page, int limit);
 
-    public List<Map<String, String>> selectCodeInWaiting(int limit);
-
-    public void updateStatusList(@Param("submitCodeIds") List<Integer> submitCodeIds, @Param("status") String status);
+    public Map<String, String> selectSubmitCodeInWaiting();
 
     public void updateStatus(int submitCodeId, String status);
 

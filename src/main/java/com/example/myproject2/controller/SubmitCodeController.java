@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +30,7 @@ public class SubmitCodeController {
     @PostMapping("/submit_code_list")
     public Map<String, Object> submitCodeList(int page, int limit) {
         Map<String, Object> map = new HashMap<>();
-        List<SubmitCodeListPage> submitCodeList = submitCodeService.getSubmitCodeList(page, limit);
+        List<Map<String, String>> submitCodeList = submitCodeService.getSubmitCodeList(page, limit);
         int count = submitCodeService.getSubmitCodeCount();
         map.put("page", page);
         map.put("code", 0);

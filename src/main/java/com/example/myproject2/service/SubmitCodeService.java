@@ -9,11 +9,12 @@ import com.example.myproject2.entity.SubmitCodeListPage;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public interface SubmitCodeService {
     public void addSubmitCode(SubmitCode submitCode) throws IOException;
 
-    public List<SubmitCodeListPage> getSubmitCodeList(int page, int limit);
+    public List<Map<String, String>> getSubmitCodeList(int page, int limit);
 
     public int getSubmitCodeCount();
 

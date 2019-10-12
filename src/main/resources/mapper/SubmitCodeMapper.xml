@@ -10,12 +10,6 @@
         insert into submit_code (user_id, problem_id, code_value, code_type, font_size, theme)
         values(#{userId}, #{problemId}, #{codeValue}, #{codeType}, #{fontSize}, #{theme});
     </insert>
-    <update id="updateStatusList">
-        update submit_code set judge_status = #{status} where submit_code_id in
-        (<foreach collection="submitCodeIds" item="item" separator=",">
-            #{item}
-        </foreach>)
-    </update>
 
     <update id="updateStatus">
         update submit_code set judge_status = #{status} where submit_code_id = #{submitCodeId};
@@ -37,26 +31,27 @@
         where submit_code_id = #{submitCodeId} and (judge_status = 'AC' or judge_status = 'running')
     </update>
 
-    <select id="selectSubmitCodeList" resultType="com.example.myproject2.entity.SubmitCodeListPage">
+    <select id="selectSubmitCodeList" resultType="java.util.HashMap">
         select
         a.problem_id as problemId,
         c.problem_name as problemName,
         a.code_type as codeType,
         b.user_name as userName,
-        a.judge_status as judgeStatus
+        a.judge_status as judgeStatus,
+        a.submit_time as submitTime
         from submit_code a
         left join user b on a.user_id = b.user_id
         left join problem c on a.problem_id = c.problem_id
         order BY a.submit_time desc limit #{page}, #{limit};
     </select>
 
-    <select id="selectCodeInWaiting" resultType="java.util.HashMap">
+    <select id="selectSubmitCodeInWaiting" resultType="java.util.HashMap">
         select
         submit_code_id as submitCodeId,
         code_type as codeType,
         code_value as codeValue,
         problem_id as problemId
-        from submit_code where judge_status = 'waiting' order by submit_time limit #{limit};
+        from submit_code where judge_status = 'waiting' order by submit_time limit 1;
     </select>
 
     <select id="selectProblemId" resultType="java.lang.Integer">

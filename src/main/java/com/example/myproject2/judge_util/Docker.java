@@ -79,7 +79,8 @@ public class Docker {
                 add("kill");
                 add(dockerId);
             }};
-            processBuilder.command(commands).start().waitFor();
+            Process process = processBuilder.command(commands).start();
+            process.waitFor();
         }
         List<String> commands = new ArrayList<String>() {{
             add("docker");

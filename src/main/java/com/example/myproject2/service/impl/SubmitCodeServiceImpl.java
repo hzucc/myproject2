@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class SubmitCodeServiceImpl implements SubmitCodeService {
@@ -41,8 +42,8 @@ public class SubmitCodeServiceImpl implements SubmitCodeService {
     }
 
     @Override
-    public List<SubmitCodeListPage> getSubmitCodeList(int page, int limit) {
-        List<SubmitCodeListPage> submitCodeListPages = submitCodeDao.selectSubmitCodeList((page - 1) * limit, limit);
+    public List<Map<String, String>> getSubmitCodeList(int page, int limit) {
+        List<Map<String, String>> submitCodeListPages = submitCodeDao.selectSubmitCodeList((page - 1) * limit, limit);
         return submitCodeListPages;
     }
 

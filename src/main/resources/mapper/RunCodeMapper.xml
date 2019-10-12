@@ -24,10 +24,7 @@
         </foreach>
     </insert>
     <update id="updateStatus">
-        update run_code set status = #{status} where run_code_id in
-        (<foreach collection="runCodeIds" item="item" separator=",">
-            #{item}
-        </foreach>)
+        update run_code set status = #{status} where run_code_id = #{runCodeId};
     </update>
 
     <update id="updateJudgeStatus">
@@ -38,14 +35,15 @@
         run_memory = #{runMemory}
         where run_code_id = #{runCodeId};
     </update>
-    <select id="selectRunCodes" resultType="java.util.HashMap">
+
+    <select id="selectRunCode" resultType="java.util.HashMap">
         select
         run_code_id as runCodeId,
         submit_code_id as submitCodeId,
         run_code_file as runCodeFile,
         code_type as codeType,
         test_data_path as testDataPath
-        from run_code where status = 'waiting' limit #{limit};
+        from run_code where status = 'waiting' limit 1;
     </select>
 
 
