@@ -18,11 +18,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.xml.crypto.Data;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class JudgeCodeImpl implements com.example.myproject2.service.JudgeCode {
@@ -39,18 +38,33 @@ public class JudgeCodeImpl implements com.example.myproject2.service.JudgeCode {
     @Autowired
     private ProblemDao problemDao;
 
-    @Transactional
+    private Queue<Map<String, String>> compilePL = new LinkedList<>();
+    private Queue<Map<String, String>> runPL = new LinkedList<>();
+
+    private Object compileObj = new Object();
+    private Object runObj = new Object();
+
     @Scheduled(fixedRate = 100)
     @Async
     @Override
     public void compilePL() throws IOException, InterruptedException, ClassNotFoundException, IllegalAccessException, InstantiationException {
-        Map<String, String> code = submitCodeDao.selectSubmitCodeInWaiting();
-        if (code != null && !code.isEmpty()) {
-            int submitCodeId = Integer.valueOf(String.valueOf(code.get("submitCodeId")));
-            submitCodeDao.updateStatus(submitCodeId, "compiling");
-            int problemId = Integer.valueOf(String.valueOf(code.get("problemId")));
-            String codeType = code.get("codeType");
-            String codeValue = code.get("codeValue");
+        Map<String, String> map = null;
+        synchronized (compileObj) {
+            if (compilePL.isEmpty()) {
+                List<Map<String, String>> maps = submitCodeDao.selectSubmitCodeInWaitingList(20);
+                compilePL.addAll(maps);
+            }
+            map = compilePL.poll();
+            if (map != null && !map.isEmpty()) {
+                int submitCodeId = Integer.valueOf(String.valueOf(map.get("submitCodeId")));
+                submitCodeDao.updateStatus(submitCodeId, "compiling");
+            }
+        }
+        if (map != null && !map.isEmpty()) {
+            int submitCodeId = Integer.valueOf(String.valueOf(map.get("submitCodeId")));
+            int problemId = Integer.valueOf(String.valueOf(map.get("problemId")));
+            String codeType = map.get("codeType");
+            String codeValue = map.get("codeValue");
             CompileParam compileParam = new CompileParam();
             compileParam.setCodeType(codeType);
             compileParam.setCompileFile(new File(codeValue));
@@ -80,15 +94,24 @@ public class JudgeCodeImpl implements com.example.myproject2.service.JudgeCode {
         }
     }
 
-    @Transactional
     @Scheduled(fixedRate = 100)
     @Async
     @Override
     public void runPL() throws ClassNotFoundException, InterruptedException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, IOException, InstantiationException {
-        Map<String, String> map = runCodeDao.selectRunCode();
+        Map<String, String> map = null;
+        synchronized (runObj) {
+            if (runPL.isEmpty()) {
+                List<Map<String, String>> maps = runCodeDao.selectRunCodeList(40);
+                runPL.addAll(maps);
+            }
+            map = runPL.poll();
+            if (map != null && !map.isEmpty()) {
+                int runCodeId = Integer.valueOf(String.valueOf(map.get("runCodeId")));
+                runCodeDao.updateStatus(runCodeId, "running");
+            }
+        }
         if (map != null && !map.isEmpty()) {
             int runCodeId = Integer.valueOf(String.valueOf(map.get("runCodeId")));
-            runCodeDao.updateStatus(runCodeId, "running");
             String codeType = map.get("codeType");
             int submitCodeId = Integer.valueOf(String.valueOf(map.get("submitCodeId")));
             String runCodeFile = map.get("runCodeFile");
@@ -110,7 +133,6 @@ public class JudgeCodeImpl implements com.example.myproject2.service.JudgeCode {
             int runMemory = runResult.getRunMemory();
             runCodeDao.updateJudgeStatus(runCodeId, runResult.getResult(), runTime, runMemory);
             submitCodeDao.updateJudgeTestNumber(submitCodeId);
-
             int testNumber = submitCodeDao.selectTestNumber(submitCodeId);
             int judgeTestNumber = submitCodeDao.selectJudgeTestNumber(submitCodeId);
             boolean isJudgeCompletion = false;

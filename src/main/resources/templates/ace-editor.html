@@ -190,6 +190,15 @@
     theme.setTheme("chrome");
     fontSize.setFontSize(20);
     codeType.setCodeType("c");
+    editor.setValue("#include<stdio.h>\n" +
+        "int main()\n" +
+        "{\n" +
+        "    int a,b;\n" +
+        "    scanf(\"%d%d\",&a,&b);\n" +
+        "    printf(\"%d\",a+b);\n" +
+        "    return 0;\n" +
+        "}"
+    )
     //获取数据
     if(problemId.getProblemId() != null) {
         $.getJSON("/problemLimit/" + problemId.getProblemId(), function (res) {

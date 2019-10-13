@@ -45,13 +45,13 @@
         order BY a.submit_time desc limit #{page}, #{limit};
     </select>
 
-    <select id="selectSubmitCodeInWaiting" resultType="java.util.HashMap">
+    <select id="selectSubmitCodeInWaitingList" resultType="java.util.HashMap">
         select
         submit_code_id as submitCodeId,
         code_type as codeType,
         code_value as codeValue,
         problem_id as problemId
-        from submit_code where judge_status = 'waiting' order by submit_time limit 1;
+        from submit_code where judge_status = 'waiting' order by submit_time limit #{limit};
     </select>
 
     <select id="selectProblemId" resultType="java.lang.Integer">
@@ -70,5 +70,8 @@
         select status from run_code where submit_code_id = #{submitCodeId};
     </select>
 
+    <select id="selectStatus" resultType="java.lang.String">
+        select judge_status from submit_code where submit_code_id = #{submitCodeId};
+    </select>
 
 </mapper>

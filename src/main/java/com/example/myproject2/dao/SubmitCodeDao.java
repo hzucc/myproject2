@@ -18,7 +18,7 @@ public interface SubmitCodeDao {
 
     public List<Map<String, String>> selectSubmitCodeList(int page, int limit);
 
-    public Map<String, String> selectSubmitCodeInWaiting();
+    public List<Map<String, String>> selectSubmitCodeInWaitingList(int limit);
 
     public void updateStatus(int submitCodeId, String status);
 
@@ -35,6 +35,8 @@ public interface SubmitCodeDao {
     public int selectTestNumber(int submitCodeId);
 
     public List<String> selectJudgeStatus(int submitCodeId);
+
+    public String selectStatus(int submitCodeId);
 
 
 }
