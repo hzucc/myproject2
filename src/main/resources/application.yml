@@ -1,4 +1,3 @@
-
 spring:
   thymeleaf:
     cache: false
@@ -26,12 +25,6 @@ server:
 #  configuration:
 #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
-docker:
-  cdk: hzucc/cdk
-  c_cppdk: hzucc/c_cppdk
-  c_cppre: hzucc/c_cppre
-  jdk: hzucc/jdk
-  jre: hzucc/jre
 
 myproject2:
   testDataPath: /myproject2/TestData
