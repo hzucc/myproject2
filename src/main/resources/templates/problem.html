@@ -23,14 +23,18 @@
         <button id="ace-editor" type="button" class="layui-btn">代码窗口</button>
     </div>
 </div>
+<script type="text/javascript" th:inline="javascript">
+    servletContent = /*[[@{/}]]*/ '';
+    servletContent = servletContent.substring(0, servletContent.lastIndexOf("/") + 1);
+</script>
 <script type="text/javascript">
     if ($("#problem-id").val() != null) {
-        $.get("/problem/data/" + $("#problem-id").val(), function (res) {
+        $.get(servletContent + "problem/data/" + $("#problem-id").val(), function (res) {
             $("#problem-content").html(res.problemContent);
         });
     }
     $("#ace-editor").click(function () {
-        window.open("/ace-editor/" + $("#problem-id").val());
+        window.open(servletContent + "ace-editor/" + $("#problem-id").val());
     });
 </script>
 

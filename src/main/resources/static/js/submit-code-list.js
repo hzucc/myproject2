@@ -3,7 +3,7 @@ layui.use('table', function () {
     //第一个实例
     table.render({
         elem: '#submit-code-list',
-        url: '/submit_code_list',
+        url: servletContent + 'submit_code_list',
         method: 'post',
         page: true,
         limit: 20,

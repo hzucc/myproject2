@@ -11,6 +11,7 @@ import com.example.myproject2.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -38,8 +39,8 @@ public class IndexController {
         return new ModelAndView("index");
     }
 
-    @GetMapping("/problemList")
-    public Map<String, Object> problomList() {
+    @PostMapping("/problemList")
+    public Map<String, Object> problomList(int page, int limit) {
         Map<String, Object> map = new HashMap<>();
         List<Problem> problems = problemService.getProlemList(1, 20);
         int count = problemService.getProblemCount();

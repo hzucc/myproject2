@@ -44,14 +44,14 @@ public class JudgeCodeImpl implements com.example.myproject2.service.JudgeCode {
     private Object compileObj = new Object();
     private Object runObj = new Object();
 
-    @Scheduled(fixedRate = 100)
+    @Scheduled(fixedRate = 200)
     @Async
     @Override
     public void compilePL() throws IOException, InterruptedException, ClassNotFoundException, IllegalAccessException, InstantiationException {
         Map<String, String> map = null;
         synchronized (compileObj) {
             if (compilePL.isEmpty()) {
-                List<Map<String, String>> maps = submitCodeDao.selectSubmitCodeInWaitingList(20);
+                List<Map<String, String>> maps = submitCodeDao.selectSubmitCodeInWaitingList(50);
                 compilePL.addAll(maps);
             }
             map = compilePL.poll();
@@ -94,14 +94,14 @@ public class JudgeCodeImpl implements com.example.myproject2.service.JudgeCode {
         }
     }
 
-    @Scheduled(fixedRate = 100)
+    @Scheduled(fixedRate = 500)
     @Async
     @Override
     public void runPL() throws ClassNotFoundException, InterruptedException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, IOException, InstantiationException {
         Map<String, String> map = null;
         synchronized (runObj) {
             if (runPL.isEmpty()) {
-                List<Map<String, String>> maps = runCodeDao.selectRunCodeList(40);
+                List<Map<String, String>> maps = runCodeDao.selectRunCodeList(50);
                 runPL.addAll(maps);
             }
             map = runPL.poll();

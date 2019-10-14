@@ -91,9 +91,13 @@
         </button>
     </div>
 </div>
+<script type="text/javascript" th:inline="javascript">
+    servletContent = /*[[@{/}]]*/ '';
+    servletContent = servletContent.substring(0, servletContent.lastIndexOf("/") + 1);
+</script>　
 <script type="text/javascript">
     if ($("#problemId").val() != null) {
-        $.getJSON("/problem/data/" + $("#problemId").val(), function (res) {
+        $.getJSON(servletContent + "problem/data/" + $("#problemId").val(), function (res) {
             $("#problemName").val(res.problemName);
             editor.txt.html(res.problemContent);
             $("#c_cppTimeLimit").val(res.timeLimit.c_cppTimeLimit);
@@ -102,7 +106,7 @@
             $("#javaMemoryLimit").val(res.memoryLimit.javaMemoryLimit);
         })
         /*获取题目样例数据*/
-        $.getJSON("/getTestDataMessage/" + $("#problemId").val(), function (res) {
+        $.getJSON(servletContent + "getTestDataMessage/" + $("#problemId").val(), function (res) {
             if(res.testDataStatus == "已上传") {
                 var fileSize = Number(res.fileSize);
                 if (fileSize == 0) {
@@ -120,7 +124,7 @@
         //执行实例
         var uploadInst = upload.render({
             elem: '#updateTestData' //绑定元素
-            ,url: '/updateTestData' //上传接口
+            ,url: servletContent + 'updateTestData' //上传接口
             ,accept: 'file'
             ,exts: 'zip'
             ,auto: true
@@ -141,7 +145,7 @@
         });
     });
     $("#submit").click(function () {
-        $.post("/updateProblem", {
+        $.post(servletContent + "updateProblem", {
             problemId: $("#problemId").val(),
             problemContent: editor.txt.html(),
             problemName: $("#problemName").val(),
@@ -156,7 +160,7 @@
     })
 
     function downloadTestData() {
-        window.location.href = "/downloadTestData/" + $("#problemId").val();
+        window.location.href = servletContent + "downloadTestData/" + $("#problemId").val();
     }
 
 </script>

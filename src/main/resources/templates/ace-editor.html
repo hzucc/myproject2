@@ -86,6 +86,10 @@
         <button id="submit" class="btn btn-success">提交代码</button>
     </div>
 </div>
+<script type="text/javascript" th:inline="javascript">
+    servletContent = /*[[@{/}]]*/ '';
+    servletContent = servletContent.substring(0, servletContent.lastIndexOf("/") + 1);
+</script>　
 <script>
     editor = ace.edit("editor");
     //设置只读(true时只读，用于展示代码)
@@ -201,7 +205,7 @@
     )
     //获取数据
     if(problemId.getProblemId() != null) {
-        $.getJSON("/problemLimit/" + problemId.getProblemId(), function (res) {
+        $.getJSON(servletContent + "problemLimit/" + problemId.getProblemId(), function (res) {
             c_cppTimeLimit.setC_cppTimeLimit(res.c_cppTimeLimit);
             c_cppMemoryLimit.setC_cppMemoryLimit(res.c_cppMemoryLimit);
             javaTimeLimit.setJavaTimeLimit(res.javaTimeLimit);
@@ -231,15 +235,14 @@
     })
     //提交代码事件
     $("#submit").click(function () {
-        $.post("/submitCode", {
+        $.post(servletContent + "submitCode", {
             problemId: problemId.getProblemId(),
             codeValue: editor.getValue(),
             codeType: codeType.getCodeType(),
             funtSize: fontSize.getFontSize(),
             theme: theme.getTheme()
         }, function () {
-            alert("提交成功");
-            window.location.href = "/submit_code_list";
+            window.location.href = servletContent + "submit_code_list";
         })
     })
 </script>

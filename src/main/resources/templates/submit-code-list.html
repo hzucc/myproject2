@@ -16,5 +16,9 @@
         <table id="submit-code-list" lay-filter="submit-code-list"></table>
     </div>
 </div>
+<script type="text/javascript" th:inline="javascript">
+    servletContent = /*[[@{/}]]*/ '';
+    servletContent = servletContent.substring(0, servletContent.lastIndexOf("/") + 1);
+</script>　
 </body>
 </html>
