@@ -14,10 +14,4 @@ public class TestController {
     public ModelAndView test() {
         return new ModelAndView("test");
     }
-
-    @GetMapping("/testData")
-    public String testData() {
-
-        return "你好";
-    }
 }

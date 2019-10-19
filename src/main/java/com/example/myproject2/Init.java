@@ -9,6 +9,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.util.logging.Logger;
 
 @Component
 public class Init implements CommandLineRunner {
@@ -35,6 +36,7 @@ public class Init implements CommandLineRunner {
         if (!runFile.exists()) {
             runFile.mkdirs();
         }
-        System.out.println("Init类的初始化工作完毕");
+        Logger.getLogger("Init-log").info("Init类初始化完毕");
+
     }
 }

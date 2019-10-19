@@ -47,15 +47,55 @@ public class ProblemServiceImpl implements ProblemService {
     private TableCountDao tableCountDao;
     @Autowired
     private ApplicationContext applicationContext;
+
     @Override
     public List<Problem> getProlemList(int page, int limit) {
         return problemDao.selectProblemList((page - 1) * limit, limit);
     }
 
     @Override
+    public List<Map<String, Object>> getProblemList(int page, int limit) {
+        List<Map<String, Object>> maps = problemDao.selectProblemIdAndProblemNameList((page - 1) * limit, limit);
+        return maps;
+    }
+
+    @Override
     public Problem getProblemByProblemId(int problemId) {
         Problem problem = problemDao.selectProblemByProblemId(problemId);
         return problem;
+    }
+
+    @Transactional
+    @Override
+    public boolean deleteProblem(int[] problemIds) {
+        boolean success = true;
+        try {
+            if (problemIds != null) {
+                for (int problemId : problemIds) {
+                    String path = problemDao.selectTestDataPath(problemId);
+                    //删除压缩的测试数据.zip
+                    if (path != null && path.equals("")) {
+                        File file = new File(path);
+                        File fileParent = file.getParentFile();
+                        if (file.exists()) {
+                            file.delete();
+                        }
+                        //删除解压出来的测试数据
+                        if (path.endsWith(".zip")) {
+                            if (fileParent.exists()) {
+                                FileUtil.delete(fileParent);
+                            }
+                        }
+                    }
+                    problemDao.deleteProblem(problemId);
+                }
+            }
+        } catch (Exception e) {
+            success = false;
+            throw e;
+        } finally {
+            return success;
+        }
     }
 
     @Transactional
@@ -83,20 +123,20 @@ public class ProblemServiceImpl implements ProblemService {
         List<String> test_data_paths = new ArrayList<>();
         ZipFile zipFile = new ZipFile(zipFilePath);
         Enumeration<? extends ZipEntry> entries = zipFile.entries();
-        while(entries.hasMoreElements()) {
+        while (entries.hasMoreElements()) {
             ZipEntry zipEntry = entries.nextElement();
             if (!zipEntry.isDirectory()) {
                 String name = zipEntry.getName();
                 if (name.endsWith(".in")) {
                     inputs.add(zipEntry);
-                } else if(name.endsWith(".out")) {
+                } else if (name.endsWith(".out")) {
                     outputs.put(name, zipEntry);
                 }
             }
         }
         int count = 1;
-        byte[] bytes = new byte[ 1 << 10 ];
-        for (ZipEntry input: inputs) {
+        byte[] bytes = new byte[1 << 10];
+        for (ZipEntry input : inputs) {
             String name = input.getName();
             String prefixName = name.substring(0, name.lastIndexOf("."));
             if (outputs.containsKey(prefixName + ".out")) {
@@ -109,7 +149,7 @@ public class ProblemServiceImpl implements ProblemService {
                 FileOutputStream fileOutputStream = new FileOutputStream(inputFile);
                 InputStream inputStream = zipFile.getInputStream(input);
                 int len = -1;
-                while( (len = inputStream.read(bytes)) != -1) {
+                while ((len = inputStream.read(bytes)) != -1) {
                     fileOutputStream.write(bytes, 0, len);
                 }
                 fileOutputStream.close();
@@ -120,7 +160,7 @@ public class ProblemServiceImpl implements ProblemService {
                 fileOutputStream = new FileOutputStream(outputFile);
                 inputStream = zipFile.getInputStream(output);
                 len = -1;
-                while( (len = inputStream.read(bytes)) != -1) {
+                while ((len = inputStream.read(bytes)) != -1) {
                     fileOutputStream.write(bytes, 0, len);
                 }
                 fileOutputStream.close();
@@ -139,12 +179,12 @@ public class ProblemServiceImpl implements ProblemService {
     @Override
     public Map<String, Object> getTestDataMessage(int problemId) {
         Map<String, Object> map = new HashMap<>();
-        if(updateTestDataMap.contains(problemId)) {
+        if (updateTestDataMap.contains(problemId)) {
             map.put("testDataStatus", "正在分发中");
         } else {
             String path = problemDao.selectTestDataPath(problemId);
             if (path == null || path.isEmpty()) {
-                map.put("testDataStatus", "暂未上传数据");
+                map.put("testDataStatus", "暂无");
             } else {
                 map.put("testDataStatus", "已上传");
                 File file = new File(path);
@@ -162,15 +202,18 @@ public class ProblemServiceImpl implements ProblemService {
 
     @Transactional
     @Override
-    public void updateProblem(Problem problem) {
+    public int updateProblem(Problem problem) {
+        int problemId = problem.getProblemId();
         boolean problemExist = problemDao.selectProblemId(problem.getProblemId());
         if (!problemExist) {
             problemDao.insertProblem(problem);
-            problem.setProblemId(problemDao.selectProblemIdByProblemName(problem.getProblemName()));
+            problemId = problemDao.selectProblemIdByProblemName(problem.getProblemName());
+            problem.setProblemId(problemId);
             problemDao.setLimit(problem.getTimeLimit(), problem.getMemoryLimit(), problem.getProblemId());
         } else {
             problemDao.updateProbelm(problem);
         }
+        return problemId;
     }
 
     @Override

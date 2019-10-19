@@ -3,22 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <title></title>
+    <!--Layui-->
+    <link href="https://www.layuicdn.com/layui-v2.5.5/css/layui.css" rel="stylesheet">
+    <script src="https://www.layuicdn.com/layui-v2.5.5/layui.js"></script>
 </head>
 <body>
-<ul id="top" class="layui-nav layui-bg-cyan" th:fragment="head">
-    <li class="layui-nav-item"><a href="@{/index}">首页</a></li>
-    <li class="layui-nav-item layui-this"><a th:href="@{/index}">题库</a></li>
-    <li class="layui-nav-item"><a href="">----</a></li>
-    <li th:if="${isAdmin == true}" class="layui-nav-item">
-        <a href="javascript:;">管理员权限</a>
-        <dl class="layui-nav-child">
-            <dd><a th:href="@{/admin/problem/1}">添加题目</a></dd>
-            <dd><a href="">------</a></dd>
-            <dd><a href="">-------</a></dd>
-        </dl>
-    </li>
-    <li class="layui-nav-item"><a href="">登录</a></li>
-</ul>
+<div th:fragment="head">
+    <ul id="top" class="layui-nav layui-bg-blue">
+        <li class="layui-nav-item"><a th:href="@{/index}">首页</a></li>
+        <li class="layui-nav-item"><a th:href="@{/problem_list}">题库</a></li>
+        <li class="layui-nav-item"><a th:href="@{/submit_code_list}">评测榜</a></li>
+        <!--用户-->
+        <li th:unless="${#authorization.expression('hasRole(''ANONYMOUS'')')}" class="layui-nav-item">
+            <a href="javascript:;">用户</a>
+            <dl class="layui-nav-child">
+                <dd><a href="">用户信息</a></dd>
+                <dd>
+                    <form id="logout" th:action="@{/logout}" method="post" style="text-align: center">
+                         <button class="layui-btn layui-btn-primary layui-btn-fluid" style="border: 0px">登出</button>
+                    </form>
+                </dd>
+            </dl>
+        </li>
+        <li th:if="${#authorization.expression('hasRole(''ANONYMOUS'')')}" class="layui-nav-item">
+            <a th:href="@{/login}">登录</a>
+        </li>
+        <li th:if="${#authorization.expression('hasRole(''ANONYMOUS'')')}" class="layui-nav-item"><a th:href="@{/register}">注册</a></li>
+
+        <li th:if="${#authorization.expression('hasRole(''ADMIN_LEVEL1'')') ||
+                    #authorization.expression('hasRole(''ADMIN_SUPER'')')}" class="layui-nav-item">
+            <a th:href="@{/admin}">后台管理</a>
+        </li>
+        <li class="layui-nav-item"><a href="">----</a></li>
+    </ul>
+    <script>
+        layui.use('element', function(){
+            var element = layui.element;
+
+            //…
+        });
+    </script>
+</div>
+
+
 
 </body>
 </html>

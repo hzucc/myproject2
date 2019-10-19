@@ -2,6 +2,8 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title></title>
     <!--jq-->
     <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
@@ -10,40 +12,33 @@
     <script src="https://www.layuicdn.com/layui-v2.5.5/layui.js"></script>
     <!--wangEditro-->
     <script src="//unpkg.com/wangeditor/release/wangEditor.min.js" type="text/javascript"></script>
-
 </head>
+
 <body>
-<div class="layui-container" style="margin-top: 100px">
+<div th:insert="~{footer :: head}"></div>
+<div class="layui-container" style="margin-top: 50px">
     <div class="layui-row">
         <div id="editor">
-            <p>欢迎使用 <b>wangEditor</b> 富文本编辑器</p>
+            <h2 style="text-align: left;"><span style="background-color: rgb(255, 255, 255); color: rgb(28, 72, 127); font-size: medium;">（样板）</span></h2><h1 style="text-align: center;">计算A+B</h1><h2 style="text-align: left;">题目描述：</h2><blockquote>计算两个数的和。</blockquote><h2>输入格式：</h2><blockquote>一行，两个整数，中间用空格隔开。</blockquote><h2>输出格式：</h2><blockquote>一行，一个整数。</blockquote><h2>输入样例：</h2><blockquote>1 2</blockquote><h2>输出样例：</h2><blockquote>3</blockquote><p></p><p></p><p></p>
         </div>
     </div>
 </div>
 
 <script type="text/javascript">
-    var E = window.wangEditor
-    var editor = new E('#editor')
-    // 或者 var editor = new E( document.getElementById('editor') )
-    editor.create()
-    // 禁用编辑功能
-    //editor.$textElem.attr('contenteditable', false)
-    // 开启编辑功能
-    //editor.$textElem.attr('contenteditable', true)
-    //设置内容
-    //editor.txt.html()
-    //editor.txt.text()
+    var E = window.wangEditor;
+    var editor = new E('#editor');
+    editor.create();
 </script>
 
 
 <div class="layui-container">
     <div id="form" class="layui-form layui-form-pane">
         <!--题目内容-->
-        <input id="problemId" type="hidden" name="problemId" th:value="${problemId}">
+        <input id="problem-id" type="hidden" name="problemId" th:value="${problemId}">
         <div class="layui-form-item" style="margin-top: 40px">
             <label class="layui-form-label">题目名称</label>
             <div class="layui-input-block">
-                <input id="problemName" type="text" name="problemName" required lay-verify="required"
+                <input id="problem-name" type="text" name="problemName" required lay-verify="required"
                        placeholder="请输入题目名称" autocomplete="off" class="layui-input">
             </div>
         </div>
@@ -51,14 +46,16 @@
         <div class="layui-inline">
             <label class="layui-form-label">c/c++时限</label>
             <div class="layui-input-inline" style="width: 100px">
-                <input id="c_cppTimeLimit" type="text" name="timeLimit.c_cppTimeLimit" autocomplete="off" class="layui-input">
+                <input id="c_cpp-timelimit" type="text" name="timeLimit.c_cppTimeLimit" autocomplete="off"
+                       class="layui-input">
             </div>
         </div>
 
         <div class="layui-inline">
             <label class="layui-form-label">java时限</label>
             <div class="layui-input-inline" style="width: 100px">
-                <input id="javaTimeLimit" type="text" name="timeLimit.javaTimeLimit" autocomplete="off" class="layui-input">
+                <input id="java-timelimit" type="text" name="timeLimit.javaTimeLimit" autocomplete="off"
+                       class="layui-input">
             </div>
         </div>
 
@@ -66,7 +63,7 @@
         <div class="layui-inline" style="margin-top: 15px">
             <label class="layui-form-label">c/c++内存</label>
             <div class="layui-input-inline" style="width: 100px">
-                <input id="c_cppMemoryLimit" type="text" name="memoryLimit.c_cppMemoryLimit" autocomplete="off"
+                <input id="c_cpp-memorylimit" type="text" name="memoryLimit.c_cppMemoryLimit" autocomplete="off"
                        class="layui-input">
             </div>
         </div>
@@ -74,7 +71,8 @@
         <div class="layui-inline">
             <label class="layui-form-label" style="margin-top: 15px">java内存</label>
             <div class="layui-input-inline" style="width: 100px;margin-top: 15px">
-                <input id="javaMemoryLimit" type="text" name="memoryLimit.javaMemoryLimit" autocomplete="off" class="layui-input">
+                <input id="java-memorylimit" type="text" name="memoryLimit.javaMemoryLimit" autocomplete="off"
+                       class="layui-input">
             </div>
         </div>
         <div class="layui-row" style="margin-top: 15px">
@@ -82,87 +80,101 @@
         </div>
     </div>
 
-    <div id="test-data" th:if="${problemId != null}" class="layui-row" style="margin-top: 15px">
-        <button type="button" class="layui-btn" id="updateTestData">
+    <div id="test-data" class="layui-row" style="margin-top: 15px">
+        <button type="button" class="layui-btn" id="update-test-data">
             <i class="layui-icon layui-icon-upload"></i>上传数据包
         </button>
         <button type="button" class="layui-btn" onclick="downloadTestData()">
-            <strong><i class="layui-icon layui-icon-download-circle"></i></strong>下载数据包(<span id="testDataFile"></span>&nbsp;KB)
+            <strong><i class="layui-icon layui-icon-download-circle"></i>
+            </strong>下载数据包(<span id="test-data-file"></span>)
         </button>
     </div>
 </div>
-<script type="text/javascript" th:inline="javascript">
-    servletContent = /*[[@{/}]]*/ '';
-    servletContent = servletContent.substring(0, servletContent.lastIndexOf("/") + 1);
-</script>　
+　
 <script type="text/javascript">
-    if ($("#problemId").val() != null) {
-        $.getJSON(servletContent + "problem/data/" + $("#problemId").val(), function (res) {
-            $("#problemName").val(res.problemName);
-            editor.txt.html(res.problemContent);
-            $("#c_cppTimeLimit").val(res.timeLimit.c_cppTimeLimit);
-            $("#javaTimeLimit").val(res.timeLimit.javaTimeLimit);
-            $("#c_cppMemoryLimit").val(res.memoryLimit.c_cppMemoryLimit);
-            $("#javaMemoryLimit").val(res.memoryLimit.javaMemoryLimit);
-        })
-        /*获取题目样例数据*/
-        $.getJSON(servletContent + "getTestDataMessage/" + $("#problemId").val(), function (res) {
-            if(res.testDataStatus == "已上传") {
+    servletContent = "[[@{/}]]";
+    servletContent = servletContent.substring(0, servletContent.lastIndexOf("/"));
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
+    $(document).ajaxSend(function (e, xhr, options) {
+        xhr.setRequestHeader(header, token);
+    });
+    function getTestDataMessage() {
+        $.getJSON(servletContent + "/admin/test_data_message/" + $("#problem-id").val(), function (res) {
+            if (res.testDataStatus == "已上传") {
                 var fileSize = Number(res.fileSize);
                 if (fileSize == 0) {
                     fileSize = 1;
                 }
-                $("#testDataFile").text(fileSize);
+                $("#test-data-file").text(fileSize + " KB");
             } else {
-                $("#testDataFile").text(res.testDataStatus);
+                $("#test-data-file").text(res.testDataStatus);
             }
         })
     }
-    layui.use('upload', function(){
+    if ($("#problem-id").val() != null && $("#problem-id").val() != "") {
+        $.getJSON(servletContent + "/problem/data/" + $("#problem-id").val(), function (res) {
+            $("#problem-name").val(res.problemName);
+            editor.txt.html(res.problemContent);
+            $("#c_cpp-timelimit").val(res.timeLimit.c_cppTimeLimit);
+            $("#java-timelimit").val(res.timeLimit.javaTimeLimit);
+            $("#c_cpp-memorylimit").val(res.memoryLimit.c_cppMemoryLimit);
+            $("#java-memorylimit").val(res.memoryLimit.javaMemoryLimit);
+        })
+        /*获取题目样例数据*/
+        getTestDataMessage();
+    } else {
+        $("#test-data").hide();
+    }
+    layui.use('upload', function () {
         var upload = layui.upload;
-
         //执行实例
         var uploadInst = upload.render({
-            elem: '#updateTestData' //绑定元素
-            ,url: servletContent + 'updateTestData' //上传接口
-            ,accept: 'file'
-            ,exts: 'zip'
-            ,auto: true
-            ,method: 'POST'
-            ,multiple: false
-            ,size: 20480
-            ,data: {
+            elem: '#update-test-data' //绑定元素
+            , url: servletContent + '/admin/test_data_update' //上传接口
+            , accept: 'file'
+            , exts: 'zip'
+            , auto: true
+            , method: 'post'
+            , multiple: false
+            , size: 20480
+            , data: {
                 problemId: function () {
-                    return $("#problemId").val();
+                    return $("#problem-id").val();
                 }
             }
-            ,done: function(res, index, upload){
+            , done: function (res, index, upload) {
                 alert("文件上传成功")
             }
-            ,error: function(){
+            , error: function () {
                 alert("文件上传出错...")
             }
         });
     });
     $("#submit").click(function () {
-        $.post(servletContent + "updateProblem", {
-            problemId: $("#problemId").val(),
-            problemContent: editor.txt.html(),
-            problemName: $("#problemName").val(),
-            c_cppTimeLimit: $("#c_cppTimeLimit").val(),
-            javaMemoryLimit: $("#javaMemoryLimit").val(),
-            c_cppMemoryLimit: $("#c_cppMemoryLimit").val(),
-            javaMemoryLimit: $("#javaMemoryLimit").val()
-            }, function (res) {
-                alert("提交成功")
-            }
-        )
+        $.post(servletContent + "/admin/problem_update",
+            {
+                problemId: Number($("#problem-id").val() == ""?0:$("#problem-id").val()),
+                problemContent: editor.txt.html(),
+                problemName: $("#problem-name").val(),
+                "timeLimit.c_cppTimeLimit": Number($("#c_cpp-timelimit").val()),
+                "timeLimit.javaTimeLimit": Number($("#java-timelimit").val()),
+                "memoryLimit.c_cppMemoryLimit": Number($("#c_cpp-memorylimit").val()),
+                "memoryLimit.javaMemoryLimit": Number($("#java-memorylimit").val())
+            },
+            function(res) {
+                if ($("#problem-id").val() == "") {
+                    $("#problem-id").val(res);
+                    $("#test-data").show();
+                    getTestDataMessage();
+                }
+                alert("成功");
+            })
     })
 
     function downloadTestData() {
-        window.location.href = servletContent + "downloadTestData/" + $("#problemId").val();
+        window.location.href = servletContent + "/admin/test_data_download/" + $("#problem-id").val();
     }
-
 </script>
 </body>
 </html>

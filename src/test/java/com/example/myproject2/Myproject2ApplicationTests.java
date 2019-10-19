@@ -24,10 +24,12 @@ public class Myproject2ApplicationTests {
     private UserDao userDao;
     @Autowired
     private SubmitCodeDao submitCodeDao;
+    @Autowired
+    private User_RoleDao user_roleDao;
 
     @Test
     public void contextLoads() {
-
+        user_roleDao.insertUser_Role("123@qq.com", "ROLE_USER");
     }
 
 }

@@ -15,6 +15,16 @@ public class MemoryLimit {
     private int c_cppMemoryLimit;
     private int javaMemoryLimit;
 
+    @Override
+    public String toString() {
+        return "MemoryLimit{" +
+                "memoryLimitId=" + memoryLimitId +
+                ", problemId=" + problemId +
+                ", c_cppMemoryLimit=" + c_cppMemoryLimit +
+                ", javaMemoryLimit=" + javaMemoryLimit +
+                '}';
+    }
+
     public int getMemoryLimitId() {
         return memoryLimitId;
     }
@@ -47,13 +57,4 @@ public class MemoryLimit {
         this.javaMemoryLimit = javaMemoryLimit;
     }
 
-    @Override
-    public String toString() {
-        return "MemoryLimit{" +
-                "memoryLimitId=" + memoryLimitId +
-                ", problemId=" + problemId +
-                ", c_cppMemoryLimit=" + c_cppMemoryLimit +
-                ", javaMemoryLimit=" + javaMemoryLimit +
-                '}';
-    }
 }

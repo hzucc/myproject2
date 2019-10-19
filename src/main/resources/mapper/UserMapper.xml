@@ -5,9 +5,41 @@
 -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.myproject2.dao.UserDao">
-    <select id="getUserRights" resultType="java.lang.Integer">
-        select user_rights from user where user_id = #{userId} and user_password = #{userPassword};
+    <insert id="insertUser">
+        insert into user (user_email, user_password)
+        values(#{userEmail}, #{password});
+    </insert>
+    <select id="selectUserEmailExist" resultType="java.lang.Boolean">
+        select count(1) from user where user_email = #{userEmail};
     </select>
 
+    <select id="selectUserExist" resultType="java.lang.Boolean">
+        select count(1) from user where user_email = #{userEmail} and password = #{password};
+    </select>
+
+    <select id="selectUserId" resultType="java.lang.Integer">
+        select user_id from user where user_email = #{userEmail};
+    </select>
+
+    <select id="selectPasswordByUserEmail" resultType="java.lang.String">
+        select user_password from user where user_email = #{userEmail};
+    </select>
+
+    <select id="selectRoleListByUserEmail" resultType="java.lang.String">
+        select c.role_name from user a
+        join user_role b on a.user_id = b.user_id
+        join role c on b.role_id = c.role_id
+        where user_email = #{userEmail};
+    </select>
+
+    <select id="selectUsers" resultType="java.util.HashMap">
+        select user_id as userId, user_name as userName, user_email as userEamil from user limit #{page}, #{limit};
+    </select>
+
+    <select id="selectRoleListByUserId" resultType="java.lang.String">
+        select role_name from user_role a
+        join role b on a.role_id = b.role_id
+        where a.user_id = #{userId};
+    </select>
 </mapper>
 

@@ -20,6 +20,7 @@ server:
     uri-encoding: UTF-8
 
 
+
 #打印sql语句
 #mybatis:
 #  configuration:

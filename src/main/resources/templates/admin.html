@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title></title>
+    <!--Jq-->
+    <script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <!--Layui-->
+    <link href="//www.layuicdn.com/layui-v2.5.5/css/layui.css" rel="stylesheet">
+    <script src="//www.layuicdn.com/layui-v2.5.5/layui.js"></script>
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">后台管理</div>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <i class="layui-icon layui-icon-user" style="font-size: 20px"></i>
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">基本信息</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item"><a th:href="@{/index}">退出</a></li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree" lay-filter="test">
+                <li id="nav-title-problem" class="layui-nav-item"><a href="">题库管理</a></li>
+                <li id="nav-title-user" class="layui-nav-item"><a href="">用户管理</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="layui-body" style="padding: 15px">
+        <!-- 内容主体区域 -->
+        <div id="nav-content-problem">
+            <table id="table-problem" lay-filter="table-problem"></table>
+        </div>
+        <div id="nav-content-user">
+            <table id="table-user" lay-filter="table-user"></table>
+        </div>
+    </div>
+</div>
+<!--头部左侧工具栏样式-->
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="deleteCheckData">删除所有选中数据</button>
+        <button class="layui-btn layui-btn-sm" lay-event="insertCheckData">新增一条数据</button>
+    </div>
+</script>
+<!--右侧工具栏样式-->
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edi">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+
+<script>
+    var firstTable = true;
+    function NavSwitch(titleId, contentId) {
+        if (!firstTable) {
+            $("#" + contentId).hide();
+        }
+        $("#" + titleId).mouseenter(function () {
+            var navIdInShowing = sessionStorage.getItem("navIdInShowing");
+            if (navIdInShowing != null && navIdInShowing != contentId) {
+                $("#" + navIdInShowing).hide();
+            }
+            $("#" + contentId).show();
+            sessionStorage.setItem("navIdInShowing", contentId);
+        });
+        firstTable = false;
+    }
+
+    //在此增加左侧导航栏与中间选项卡的对应切换
+    var navProblemTable = new NavSwitch("nav-title-problem", "nav-content-problem");
+    var navUserTable = new NavSwitch("nav-title-user", "nav-content-user");
+    //默认状态
+</script>
+
+
+<script>
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
+    $(document).ajaxSend(function (e, xhr, options) {
+        xhr.setRequestHeader(header, token);
+    });
+    servletContent = "[[@{/}]]";
+    servletContent = servletContent.substring(0, servletContent.lastIndexOf("/"));
+    //JavaScript代码区域
+
+    layui.use('element', function () {
+        var element = layui.element;
+    });
+    /*题库表格容器*/
+    layui.use('table', function(){
+        var tableProblem = layui.table;
+        //第一个实例
+        tableProblem.render({
+            elem: "#table-problem",
+            page: 1,
+            limit: 20,
+            url: servletContent + "/admin/problem_list",
+            page: true,
+            toolbar: "#toolbarDemo",
+            defaultToolbar: [""],
+            cols: [
+                [{type:'checkbox'},
+                    {field: 'problemId', title: '题目ID' },
+                    {field: 'problemName', title: '题目名称'},
+                    {title:'操作', toolbar: '#barDemo'}
+                ]
+            ],
+            id: "table-problem"
+        });
+        //头工具栏事件
+        tableProblem.on('toolbar(table-problem)', function(obj){
+            var checkStatus = tableProblem.checkStatus(obj.config.id);
+            switch(obj.event){
+                case 'deleteCheckData':
+                    var data = checkStatus.data;
+                    var problemIds = new Array(data.length);
+                    data.forEach(function (value, index) {
+                        problemIds[index] = value.problemId;
+                    })
+                    if (problemIds.length > 0) {
+                        $.ajax({
+                            url: servletContent + "/admin_delete/problem/" + problemIds,
+                            type: "delete",
+                            contentType: "application/json",
+                            success: function (res) {
+                                if (res == "ok") {
+                                    tableProblem.reload("table-problem", {});
+                                } else {
+                                    layui.msg("删除失败");
+                                }
+
+                            }
+                        })
+                    }
+                    break;
+                case 'insertCheckData':
+                    window.location.href = servletContent + "/admin/problem";
+                    break;
+            };
+        });
+        //行工具事件
+        tableProblem.on('tool(table-problem)', function(obj){
+            var data = obj.data;
+            switch(obj.event) {
+                case 'del':
+                   $.ajax({
+                       url: servletContent + "/admin_delete/problem/" + data.problemId,
+                       type: "delete",
+                       contentType: "application/json",
+                       success: function (res) {
+                           if (res == "ok") {
+                               tableProblem.reload("table-problem", {});
+                           } else {
+                               layui.msg("删除失败");
+                           }
+                       }
+                   })
+                    break;
+                case 'edi':
+                    window.location.href = servletContent + "/admin/problem/" + data.problemId;
+                    break;
+            }
+        });
+
+        var tableUser = layui.table;
+        tableUser.render({
+            elem: "#table-user",
+            page: 1,
+            limit: 20,
+            url: servletContent + "/admin/user_list",
+            page: true,
+            cols: [
+                [{type:'checkbox'},
+                    {field: 'userId', title: '用户ID'},
+                    {field: 'userName', title: '用户名称'},
+                    {field: 'userEamil', title: '用户邮箱'},
+                    {field: 'roles', title: '权限'},
+                    {title:'操作', toolbar: '#barDemo'},
+                ]
+            ],
+            id: "table-user"
+        })
+    });
+</script>
+</body>
+</html>

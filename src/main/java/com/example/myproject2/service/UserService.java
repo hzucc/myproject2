@@ -4,8 +4,20 @@
  */
 package com.example.myproject2.service;
 
-import com.example.myproject2.entity.User;
+
+import java.util.List;
+import java.util.Map;
 
 public interface UserService {
-    public boolean loginUserIsAdministrators(User loginUser);
+    public void insertUser(String userEmail, String password);
+
+    public Boolean login(String userEmail, String password);
+
+    public int getUserId(String userEmail);
+
+    public Boolean findUserEmailExist(String userEmail);
+
+    public List<Map<String, Object>> getUserList(int page, int limit);
+
+    public int getUserNumber();
 }

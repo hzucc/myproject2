@@ -2,6 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>ACE Editor</title>
     <!--Jq-->
     <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
@@ -15,7 +17,7 @@
     <script src="https://cdn.bootcss.com/ace/1.4.6/ext-language_tools.js"></script>
 
 </head>
-
+<div th:insert="~{footer :: head}"></div>
 <!--problemId-->
 <input id="problem-id" type="hidden" th:value = "${problemId}">
 
@@ -86,11 +88,15 @@
         <button id="submit" class="btn btn-success">提交代码</button>
     </div>
 </div>
-<script type="text/javascript" th:inline="javascript">
-    servletContent = /*[[@{/}]]*/ '';
-    servletContent = servletContent.substring(0, servletContent.lastIndexOf("/") + 1);
-</script>　
 <script>
+    servletContent = "[[@{/}]]";
+    servletContent = servletContent.substring(0, servletContent.lastIndexOf("/"));
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
+    $(document).ajaxSend(function(e, xhr, options) {
+        xhr.setRequestHeader(header, token);
+    });
+
     editor = ace.edit("editor");
     //设置只读(true时只读，用于展示代码)
     editor.setReadOnly(false);
@@ -205,7 +211,7 @@
     )
     //获取数据
     if(problemId.getProblemId() != null) {
-        $.getJSON(servletContent + "problemLimit/" + problemId.getProblemId(), function (res) {
+        $.getJSON(servletContent + "/problem_limit/" + problemId.getProblemId(), function (res) {
             c_cppTimeLimit.setC_cppTimeLimit(res.c_cppTimeLimit);
             c_cppMemoryLimit.setC_cppMemoryLimit(res.c_cppMemoryLimit);
             javaTimeLimit.setJavaTimeLimit(res.javaTimeLimit);
@@ -235,14 +241,14 @@
     })
     //提交代码事件
     $("#submit").click(function () {
-        $.post(servletContent + "submitCode", {
+        $.post(servletContent + "/submit_code", {
             problemId: problemId.getProblemId(),
             codeValue: editor.getValue(),
             codeType: codeType.getCodeType(),
             funtSize: fontSize.getFontSize(),
             theme: theme.getTheme()
         }, function () {
-            window.location.href = servletContent + "submit_code_list";
+            window.location.href = servletContent + "/submit_code_list";
         })
     })
 </script>

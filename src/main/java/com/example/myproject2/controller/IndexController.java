@@ -10,6 +10,8 @@ import com.example.myproject2.service.ProblemService;
 import com.example.myproject2.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,34 +33,20 @@ public class IndexController {
     private UserService userService;
 
     @GetMapping("/index")
-    public ModelAndView index(HttpServletRequest request, ModelAndView modelAndView) {
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
-        boolean isAdmin = userService.loginUserIsAdministrators(user);
-        modelAndView.addObject("isAdmin", isAdmin);
-        return new ModelAndView("index");
+    public ModelAndView index() {
+        return new ModelAndView("forward:/problem_list");
     }
 
-    @PostMapping("/problemList")
+    @PostMapping("/problem_list")
     public Map<String, Object> problomList(int page, int limit) {
         Map<String, Object> map = new HashMap<>();
         List<Problem> problems = problemService.getProlemList(1, 20);
         int count = problemService.getProblemCount();
+        map.put("page", page);
         map.put("code", 0);
         map.put("msg", null);
         map.put("count", count);
         map.put("data", problems);
         return map;
-    }
-
-    @GetMapping("/isAdmin")
-    public boolean isAdmin(HttpServletRequest request) {
-        boolean isAdmin = false;
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
-        if (userService.loginUserIsAdministrators(user)) {
-            isAdmin = true;
-        }
-        return isAdmin;
     }
 }

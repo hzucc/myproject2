@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+@author ChenCheng
+@date 2019/10/18
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.myproject2.dao.User_RoleDao">
+    <insert id="insertUser_Role">
+        insert into user_role (user_id, role_id)
+        value((select user_id from user where user_email = #{userEmail}),
+        (select role_id from role where role_name = #{roleName}));
+    </insert>
+
+</mapper>

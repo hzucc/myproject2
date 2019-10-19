@@ -38,7 +38,9 @@
         a.code_type as codeType,
         b.user_name as userName,
         a.judge_status as judgeStatus,
-        a.submit_time as submitTime
+        a.submit_time as submitTime,
+        a.judge_test_number as judgeTestNumber,
+        a.test_number as testNumber
         from submit_code a
         left join user b on a.user_id = b.user_id
         left join problem c on a.problem_id = c.problem_id

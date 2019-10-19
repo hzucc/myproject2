@@ -13,9 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface ProblemService {
-    public List<Problem> getProlemList(int page, int limit);
-
-    public Problem getProblemByProblemId(int problemId);
+    public boolean deleteProblem(int[] problemIds);
 
     public void updateTestData(int problemId, Part part) throws IOException;
 
@@ -23,9 +21,15 @@ public interface ProblemService {
 
     public String getTestDataPath(int problemId);
 
-    public void updateProblem(Problem problem);
+    public int updateProblem(Problem problem);
 
     public Map<String, Object> getProblemLimit(int problemId);
 
     public int getProblemCount();
+
+    public List<Problem> getProlemList(int page, int limit);
+
+    public List<Map<String, Object>> getProblemList(int page, int limit);
+
+    public Problem getProblemByProblemId(int problemId);
 }

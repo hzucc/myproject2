@@ -1,34 +1,42 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title></title>
-<!--    &lt;!&ndash;Layui&ndash;&gt;
-    <link href="https://www.layuicdn.com/layui-v2.5.5/css/layui.css" rel="stylesheet">
-    <script src="https://www.layuicdn.com/layui-v2.5.5/layui.js"></script>-->
-
-
-    <script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <meta charset="utf-8">
+    <title>table模块快速使用</title>
+    <!--Jq-->
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <!--Layui-->
+    <link href="//www.layuicdn.com/layui-v2.5.5/css/layui.css">
+    <script src="//www.layuicdn.com/layui-v2.5.5/layui.js"></script>
 </head>
 <body>
-<div id="app">
-    <p>{{ message }}</p>
-</div>
+
+<table id="table-problem" lay-filter="test"></table>
+
 <script>
-    new Vue({
-        el:'#app',
-        data: {
-            message: 'Hello'
-        },
-        mounted() {
-            axios.get('/testData').then(
-                res => (this.message = res.data)
-            ).catch(function (reason) {
-            });
-            console.log(message);
-        }
-    })
+    layui.use('table', function(){
+        var tableProblem = layui.table;
+
+        //第一个实例
+        tableProblem.render({
+            elem: '#table-problem'
+            ,height: 312
+            ,url: '/demo/table/user/' //数据接口
+            ,page: true //开启分页
+            ,cols: [[ //表头
+                {field: 'id', title: 'ID', width:80, sort: true, fixed: 'left'}
+                ,{field: 'username', title: '用户名', width:80}
+                ,{field: 'sex', title: '性别', width:80, sort: true}
+                ,{field: 'city', title: '城市', width:80}
+                ,{field: 'sign', title: '签名', width: 177}
+                ,{field: 'experience', title: '积分', width: 80, sort: true}
+                ,{field: 'score', title: '评分', width: 80, sort: true}
+                ,{field: 'classify', title: '职业', width: 80}
+                ,{field: 'wealth', title: '财富', width: 135, sort: true}
+            ]]
+        });
+
+    });
 </script>
 </body>
 </html>

@@ -32,7 +32,7 @@ public class AceEditorController {
         return modelAndView;
     }
 
-    @PostMapping("/submitCode")
+    @PostMapping("/submit_code")
     public void judgeCode(SubmitCode submitCode, HttpServletRequest request) throws IOException {
         User user = (User) request.getSession().getAttribute("user");
         if (user != null) {

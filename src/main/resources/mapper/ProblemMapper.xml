@@ -35,6 +35,10 @@
         insert into problem (problem_name, problem_content)
         values(#{problemName}, #{problemContent});
     </insert>
+
+    <delete id="deleteProblem">
+        delete from problem where problem_id = #{problemId};
+    </delete>
     <update id="updateProbelm" parameterType="com.example.myproject2.entity.Problem">
         update problem a
         join time_limit b on a.problem_id = b.problem_id
@@ -106,6 +110,11 @@
         from  time_limit a
         join memory_limit b on a.problem_id = b.problem_id
         where a.problem_id = #{problemId};
+    </select>
+
+    <select id="selectProblemIdAndProblemNameList" resultType="java.util.HashMap">
+        select problem_id as problemId, problem_name as problemName
+        from problem limit #{page}, #{limit};
     </select>
 
 

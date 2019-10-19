@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title></title>
+    <!--Jq-->
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <!--Layui-->
+    <link href="https://www.layuicdn.com/layui-v2.5.5/css/layui.css" rel="stylesheet">
+    <script src="https://www.layuicdn.com/layui-v2.5.5/layui.js"></script>
+</head>
+<style type="text/css">
+    @font-face {
+        font-family: yangrendong-extralight;
+        src: url("/font/yangrendong-extralight.ttf");
+    }
+    .yangrendong-font{
+        font-family: yangrendong-extralight;
+        font-size: 18px;
+    }
+    .input-highlight1 {
+        background-color: #BFDEFF;
+    }
+
+    .input-highlight2 {
+        border: 1px solid #1E9FFF;
+    }
+</style>
+<body style="background-color: #f2f2f2">
+<div class="layui-container" style="margin-top: 100px">
+    <div class="layui-row">
+        <form class="layui-form
+         layui-col-md-offset3 layui-col-md6" th:action="@{/register}" method="post"
+              style="padding: 20px;background-color: white">
+            <h1 style="font-family:yangrendong-extralight; text-align: center">注册</h1>
+            <br>
+            <div class="input-highlight yangrendong-font" style="padding: 3px;border-radius: 5px">
+                <input id="user-email" type="text" name="userEmail" style="border-radius: 5px"
+                       required lay-verify="required|email|email_exist" lay-verType="msg" placeholder="请输入邮箱" autocomplete="off"
+                       class="layui-input">
+            </div>
+            <br>
+            <div class="input-highlight yangrendong-font" style="padding: 3px;border-radius: 5px">
+                <input id="password" type="password" name="password" style="border-radius: 5px"
+                       required lay-verify="required" lay-verType="msg" placeholder="请输入密码" autocomplete="off"
+                       class="layui-input">
+            </div>
+            <br>
+            <div class="input-highlight yangrendong-font" style="padding: 3px;border-radius: 5px">
+                <input type="password" style="border-radius: 5px"
+                       required lay-verify="required|password_equal" lay-verType="msg" placeholder="请再次输入密码" autocomplete="off"
+                       class="layui-input">
+            </div>
+            <br>
+            <div th:insert="~{verify :: verify}"></div>
+
+            <button id="submit-register" class="layui-btn layui-btn-normal layui-btn-fluid yangrendong-font" lay-submit lay-filter="register-submit"
+                    style="margin-top: 15px">立即提交
+            </button>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
+    $(document).ajaxSend(function(e, xhr, options) {
+        xhr.setRequestHeader(header, token);
+    });
+    servletContent = "[[@{/}]]";
+    servletContent = servletContent.substring(0, servletContent.lastIndexOf("/"));
+
+    layui.use('form', function () {
+        var form = layui.form;
+        form.verify({
+            password_equal: function (value, item) {
+                if (value != $("#password").val()) {
+                    return "密码不一致";
+                }
+            },
+            email_exist: function (value, item) {
+                $.get(servletContent + "/user_email_exist/" + $("#user-email").val(), {},
+                    function (res) {
+                        if (res == true) {
+                            return "用户邮箱已被注册";
+                        }
+                    }
+                )
+            }
+        });
+
+        form.on('submit(register-submit)', function (res) {
+            var verifySuccess = false;
+            if (document.getElementById("slider").classList.contains("slide_ok")) {
+                verifySuccess = true;
+            }
+            if(!verifySuccess) {
+                layer.msg("滑动验证!");
+            } else {
+                $.post(servletContent + "/register", {
+                        userEmail: $("#user-email").val(),
+                        password: $("#password").val()
+                    }, function (res) {
+                        if (res == false) {
+                            layer.msg("注册失败");
+                        } else {
+                            layer.msg("注册成功,3秒后自动登录到主页");
+                            setTimeout(function () {
+                                $.post(servletContent + "/login", {
+                                        username: $("#user-email").val(),
+                                        password: $("#password").val()
+                                    }, function (res) {window.location.href = servletContent + "/index";})
+                            }, 3000);
+                        }
+                    })
+            }
+            return false;
+        })
+    });
+    $("#user-email").blur(function () {
+        if ($("#user-email").val() != null && $("#user-email").val() != "") {
+            $.get(servletContent + "/user_email_exist/" + $("#user-email").val(), {},
+                function (res) {
+                    if (res == true) {
+                        layer.msg("用户邮箱已被注册");
+                    }
+                }
+            )
+        }
+    });
+    $(".input-highlight input").focus(function () {
+        $(this).parent().addClass("input-highlight1");
+        $(this).addClass("input-highlight2");
+    })
+    $(".input-highlight input").blur(function () {
+        $(this).parent().removeClass("input-highlight1");
+        $(this).removeClass("input-highlight2");
+    })
+</script>
+</body>
+</html>

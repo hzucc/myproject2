@@ -16,9 +16,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.xml.crypto.Data;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -44,7 +42,7 @@ public class JudgeCodeImpl implements com.example.myproject2.service.JudgeCode {
     private Object compileObj = new Object();
     private Object runObj = new Object();
 
-    @Scheduled(fixedRate = 200)
+    @Scheduled(fixedRate = 500)
     @Async
     @Override
     public void compilePL() throws IOException, InterruptedException, ClassNotFoundException, IllegalAccessException, InstantiationException {
@@ -77,13 +75,13 @@ public class JudgeCodeImpl implements com.example.myproject2.service.JudgeCode {
                     submitCodeDao.updateStatus(submitCodeId, "running");
                     submitCodeDao.updateTestNumber(testDataPaths.size(), submitCodeId);
                     List<RunCode> runCodes = new ArrayList<>();
-                    for (int i = 0; i < testDataPaths.size(); i++) {
+                    for (int j = 0; j < testDataPaths.size(); j++) {
                         RunCode runCode = applicationContext.getBean(RunCode.class);
                         runCode.setCodeType(codeType);
                         runCode.setRunCodeFile(compileResult.getRunFile().getPath());
                         runCode.setSubmitCodeId(submitCodeId);
-                        runCode.setTestDataSerial(i + 1);
-                        runCode.setTestDataPath(testDataPaths.get(i));
+                        runCode.setTestDataSerial(j + 1);
+                        runCode.setTestDataPath(testDataPaths.get(j));
                         runCodes.add(runCode);
                     }
                     runCodeDao.insertRunCodes(runCodes);
@@ -94,7 +92,7 @@ public class JudgeCodeImpl implements com.example.myproject2.service.JudgeCode {
         }
     }
 
-    @Scheduled(fixedRate = 500)
+    @Scheduled(fixedRate = 100)
     @Async
     @Override
     public void runPL() throws ClassNotFoundException, InterruptedException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, IOException, InstantiationException {

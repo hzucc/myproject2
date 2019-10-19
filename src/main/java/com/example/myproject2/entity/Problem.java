@@ -24,6 +24,21 @@ public class Problem {
     @Autowired
     private TestData testData;
 
+    @Override
+    public String toString() {
+        return "Problem{" +
+                "problemId=" + problemId +
+                ", problemName='" + problemName + '\'' +
+                ", acceptNumber=" + acceptNumber +
+                ", submitNumber=" + submitNumber +
+                ", problemContent='" + problemContent + '\'' +
+                ", testDataPath='" + testDataPath + '\'' +
+                ", timeLimit=" + timeLimit +
+                ", memoryLimit=" + memoryLimit +
+                ", testData=" + testData +
+                '}';
+    }
+
     public int getProblemId() {
         return problemId;
     }
@@ -94,20 +109,5 @@ public class Problem {
 
     public void setTestData(TestData testData) {
         this.testData = testData;
-    }
-
-    @Override
-    public String toString() {
-        return "Problem{" +
-                "problemId=" + problemId +
-                ", problemName='" + problemName + '\'' +
-                ", acceptNumber=" + acceptNumber +
-                ", submitNumber=" + submitNumber +
-                ", problemContent='" + problemContent + '\'' +
-                ", testDataPath='" + testDataPath + '\'' +
-                ", timeLimit=" + timeLimit +
-                ", memoryLimit=" + memoryLimit +
-                ", testData=" + testData +
-                '}';
     }
 }
