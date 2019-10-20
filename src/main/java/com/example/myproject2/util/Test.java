@@ -10,14 +10,15 @@ import java.util.List;
 
 public class Test {
     public static void main(String[] args) throws IOException, InterruptedException {
-        Process exec = Runtime.getRuntime().exec("docker exec 4d3cc89e8a02 cat Main.i");
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(exec.getInputStream()));
-        String str = null;
-        while (( str = bufferedReader.readLine()) != null) {
-            System.out.println(str);
-        }
-        exec.waitFor();
-        exec.destroy();
-
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        List<String> commands = new ArrayList<>();
+        commands.add("docker");
+        commands.add("run");
+        commands.add("-itd");
+        commands.add("hzucc/alpine-oj");
+        Process start = processBuilder.command(commands).start();
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(start.getInputStream()));
+        String dockerId = bufferedReader.readLine();
+        bufferedReader.close();
     }
 }

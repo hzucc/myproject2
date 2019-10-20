@@ -92,61 +92,64 @@ public class JudgeCodeImpl implements com.example.myproject2.service.JudgeCode {
         }
     }
 
-    @Scheduled(fixedRate = 100)
+    @Scheduled(fixedRate = 50)
     @Async
     @Override
     public void runPL() throws ClassNotFoundException, InterruptedException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, IOException, InstantiationException {
-        Map<String, String> map = null;
-        synchronized (runObj) {
-            if (runPL.isEmpty()) {
-                List<Map<String, String>> maps = runCodeDao.selectRunCodeList(50);
-                runPL.addAll(maps);
+        int count = 3;
+        while (count-- > 0) {
+            Map<String, String> map = null;
+            synchronized (runObj) {
+                if (runPL.isEmpty()) {
+                    List<Map<String, String>> maps = runCodeDao.selectRunCodeList(100);
+                    runPL.addAll(maps);
+                }
+                map = runPL.poll();
+                if (map != null && !map.isEmpty()) {
+                    int runCodeId = Integer.valueOf(String.valueOf(map.get("runCodeId")));
+                    runCodeDao.updateStatus(runCodeId, "running");
+                }
             }
-            map = runPL.poll();
             if (map != null && !map.isEmpty()) {
                 int runCodeId = Integer.valueOf(String.valueOf(map.get("runCodeId")));
-                runCodeDao.updateStatus(runCodeId, "running");
-            }
-        }
-        if (map != null && !map.isEmpty()) {
-            int runCodeId = Integer.valueOf(String.valueOf(map.get("runCodeId")));
-            String codeType = map.get("codeType");
-            int submitCodeId = Integer.valueOf(String.valueOf(map.get("submitCodeId")));
-            String runCodeFile = map.get("runCodeFile");
-            String testDataPath = map.get("testDataPath");
-            int problemId = submitCodeDao.selectProblemId(submitCodeId);
-            Map<String, String> limit = problemDao.selectLimit(problemId, codeType);
-            int timeLimit = Integer.valueOf(String.valueOf(limit.get("timeLimit")));
-            int memoryLimit = Integer.valueOf(String.valueOf(limit.get("memoryLimit")));
-            RunParam runParam = new RunParam();
-            runParam.setCodeType(codeType);
-            runParam.setInput(new File(testDataPath + "/test.in"));
-            runParam.setOutput(new File(testDataPath + "/test.out"));
-            runParam.setTimeLimit(timeLimit);
-            runParam.setMemoryLimit(memoryLimit);
-            runParam.setRunFile(new File(runCodeFile));
-            JudgeCode judgeCode = (JudgeCode) Class.forName("com.example.myproject2.judge_util.JudgeCode_" + HandleType.typeHandle(codeType)).newInstance();
-            RunResult runResult = judgeCode.run(runParam);
-            int runTime = runResult.getRunTime();
-            int runMemory = runResult.getRunMemory();
-            runCodeDao.updateJudgeStatus(runCodeId, runResult.getResult(), runTime, runMemory);
-            submitCodeDao.updateJudgeTestNumber(submitCodeId);
-            int testNumber = submitCodeDao.selectTestNumber(submitCodeId);
-            int judgeTestNumber = submitCodeDao.selectJudgeTestNumber(submitCodeId);
-            boolean isJudgeCompletion = false;
-            if (testNumber == judgeTestNumber) {
-                isJudgeCompletion = true;
-            }
-            if (isJudgeCompletion) {
-                List<String> status = submitCodeDao.selectJudgeStatus(submitCodeId);
-                String result = "AC";
-                for (String s : status) {
-                    if (!"AC".equals(s)) {
-                        result = s;
-                        break;
-                    }
+                String codeType = map.get("codeType");
+                int submitCodeId = Integer.valueOf(String.valueOf(map.get("submitCodeId")));
+                String runCodeFile = map.get("runCodeFile");
+                String testDataPath = map.get("testDataPath");
+                int problemId = submitCodeDao.selectProblemId(submitCodeId);
+                Map<String, String> limit = problemDao.selectLimit(problemId, codeType);
+                int timeLimit = Integer.valueOf(String.valueOf(limit.get("timeLimit")));
+                int memoryLimit = Integer.valueOf(String.valueOf(limit.get("memoryLimit")));
+                RunParam runParam = new RunParam();
+                runParam.setCodeType(codeType);
+                runParam.setInput(new File(testDataPath + "/test.in"));
+                runParam.setOutput(new File(testDataPath + "/test.out"));
+                runParam.setTimeLimit(timeLimit);
+                runParam.setMemoryLimit(memoryLimit);
+                runParam.setRunFile(new File(runCodeFile));
+                JudgeCode judgeCode = (JudgeCode) Class.forName("com.example.myproject2.judge_util.JudgeCode_" + HandleType.typeHandle(codeType)).newInstance();
+                RunResult runResult = judgeCode.run(runParam);
+                int runTime = runResult.getRunTime();
+                int runMemory = runResult.getRunMemory();
+                runCodeDao.updateJudgeStatus(runCodeId, runResult.getResult(), runTime, runMemory);
+                submitCodeDao.updateJudgeTestNumber(submitCodeId);
+                int testNumber = submitCodeDao.selectTestNumber(submitCodeId);
+                int judgeTestNumber = submitCodeDao.selectJudgeTestNumber(submitCodeId);
+                boolean isJudgeCompletion = false;
+                if (testNumber == judgeTestNumber) {
+                    isJudgeCompletion = true;
                 }
-                submitCodeDao.updateJudgeStatus(submitCodeId, result);
+                if (isJudgeCompletion) {
+                    List<String> status = submitCodeDao.selectJudgeStatus(submitCodeId);
+                    String result = "AC";
+                    for (String s : status) {
+                        if (!"AC".equals(s)) {
+                            result = s;
+                            break;
+                        }
+                    }
+                    submitCodeDao.updateJudgeStatus(submitCodeId, result);
+                }
             }
         }
     }

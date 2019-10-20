@@ -3,8 +3,6 @@ package com.example.myproject2.judge_util;/*
  *@date 2019/9/27
  */
 
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -22,14 +20,11 @@ public class Docker {
         add("1024m");
         add("--memory-swap");
         add("1152m");
-        //设置OI
+        //设置OI,按实际需求，是/dev/sda, 还是/dev/vda...
         add("--device-read-bps");
         add("/dev/sda:50mb");
         add("--device-write-bps");
         add("/dev/sda:50mb");
-        //设置cpu
-        add("--cpus");
-        add("1");
     }};
     private String dockerId;
 
@@ -52,11 +47,6 @@ public class Docker {
         Process process = processBuilder.command(com).start();
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         dockerId = bufferedReader.readLine();
-        BufferedReader buf1 = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-        String s =null;
-        while ((s = buf1.readLine()) != null) {
-            System.out.println(s);
-        }
         bufferedReader.close();
         process.waitFor();
     }
