@@ -32,13 +32,18 @@ public class JudgeCode_C_cpp implements JudgeCode {
             add("./compile");
             add(compileParam.getCodeType());
         }};
-        Process process = processBuilder.command(commands).start();
-        BufferedReader buf = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        String res = buf.readLine();
-        process.waitFor();
-        buf.close();
         CompileResult compileResult = new CompileResult();
-        if ("running".equals(docker.getStatus()) && "success:compile success".equals(res)) {
+        Process process = processBuilder.command(commands).start();
+        BufferedReader buf = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+        String s = null;
+        StringBuffer res1 = new StringBuffer();
+        while ((s = buf.readLine()) != null) {
+            res1.append(s);
+        }
+        buf.close();
+        compileResult.setErrorMessage(res1.toString());
+        process.waitFor();
+        if ("running".equals(docker.getStatus()) && process.exitValue() == 0) {
             compileResult.setCompileSuccess(true);
         } else {
             compileResult.setCompileSuccess(false);
@@ -54,11 +59,9 @@ public class JudgeCode_C_cpp implements JudgeCode {
             add(compileParam.getCodeType());
         }};
         process = processBuilder.command(commands2).start();
-        buf = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        res = buf.readLine();
         process.waitFor();
         buf.close();
-        if ("running".equals(docker.getStatus()) && "success:compile success".equals(res)) {
+        if ("running".equals(docker.getStatus()) && process.exitValue() == 0) {
             compileResult.setCompileSuccess(true);
             File workFile = new File(runFilePath + "/" + UUID.randomUUID());
             workFile.mkdirs();
@@ -83,9 +86,9 @@ public class JudgeCode_C_cpp implements JudgeCode {
             process = processBuilder.command(com2).start();
             buf = new BufferedReader(new InputStreamReader(process.getInputStream()));
             StringBuffer error = new StringBuffer();
-            String s = null;
-            while ((s = buf.readLine()) != null) {
-                error.append(s);
+            String str = null;
+            while ((str = buf.readLine()) != null) {
+                error.append(str);
             }
             compileResult.setErrorMessage(error.toString());
             buf.close();
@@ -122,8 +125,12 @@ public class JudgeCode_C_cpp implements JudgeCode {
                 String[] split = res.split(":");
                 char[] chars = split[0].toCharArray();
                 chars[0] = Character.toUpperCase(chars[0]);
-                Method method = RunResult.class.getMethod("set" + String.valueOf(chars), String.class);
-                method.invoke(runResult, split[1]);
+                try {
+                    Method method = RunResult.class.getMethod("set" + String.valueOf(chars), String.class);
+                    method.invoke(runResult, split[1]);
+                }catch (Exception e) {
+
+                }
             }
         }
         process.waitFor();

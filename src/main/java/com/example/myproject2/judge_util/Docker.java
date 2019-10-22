@@ -4,6 +4,8 @@ package com.example.myproject2.judge_util;/*
  */
 
 
+import org.springframework.scheduling.annotation.Async;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +22,9 @@ public class Docker {
         add("1024m");
         add("--memory-swap");
         add("1152m");
-        //设置OI,按实际需求，是/dev/sda, 还是/dev/vda...
+        /*设置OI,
+        值得注意的是，本机是挂载路径是/dev/sda, 阿里云服务器是/dev/vda...
+        */
         add("--device-read-bps");
         add("/dev/sda:50mb");
         add("--device-write-bps");
@@ -60,6 +64,7 @@ public class Docker {
         return status;
     }
 
+    @Async
     public void delete() throws IOException, InterruptedException {
         String dockerStatus = getStatus();
         ProcessBuilder processBuilder = new ProcessBuilder();

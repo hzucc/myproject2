@@ -5,8 +5,8 @@ package com.example.myproject2.judge_util;/*
 
 public class RunResult {
     private String result;
-    private int runTime;
-    private int runMemory;
+    private String runTime;
+    private String runMemory;
     private String message;
 
     @Override
@@ -27,19 +27,19 @@ public class RunResult {
         this.result = result;
     }
 
-    public int getRunTime() {
+    public String getRunTime() {
         return runTime;
     }
 
-    public void setRunTime(int runTime) {
+    public void setRunTime(String runTime) {
         this.runTime = runTime;
     }
 
-    public int getRunMemory() {
+    public String getRunMemory() {
         return runMemory;
     }
 
-    public void setRunMemory(int runMemory) {
+    public void setRunMemory(String runMemory) {
         this.runMemory = runMemory;
     }
 

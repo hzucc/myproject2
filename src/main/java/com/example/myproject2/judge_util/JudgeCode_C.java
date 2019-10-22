@@ -110,6 +110,7 @@ public class JudgeCode_C implements JudgeCode {
         String res = null;
         BufferedReader buf = new BufferedReader(new InputStreamReader(process.getInputStream()));
         while ((res = buf.readLine()) != null) {
+            System.out.println(res);
             if (res.contains(":")) {
                 String[] split = res.split(":");
                 char[] chars = split[0].toCharArray();

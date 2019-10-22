@@ -4,18 +4,17 @@ package com.example.myproject2.judge_util;/*
  */
 
 import java.io.File;
-
+import java.util.Scanner;
 /*
  * codeType:  1.c  2.c/cpp  3.java
  *
  * */
 public class Test {
-
     public static void main(String[] args) throws Exception {
-        String codeType = "c";
+        String codeType = "java";
         JudgeCode judgeCode = (JudgeCode) Class.forName("com.example.myproject2.judge_util.JudgeCode_" + HandleType.typeHandle(codeType)).newInstance();
         CompileParam compileParam = new CompileParam();
-        compileParam.setCompileFile(new File("/home/cc/Main.c"));
+        compileParam.setCompileFile(new File("/home/cc/Main.java"));
         compileParam.setCodeType(codeType);
         CompileResult compileResult = judgeCode.compile(compileParam);
         if (compileResult.isCompileSuccess()) {
@@ -31,7 +30,5 @@ public class Test {
         } else {
             System.out.println(compileResult.getErrorMessage());
         }
-
-
     }
 }

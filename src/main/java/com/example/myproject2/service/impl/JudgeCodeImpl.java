@@ -92,7 +92,7 @@ public class JudgeCodeImpl implements com.example.myproject2.service.JudgeCode {
         }
     }
 
-    @Scheduled(fixedRate = 50)
+    @Scheduled(fixedRate = 100)
     @Async
     @Override
     public void runPL() throws ClassNotFoundException, InterruptedException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, IOException, InstantiationException {
@@ -129,8 +129,8 @@ public class JudgeCodeImpl implements com.example.myproject2.service.JudgeCode {
                 runParam.setRunFile(new File(runCodeFile));
                 JudgeCode judgeCode = (JudgeCode) Class.forName("com.example.myproject2.judge_util.JudgeCode_" + HandleType.typeHandle(codeType)).newInstance();
                 RunResult runResult = judgeCode.run(runParam);
-                int runTime = runResult.getRunTime();
-                int runMemory = runResult.getRunMemory();
+                int runTime = Integer.valueOf(runResult.getRunTime());
+                int runMemory = Integer.valueOf(runResult.getRunMemory());
                 runCodeDao.updateJudgeStatus(runCodeId, runResult.getResult(), runTime, runMemory);
                 submitCodeDao.updateJudgeTestNumber(submitCodeId);
                 int testNumber = submitCodeDao.selectTestNumber(submitCodeId);

@@ -18,12 +18,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 public class JudgeCode_Java implements JudgeCode {
-    private String runFilePath = "myproject2.run";
+    private String runFilePath = "/myproject2/run";
     @Override
     public CompileResult compile(CompileParam compileParam) throws IOException, InterruptedException {
         List<File> files = new ArrayList<>();
         files.add(compileParam.getCompileFile());
         Docker docker = new Docker(files);
+
         //编译阶段
         List<String> commands2 = new ArrayList<String>(){{
             add("docker");
@@ -39,7 +40,7 @@ public class JudgeCode_Java implements JudgeCode {
         process.waitFor();
         buf.close();
         CompileResult compileResult = new CompileResult();
-        if ("running".equals(docker.getStatus()) && "success:compile success".equals(res)) {
+        if ("running".equals(docker.getStatus()) && process.exitValue() == 0) {
             compileResult.setCompileSuccess(true);
             File workFile = new File(runFilePath + "/" + UUID.randomUUID());
             workFile.mkdirs();
@@ -102,8 +103,12 @@ public class JudgeCode_Java implements JudgeCode {
                 String[] split = res.split(":");
                 char[] chars = split[0].toCharArray();
                 chars[0] = Character.toUpperCase(chars[0]);
-                Method method = RunResult.class.getMethod("set" + String.valueOf(chars), String.class);
-                method.invoke(runResult, split[1]);
+                try{
+                    Method method = RunResult.class.getMethod("set" + String.valueOf(chars), String.class);
+                    method.invoke(runResult, split[1]);
+                } catch (Exception e) {
+
+                }
             }
         }
         process.waitFor();
