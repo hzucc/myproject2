@@ -20,6 +20,20 @@ public class RunCode {
     private short runTime;
     private int runMemory;
 
+    public RunCode() {
+    }
+    public RunCode(int submitCodeId, String runCodeFile, String codeType, String testDataPath, int testDataSerial) {
+        this.runCodeId = runCodeId;
+        this.submitCodeId = submitCodeId;
+        this.runCodeFile = runCodeFile;
+        this.codeType = codeType;
+        this.testDataPath = testDataPath;
+        this.testDataSerial = testDataSerial;
+        this.status = status;
+        this.runTime = runTime;
+        this.runMemory = runMemory;
+    }
+
     public int getRunCodeId() {
         return runCodeId;
     }

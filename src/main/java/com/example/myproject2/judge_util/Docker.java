@@ -3,12 +3,10 @@ package com.example.myproject2.judge_util;/*
  *@date 2019/9/27
  */
 
-
-import org.springframework.scheduling.annotation.Async;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+
 public class Docker {
     private static final List<String> commands = new ArrayList<String>(){{
         add("docker");
@@ -22,9 +20,7 @@ public class Docker {
         add("1024m");
         add("--memory-swap");
         add("1152m");
-        /*设置OI,
-        值得注意的是，本机是挂载路径是/dev/sda, 阿里云服务器是/dev/vda...
-        */
+        //设置OI,按实际设置/dev/sda  ，  还是 /dev/vda
         add("--device-read-bps");
         add("/dev/sda:50mb");
         add("--device-write-bps");
@@ -40,18 +36,18 @@ public class Docker {
         ProcessBuilder processBuilder = new ProcessBuilder();
         List<String> com = new ArrayList<>(commands);
         for (File file: files) {
+            com.add("-v");
             String name = file.getName();
             if (name.startsWith("Main") && name.contains(".")) {
                 name = "Main" + name.substring(name.lastIndexOf("."));
             }
-            com.add("-v");
             com.add(file.getPath() + ":/" + name + ":ro");
         }
         com.add("hzucc/alpine-oj");
         Process process = processBuilder.command(com).start();
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        dockerId = bufferedReader.readLine();
-        bufferedReader.close();
+        BufferedReader buf = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        dockerId = buf.readLine();
+        buf.close();
         process.waitFor();
     }
 
@@ -64,7 +60,6 @@ public class Docker {
         return status;
     }
 
-    @Async
     public void delete() throws IOException, InterruptedException {
         String dockerStatus = getStatus();
         ProcessBuilder processBuilder = new ProcessBuilder();
@@ -74,8 +69,7 @@ public class Docker {
                 add("kill");
                 add(dockerId);
             }};
-            Process process = processBuilder.command(commands).start();
-            process.waitFor();
+            processBuilder.command(commands).start().waitFor();
         }
         List<String> commands = new ArrayList<String>() {{
             add("docker");

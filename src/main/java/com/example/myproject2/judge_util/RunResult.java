@@ -7,17 +7,7 @@ public class RunResult {
     private String result;
     private String runTime;
     private String runMemory;
-    private String message;
-
-    @Override
-    public String toString() {
-        return "RunResult{" +
-                "result='" + result + '\'' +
-                ", runTime=" + runTime +
-                ", runMemory=" + runMemory +
-                ", message='" + message + '\'' +
-                '}';
-    }
+    private String errorMessage;
 
     public String getResult() {
         return result;
@@ -43,11 +33,21 @@ public class RunResult {
         this.runMemory = runMemory;
     }
 
-    public String getMessage() {
-        return message;
+    public String getErrorMessage() {
+        return errorMessage;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
+    @Override
+    public String toString() {
+        return "RunResult{" +
+                "result='" + result + '\'' +
+                ", runTime='" + runTime + '\'' +
+                ", runMemory='" + runMemory + '\'' +
+                ", errorMessage='" + errorMessage + '\'' +
+                '}';
     }
 }

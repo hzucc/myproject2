@@ -33,13 +33,4 @@ public class CompileResult {
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
     }
-
-    @Override
-    public String toString() {
-        return "CompileResult{" +
-                "compileSuccess=" + compileSuccess +
-                ", errorMessage='" + errorMessage + '\'' +
-                ", runFile=" + runFile +
-                '}';
-    }
 }

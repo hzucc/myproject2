@@ -1,22 +1,22 @@
-package com.example.myproject2.judge_util;/*
+package com.example.myproject2.judge_util;
+/*
  *@author ChenCheng
  *@date 2019/9/28
  */
-
 import java.io.File;
-import java.util.Scanner;
 /*
  * codeType:  1.c  2.c/cpp  3.java
- *
  * */
 public class Test {
     public static void main(String[] args) throws Exception {
-        String codeType = "java";
-        JudgeCode judgeCode = (JudgeCode) Class.forName("com.example.myproject2.judge_util.JudgeCode_" + HandleType.typeHandle(codeType)).newInstance();
+        String codeType = "c";
+        JudgeCode judgeCode = new JudgeCode();
+
         CompileParam compileParam = new CompileParam();
-        compileParam.setCompileFile(new File("/home/cc/Main.java"));
+        compileParam.setCompileFile(new File("/home/cc/Main.c"));
         compileParam.setCodeType(codeType);
         CompileResult compileResult = judgeCode.compile(compileParam);
+
         if (compileResult.isCompileSuccess()) {
             RunParam runParam = new RunParam();
             runParam.setInput(new File("/home/cc/test.in"));
@@ -24,7 +24,7 @@ public class Test {
             runParam.setRunFile(compileResult.getRunFile());
             runParam.setCodeType(codeType);
             runParam.setTimeLimit(2);
-            runParam.setMemoryLimit(200);
+            runParam.setMemoryLimit(400);
             RunResult runResult = judgeCode.run(runParam);
             System.out.println(runResult);
         } else {

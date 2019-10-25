@@ -3,15 +3,27 @@ package com.example.myproject2.judge_util;/*
  *@date 2019/9/27
  */
 
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+
 public class CompileParam {
     private String codeType;
     private File compileFile;
+    private static final Map<String, String> typeHandle = new HashMap<String, String>(){{
+        put("c", "C");
+        put("c/c++", "C_cpp");
+        put("java", "Java");
+    }};
+
+    public CompileParam() {
+    }
+
+    public CompileParam(String codeType, File compileFile) {
+        this.codeType = codeType;
+        this.compileFile = compileFile;
+    }
+
     public String getCodeType() {
         return codeType;
     }
@@ -26,5 +38,9 @@ public class CompileParam {
 
     public void setCompileFile(File compileFile) {
         this.compileFile = compileFile;
+    }
+
+    public static String getTypeHandle(String codeType) {
+        return typeHandle.get(codeType);
     }
 }

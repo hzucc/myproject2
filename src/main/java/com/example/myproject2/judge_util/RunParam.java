@@ -13,6 +13,18 @@ public class RunParam {
     private int timeLimit;
     private int memoryLimit;
 
+    public RunParam() {
+    }
+
+    public RunParam(String codeType, File runFile, File input, File output, int timeLimit, int memoryLimit) {
+        this.codeType = codeType;
+        this.runFile = runFile;
+        this.input = input;
+        this.output = output;
+        this.timeLimit = timeLimit;
+        this.memoryLimit = memoryLimit;
+    }
+
     public String getCodeType() {
         return codeType;
     }
