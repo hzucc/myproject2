@@ -23,6 +23,7 @@ public class SubmitCode {
     private int judgeTestNumber;
     private int testNumber;
     private String judgeStatus;
+    private String compileMessage;
 
     public int getSubmitCodeId() {
         return submitCodeId;
@@ -112,6 +113,14 @@ public class SubmitCode {
         this.testNumber = testNumber;
     }
 
+    public String getCompileMessage() {
+        return compileMessage;
+    }
+
+    public void setCompileMessage(String compileMessage) {
+        this.compileMessage = compileMessage;
+    }
+
     @Override
     public String toString() {
         return "SubmitCode{" +
@@ -126,6 +135,7 @@ public class SubmitCode {
                 ", judgeTestNumber=" + judgeTestNumber +
                 ", testNumber=" + testNumber +
                 ", judgeStatus='" + judgeStatus + '\'' +
+                ", compileMessage='" + compileMessage + '\'' +
                 '}';
     }
 }

@@ -31,6 +31,12 @@
         where submit_code_id = #{submitCodeId} and (judge_status = 'AC' or judge_status = 'running')
     </update>
 
+    <update id="updateStatusAndCompileMessage">
+        update submit_code
+        set judge_status = #{status} , compile_message = #{compileMessage}
+        where submit_code_id = #{submitCodeId};
+    </update>
+
     <select id="selectSubmitCodeList" resultType="java.util.HashMap">
         select
         a.problem_id as problemId,
@@ -72,8 +78,9 @@
         select status from run_code where submit_code_id = #{submitCodeId};
     </select>
 
-    <select id="selectStatus" resultType="java.lang.String">
-        select judge_status from submit_code where submit_code_id = #{submitCodeId};
+    <select id="selectSubmitCodeListOfUser" resultType="java.util.HashMap">
+        select code_value as codeValue, code_type as codeType, font_size as fontSize, theme from submit_code
+        where user_id = #{userId} and problem_id = #{problemId} order by submit_time desc limit #{limit};
     </select>
 
 </mapper>

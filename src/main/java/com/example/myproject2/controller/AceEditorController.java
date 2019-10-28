@@ -4,11 +4,14 @@
  */
 package com.example.myproject2.controller;
 
+import com.example.myproject2.dao.UserDao;
 import com.example.myproject2.entity.SubmitCode;
 import com.example.myproject2.entity.User;
 import com.example.myproject2.service.ProblemService;
 import com.example.myproject2.service.SubmitCodeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +27,8 @@ public class AceEditorController {
     private ProblemService problemService;
     @Autowired
     private SubmitCodeService submitCodeService;
+    @Autowired
+    private UserDao userDao;
 
     @GetMapping("/ace-editor/{problemId}")
     public ModelAndView aceEditor(@PathVariable(value = "problemId", required = false) int problemId, ModelAndView modelAndView) {
@@ -34,10 +39,15 @@ public class AceEditorController {
 
     @PostMapping("/submit_code")
     public void judgeCode(SubmitCode submitCode, HttpServletRequest request) throws IOException {
-        User user = (User) request.getSession().getAttribute("user");
-        if (user != null) {
-            submitCode.setUserId(user.getUserId());
+        try {
+            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            String userEmail = userDetails.getUsername();
+            int userId = userDao.selectUserId(userEmail);
+            submitCode.setUserId(userId);
+        } catch (Exception e) {
+
+        } finally {
+            submitCodeService.addSubmitCode(submitCode);
         }
-        submitCodeService.addSubmitCode(submitCode);
     }
 }

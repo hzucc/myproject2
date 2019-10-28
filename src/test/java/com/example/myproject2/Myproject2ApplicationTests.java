@@ -21,9 +21,12 @@ public class Myproject2ApplicationTests {
     private DockerFactory dockerFactory;
     @Autowired
     private ApplicationContext applicationContext;
+    @Autowired
+    private UserDao userDao;
+    @Autowired
+    private SubmitCodeDao submitCodeDao;
     @Test
     public void contextLoads() {
-
     }
 
 }

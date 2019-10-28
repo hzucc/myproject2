@@ -6,6 +6,7 @@ package com.example.myproject2.service.impl;
 
 import com.example.myproject2.dao.SubmitCodeDao;
 import com.example.myproject2.dao.TableCountDao;
+import com.example.myproject2.dao.UserDao;
 import com.example.myproject2.entity.CompileSuffixMap;
 import com.example.myproject2.entity.SubmitCode;
 import com.example.myproject2.entity.SubmitCodeListPage;
@@ -30,6 +31,8 @@ public class SubmitCodeServiceImpl implements SubmitCodeService {
     private TableCountDao tableCountDao;
     @Autowired
     private CompileSuffixMap compileSuffixMap;
+    @Autowired
+    private UserDao userDao;
     @Override
     public void addSubmitCode(SubmitCode submitCode) throws IOException {
         String codeValue = submitCode.getCodeValue();
@@ -56,6 +59,27 @@ public class SubmitCodeServiceImpl implements SubmitCodeService {
     @Override
     public int getSubmitCodeCount() {
         return tableCountDao.selectTableCount("submit_code");
+    }
+
+    @Override
+    public Map<String, String> getSubmitCode(String userEmail, int problemId) throws IOException {
+        int userId = userDao.selectUserId(userEmail);
+        List<Map<String, String>> maps = submitCodeDao.selectSubmitCodeListOfUser(userId, problemId, 1);
+        if (!maps.isEmpty()) {
+            Map<String, String> map = maps.get(0);
+            String codeValue = map.get("codeValue");
+            File file = new File(codeValue);
+            BufferedReader buf = new BufferedReader(new FileReader(codeValue));
+            StringBuilder res = new StringBuilder();
+            String str = null;
+            while ((str = buf.readLine()) != null) {
+                res.append(str + '\n');
+            }
+            map.put("codeValue", res.toString());
+            return map;
+        } else {
+            return null;
+        }
     }
 
 }

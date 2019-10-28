@@ -78,7 +78,7 @@ public class JudgeCodeImpl implements com.example.myproject2.service.JudgeCode {
                     runCodeDao.insertRunCodes(runCodes);
                 }
             } else {
-                submitCodeDao.updateStatus(submitCodeId, "compile fail");
+                submitCodeDao.updateStatusAndCompileMessage(submitCodeId, "compile fail", compileResult.getErrorMessage());
             }
         }
     }
@@ -113,8 +113,8 @@ public class JudgeCodeImpl implements com.example.myproject2.service.JudgeCode {
                     new File(testDataPath, "test.out"), timeLimit, memoryLimit);
             JudgeCode judgeCode = (JudgeCode) applicationContext.getBean("judgeCode_2");
             RunResult runResult = judgeCode.run(runParam);
-            int runTime = Integer.valueOf(runResult.getRunTime());
-            int runMemory = Integer.valueOf(runResult.getRunMemory());
+            int runTime = Integer.valueOf(String.valueOf(runResult.getRunTime()));
+            int runMemory = Integer.valueOf(String.valueOf(runResult.getRunMemory()));
             runCodeDao.updateJudgeStatus(runCodeId, runResult.getResult(), runTime, runMemory);
             submitCodeDao.updateJudgeTestNumber(submitCodeId);
             int testNumber = submitCodeDao.selectTestNumber(submitCodeId);

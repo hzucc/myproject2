@@ -39,10 +39,4 @@ public class ProblemController {
         Problem problem = problemService.getProblemByProblemId(problemId);
         return problem;
     }
-
-
-
-
-
-
 }

@@ -141,10 +141,9 @@
     }
     var fontSize = {
         getFontSize: function () {
-            return sessionStorage.getItem("fontSize");
+            editor.getFontSize();
         },
         setFontSize: function (fontSize) {
-            sessionStorage.setItem("fontSize", fontSize);
             editor.setFontSize(fontSize);
         }
     }
@@ -208,7 +207,7 @@
         "    printf(\"%d\",a+b);\n" +
         "    return 0;\n" +
         "}"
-    )
+    );
     //获取数据
     if(problemId.getProblemId() != null) {
         $.getJSON(servletContent + "/problem_limit/" + problemId.getProblemId(), function (res) {
@@ -245,12 +244,31 @@
             problemId: problemId.getProblemId(),
             codeValue: editor.getValue(),
             codeType: codeType.getCodeType(),
-            funtSize: fontSize.getFontSize(),
+            fontSize: editor.getFontSize(),
             theme: theme.getTheme()
         }, function () {
             window.location.href = servletContent + "/submit_code_list";
         })
     })
+
+    if (problemId.getProblemId() != null) {
+        $.get(servletContent + "/submit_code/" + problemId.getProblemId(), function (res) {
+            var isLogin = res.isLogin;
+            if (isLogin && res.submitCode != null) {
+                editor.setValue(res.submitCode.codeValue);
+
+                console.log(res.submitCode.codeValue);
+
+                codeType.setCodeType(res.submitCode.codeType);
+                theme.setTheme(res.submitCode.theme);
+                var fontSize = res.submitCode.fontSize;
+                if (fontSize == 0) {
+                    fontSize = 18;
+                }
+                editor.setFontSize(fontSize);
+            }
+        })
+    }
 </script>
 
 </body>

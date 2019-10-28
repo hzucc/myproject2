@@ -22,6 +22,8 @@ public interface SubmitCodeDao {
 
     public void updateStatus(int submitCodeId, String status);
 
+    public void updateStatusAndCompileMessage(int submitCodeId, String status, String compileMessage);
+
     public void updateTestNumber(int testNumber, int submitCodeId);
 
     public void updateJudgeTestNumber(int submitCodeId);
@@ -36,7 +38,6 @@ public interface SubmitCodeDao {
 
     public List<String> selectJudgeStatus(int submitCodeId);
 
-    public String selectStatus(int submitCodeId);
-
+    public List<Map<String, String>> selectSubmitCodeListOfUser(int userId, int problemId, int limit);
 
 }
