@@ -1,6 +1,7 @@
 package com.example.myproject2;
 
 import com.example.myproject2.dao.*;
+import com.example.myproject2.entity.DockerFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,19 +18,12 @@ import java.util.Map;
 @SpringBootTest
 public class Myproject2ApplicationTests {
     @Autowired
-    private RunCodeDao runCodeDao;
+    private DockerFactory dockerFactory;
     @Autowired
-    private ProblemDao problemDao;
-    @Autowired
-    private UserDao userDao;
-    @Autowired
-    private SubmitCodeDao submitCodeDao;
-    @Autowired
-    private User_RoleDao user_roleDao;
-
+    private ApplicationContext applicationContext;
     @Test
     public void contextLoads() {
-        user_roleDao.insertUser_Role("123@qq.com", "ROLE_USER");
+
     }
 
 }

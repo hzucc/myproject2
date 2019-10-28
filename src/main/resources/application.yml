@@ -28,6 +28,6 @@ server:
 
 
 myproject2:
-  testDataPath: /myproject2/TestData
+  testDataPath: /myproject2/testdata
   compile: /myproject2/compile
   run: /myproject2/run

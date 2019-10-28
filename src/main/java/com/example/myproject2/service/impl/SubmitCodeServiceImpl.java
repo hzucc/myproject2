@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class SubmitCodeServiceImpl implements SubmitCodeService {
@@ -33,7 +34,12 @@ public class SubmitCodeServiceImpl implements SubmitCodeService {
     public void addSubmitCode(SubmitCode submitCode) throws IOException {
         String codeValue = submitCode.getCodeValue();
         String compileSuffixName = compileSuffixMap.handleType(submitCode.getCodeType());
-        File compileFile = File.createTempFile("Main", compileSuffixName, new File(compileFilepath));
+        File workFile = new File(compileFilepath, UUID.randomUUID().toString());
+        workFile.mkdir();
+        File compileFile = new File(workFile.getPath(), "Main" + compileSuffixName);
+        compileFile.createNewFile();
+
+        //File compileFile = File.createTempFile("Main", compileSuffixName, new File(compileFilepath));
         PrintWriter printWriter = new PrintWriter(new BufferedWriter(new FileWriter(compileFile)));
         printWriter.write(codeValue);
         printWriter.close();

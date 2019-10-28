@@ -10,6 +10,7 @@ import com.example.myproject2.dao.SubmitCodeDao;
 import com.example.myproject2.dao.TestDataDao;
 import com.example.myproject2.entity.RunCode;
 import com.example.myproject2.judge_util.*;
+import com.example.myproject2.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -18,7 +19,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 @Service
@@ -62,7 +62,7 @@ public class JudgeCodeImpl implements com.example.myproject2.service.JudgeCode {
             String codeType = map.get("codeType");
             String codeValue = map.get("codeValue");
             CompileParam compileParam = new CompileParam(codeType, new File(codeValue));
-            JudgeCode judgeCode = new JudgeCode();
+            JudgeCode judgeCode = (JudgeCode) applicationContext.getBean("judgeCode_2");
             CompileResult compileResult = judgeCode.compile(compileParam);
             if (compileResult.isCompileSuccess()) {
                 submitCodeDao.updateStatus(submitCodeId, "compile success");
@@ -111,7 +111,7 @@ public class JudgeCodeImpl implements com.example.myproject2.service.JudgeCode {
             int memoryLimit = Integer.valueOf(String.valueOf(limit.get("memoryLimit")));
             RunParam runParam = new RunParam(codeType, new File(runCodeFile), new File(testDataPath, "test.in"),
                     new File(testDataPath, "test.out"), timeLimit, memoryLimit);
-            JudgeCode judgeCode = new JudgeCode();
+            JudgeCode judgeCode = (JudgeCode) applicationContext.getBean("judgeCode_2");
             RunResult runResult = judgeCode.run(runParam);
             int runTime = Integer.valueOf(runResult.getRunTime());
             int runMemory = Integer.valueOf(runResult.getRunMemory());
@@ -133,6 +133,7 @@ public class JudgeCodeImpl implements com.example.myproject2.service.JudgeCode {
                     }
                 }
                 submitCodeDao.updateJudgeStatus(submitCodeId, result);
+                FileUtil.delete(runParam.getRunFile().getParentFile());
             }
         }
     }

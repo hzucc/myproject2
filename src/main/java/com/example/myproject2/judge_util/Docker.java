@@ -3,12 +3,16 @@ package com.example.myproject2.judge_util;/*
  *@date 2019/9/27
  */
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class Docker {
-    private static final List<String> commands = new ArrayList<String>(){{
+    private final List<String> commands = new ArrayList<String>(){{
         add("docker");
         add("run");
         add("-itd");
@@ -25,6 +29,7 @@ public class Docker {
         add("/dev/sda:50mb");
         add("--device-write-bps");
         add("/dev/sda:50mb");
+
     }};
     private String dockerId;
 
@@ -32,17 +37,11 @@ public class Docker {
         return dockerId;
     }
 
-    public Docker(List<File> files) throws IOException, InterruptedException {
+    public Docker() throws IOException, InterruptedException {
         ProcessBuilder processBuilder = new ProcessBuilder();
         List<String> com = new ArrayList<>(commands);
-        for (File file: files) {
-            com.add("-v");
-            String name = file.getName();
-            if (name.startsWith("Main") && name.contains(".")) {
-                name = "Main" + name.substring(name.lastIndexOf("."));
-            }
-            com.add(file.getPath() + ":/" + name + ":ro");
-        }
+        com.add("-v");
+        com.add("/myproject2:/myproject2:ro");
         com.add("hzucc/alpine-oj");
         Process process = processBuilder.command(com).start();
         BufferedReader buf = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -51,31 +50,9 @@ public class Docker {
         process.waitFor();
     }
 
-
-    public String getStatus() throws IOException, InterruptedException {
-        Process process = Runtime.getRuntime().exec("docker inspect -f {{.State.Status}} " + dockerId);
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        String status = bufferedReader.readLine();
-        process.waitFor();
-        return status;
-    }
-
     public void delete() throws IOException, InterruptedException {
-        String dockerStatus = getStatus();
-        ProcessBuilder processBuilder = new ProcessBuilder();
-        if ("running".equals(dockerStatus)) {
-            List<String> commands = new ArrayList<String>() {{
-                add("docker");
-                add("kill");
-                add(dockerId);
-            }};
-            processBuilder.command(commands).start().waitFor();
-        }
-        List<String> commands = new ArrayList<String>() {{
-            add("docker");
-            add("rm");
-            add(dockerId);
-        }};
-        processBuilder.command(commands).start();
+        Runtime runtime = Runtime.getRuntime();
+        runtime.exec("docker kill " + dockerId).waitFor();
+        runtime.exec("docker rm " + dockerId);
     }
 }

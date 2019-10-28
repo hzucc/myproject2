@@ -3,7 +3,11 @@ package com.example.myproject2.judge_util;/*
  *@date 2019/9/27
  */
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 import java.io.File;
+
 
 public class CompileResult {
     private boolean compileSuccess;
