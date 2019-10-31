@@ -8,7 +8,9 @@ import com.example.myproject2.dao.ProblemDao;
 import com.example.myproject2.dao.RunCodeDao;
 import com.example.myproject2.dao.SubmitCodeDao;
 import com.example.myproject2.dao.TestDataDao;
+import com.example.myproject2.entity.CompilePLQueue;
 import com.example.myproject2.entity.RunCode;
+import com.example.myproject2.entity.RunPLQueue;
 import com.example.myproject2.judge_util.*;
 import com.example.myproject2.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
 import java.util.*;
@@ -35,27 +38,16 @@ public class JudgeCodeImpl implements com.example.myproject2.service.JudgeCode {
     private RunCodeDao runCodeDao;
     @Autowired
     private ProblemDao problemDao;
-    private Queue<Map<String, String>> compilePL = new LinkedList<>();
-    private Queue<Map<String, String>> runPL = new LinkedList<>();
-    private Object compileObj = new Object();
-    private Object runObj = new Object();
+    @Autowired
+    private CompilePLQueue compilePLQueue;
+    @Autowired
+    private RunPLQueue runPLQueue;
 
     @Scheduled(fixedRate = 100)
     @Async
     @Override
     public void compilePL() throws IOException, InterruptedException {
-        Map<String, String> map = null;
-        synchronized (compileObj) {
-            if (compilePL.isEmpty()) {
-                List<Map<String, String>> maps = submitCodeDao.selectSubmitCodeInWaitingList(50);
-                compilePL.addAll(maps);
-            }
-            map = compilePL.poll();
-            if (map != null && !map.isEmpty()) {
-                int submitCodeId = Integer.valueOf(String.valueOf(map.get("submitCodeId")));
-                submitCodeDao.updateStatus(submitCodeId, "compiling");
-            }
-        }
+        Map<String, String> map = compilePLQueue.pull();
         if (map != null && !map.isEmpty()) {
             int submitCodeId = Integer.valueOf(String.valueOf(map.get("submitCodeId")));
             int problemId = Integer.valueOf(String.valueOf(map.get("problemId")));
@@ -83,22 +75,11 @@ public class JudgeCodeImpl implements com.example.myproject2.service.JudgeCode {
         }
     }
 
-    @Scheduled(fixedRate = 50)
+    @Scheduled(fixedRate = 100)
     @Async
     @Override
     public void runPL() throws InterruptedException, IOException {
-        Map<String, String> map = null;
-        synchronized (runObj) {
-            if (runPL.isEmpty()) {
-                List<Map<String, String>> maps = runCodeDao.selectRunCodeList(100);
-                runPL.addAll(maps);
-            }
-            map = runPL.poll();
-            if (map != null && !map.isEmpty()) {
-                int runCodeId = Integer.valueOf(String.valueOf(map.get("runCodeId")));
-                runCodeDao.updateStatus(runCodeId, "running");
-            }
-        }
+        Map<String, String> map = runPLQueue.pull();
         if (map != null && !map.isEmpty()) {
             int runCodeId = Integer.valueOf(String.valueOf(map.get("runCodeId")));
             String codeType = map.get("codeType");
@@ -113,8 +94,14 @@ public class JudgeCodeImpl implements com.example.myproject2.service.JudgeCode {
                     new File(testDataPath, "test.out"), timeLimit, memoryLimit);
             JudgeCode judgeCode = (JudgeCode) applicationContext.getBean("judgeCode_2");
             RunResult runResult = judgeCode.run(runParam);
-            int runTime = Integer.valueOf(String.valueOf(runResult.getRunTime()));
-            int runMemory = Integer.valueOf(String.valueOf(runResult.getRunMemory()));
+            int runTime = 0;
+            if (runResult.getRunTime() != null ) {
+                runTime = Integer.valueOf(String.valueOf(runResult.getRunTime()));
+            }
+            int runMemory = 0;
+            if (runResult.getRunMemory() != null) {
+                runMemory = Integer.valueOf(String.valueOf(runResult.getRunMemory()));
+            }
             runCodeDao.updateJudgeStatus(runCodeId, runResult.getResult(), runTime, runMemory);
             submitCodeDao.updateJudgeTestNumber(submitCodeId);
             int testNumber = submitCodeDao.selectTestNumber(submitCodeId);
@@ -125,14 +112,19 @@ public class JudgeCodeImpl implements com.example.myproject2.service.JudgeCode {
             }
             if (isJudgeCompletion) {
                 List<String> status = submitCodeDao.selectJudgeStatus(submitCodeId);
+                boolean isAc = true;
                 String result = "AC";
                 for (String s : status) {
                     if (!"AC".equals(s)) {
+                        isAc = false;
                         result = s;
                         break;
                     }
                 }
                 submitCodeDao.updateJudgeStatus(submitCodeId, result);
+                if (isAc) {
+                    problemDao.addAcceptNumber(problemId);
+                }
                 FileUtil.delete(runParam.getRunFile().getParentFile());
             }
         }

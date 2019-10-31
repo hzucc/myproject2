@@ -40,4 +40,6 @@ public interface SubmitCodeDao {
 
     public List<Map<String, String>> selectSubmitCodeListOfUser(int userId, int problemId, int limit);
 
+    public boolean selectUserAcceptProblem(int userId, int problemId);
+
 }

@@ -67,6 +67,16 @@
         where a.problem_id = #{problemId};
     </update>
 
+    <update id="addSubmitNumber">
+        update problem set submit_number = submit_number + 1
+        where problem_id = #{problemId};
+    </update>
+
+    <update id="addAcceptNumber">
+        update problem set accept_number = accept_number + 1
+        where problem_id = #{problemId};
+    </update>
+
     <select id="selectProblemId" resultType="java.lang.Boolean">
         select count(1) from problem where problem_id = #{problemId};
     </select>

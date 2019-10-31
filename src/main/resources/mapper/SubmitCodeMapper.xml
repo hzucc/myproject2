@@ -83,4 +83,9 @@
         where user_id = #{userId} and problem_id = #{problemId} order by submit_time desc limit #{limit};
     </select>
 
+    <select id="selectUserAcceptProblem">
+        select count(1) from submit_code
+        where user_id = #{userId} and problem_id = #{problemId} and judge_status = 'AC';
+    </select>
+
 </mapper>

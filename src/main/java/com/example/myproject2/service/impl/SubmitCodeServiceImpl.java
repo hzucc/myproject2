@@ -4,6 +4,7 @@
  */
 package com.example.myproject2.service.impl;
 
+import com.example.myproject2.dao.ProblemDao;
 import com.example.myproject2.dao.SubmitCodeDao;
 import com.example.myproject2.dao.TableCountDao;
 import com.example.myproject2.dao.UserDao;
@@ -33,6 +34,8 @@ public class SubmitCodeServiceImpl implements SubmitCodeService {
     private CompileSuffixMap compileSuffixMap;
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private ProblemDao problemDao;
     @Override
     public void addSubmitCode(SubmitCode submitCode) throws IOException {
         String codeValue = submitCode.getCodeValue();
@@ -41,12 +44,11 @@ public class SubmitCodeServiceImpl implements SubmitCodeService {
         workFile.mkdir();
         File compileFile = new File(workFile.getPath(), "Main" + compileSuffixName);
         compileFile.createNewFile();
-
-        //File compileFile = File.createTempFile("Main", compileSuffixName, new File(compileFilepath));
         PrintWriter printWriter = new PrintWriter(new BufferedWriter(new FileWriter(compileFile)));
         printWriter.write(codeValue);
         printWriter.close();
         submitCode.setCodeValue(compileFile.getPath());
+        problemDao.addSubmitNumber(submitCode.getProblemId());
         submitCodeDao.insertSubmitCode(submitCode);
     }
 

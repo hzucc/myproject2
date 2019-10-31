@@ -24,7 +24,8 @@ public class Docker {
         add("1024m");
         add("--memory-swap");
         add("1152m");
-        //设置OI,按实际设置/dev/sda  ，  还是 /dev/vda
+
+        //设置OI,按本机是/dev/sda  ，  服务器是 /dev/vda
         add("--device-read-bps");
         add("/dev/sda:50mb");
         add("--device-write-bps");

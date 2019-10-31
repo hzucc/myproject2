@@ -24,6 +24,10 @@ public interface ProblemDao {
 
     public void updateProbelm(Problem problem);
 
+    public void addSubmitNumber(int problemId);
+
+    public void addAcceptNumber(int problemId);
+
     public boolean selectProblemId(int problemId);
 
     public int selectProblemIdByProblemName(String problemName);

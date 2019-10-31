@@ -36,11 +36,6 @@ public class Init implements CommandLineRunner {
         if (!runFile.exists()) {
             runFile.mkdirs();
         }
-        Runtime runtime = Runtime.getRuntime();
-  /*      System.out.println("开始清理docker");
-        runtime.exec("docker kill  $(docker ps -aq)").waitFor();
-        runtime.exec("docker rm  $(docker ps -aq)").waitFor();
-        System.out.println("清理完毕");*/
         Logger.getLogger("Init-log").info("Init类初始化完毕");
 
     }

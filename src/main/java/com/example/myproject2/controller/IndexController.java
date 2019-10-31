@@ -40,16 +40,5 @@ public class IndexController {
         return new ModelAndView("forward:/problem_list");
     }
 
-    @PostMapping("/problem_list")
-    public Map<String, Object> problomList(int page, int limit) {
-        Map<String, Object> map = new HashMap<>();
-        List<Problem> problems = problemService.getProlemList(1, 20);
-        int count = problemService.getProblemCount();
-        map.put("page", page);
-        map.put("code", 0);
-        map.put("msg", null);
-        map.put("count", count);
-        map.put("data", problems);
-        return map;
-    }
+
 }
