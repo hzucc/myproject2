@@ -32,6 +32,8 @@
                 <a class="dropdown-item" href="#">c</a>
                 <a class="dropdown-item" href="#">c/c++</a>
                 <a class="dropdown-item" href="#">java</a>
+                <a class="dropdown-item" href="#">go</a>
+                <a class="dropdown-item" href="#">python3</a>
             </div>
         </div>
         <!--主题选择-->
@@ -122,10 +124,14 @@
         },
         setCodeType: function(codeType) {
             $("#code-type").text(codeType);
-            if (codeType == 'c' || codeType == 'c/c++') {
+            if(codeType == 'c' || codeType == 'c/c++') {
                 editor.getSession().setMode("ace/mode/c_cpp");
-            } else if (codeType == 'java'){
+            } else if(codeType == 'java'){
                 editor.getSession().setMode("ace/mode/java");
+            } else if(codeType == "go") {
+                editor.getSession().setMode("ace/mode/golang");
+            } else if(codeType == "python3") {
+                editor.getSession().setMode("ace/mode/python");
             }
         }
     }
@@ -256,9 +262,6 @@
             var isLogin = res.isLogin;
             if (isLogin && res.submitCode != null) {
                 editor.setValue(res.submitCode.codeValue);
-
-                console.log(res.submitCode.codeValue);
-
                 codeType.setCodeType(res.submitCode.codeType);
                 theme.setTheme(res.submitCode.theme);
                 var fontSize = res.submitCode.fontSize;

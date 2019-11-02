@@ -3,11 +3,8 @@ package com.example.myproject2.judge_util;
  *@author ChenCheng
  *@date 2019/9/28
  */
-import org.springframework.objenesis.SpringObjenesis;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 /*
  * codeType:  1.c  2.c/cpp  3.java

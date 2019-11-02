@@ -6,33 +6,35 @@
     <!--Layui-->
     <link href="https://www.layuicdn.com/layui-v2.5.5/css/layui.css" rel="stylesheet">
     <script src="https://www.layuicdn.com/layui-v2.5.5/layui.js"></script>
+
+    <link href='http://cdn.repository.webfont.com/webfonts/nomal/133801/45837/5dbda699f629d80b2c29cc47.css' rel='stylesheet' type='text/css' />
 </head>
-<body>
+<body >
 <div th:fragment="head">
     <ul id="top" class="layui-nav layui-bg-blue">
-        <li class="layui-nav-item"><a th:href="@{/index}">首页</a></li>
-        <li class="layui-nav-item"><a th:href="@{/problem_list}">题库</a></li>
-        <li class="layui-nav-item"><a th:href="@{/submit_code_list}">评测榜</a></li>
+        <li class="layui-nav-item"><a th:href="@{/index}" style="font-family:'ljsh1cd1fc0ff920aa9';font-size: 18px">首页</a></li>
+        <li class="layui-nav-item"><a th:href="@{/problem_list}" style="font-family:'ljsh1cd1fc0ff920aa9';font-size: 18px">题库</a></li>
+        <li class="layui-nav-item"><a th:href="@{/submit_code_list}" style="font-family:'ljsh1cd1fc0ff920aa9';font-size: 18px">评测榜</a></li>
         <!--用户-->
         <li th:unless="${#authorization.expression('hasRole(''ANONYMOUS'')')}" class="layui-nav-item">
-            <a href="javascript:;">用户</a>
+            <a href="javascript:;" style="font-family:'ljsh1cd1fc0ff920aa9';font-size: 18px">用户</a>
             <dl class="layui-nav-child">
-                <dd><a href="">用户信息</a></dd>
+                <dd><a href="" style="font-family:'ljsh1cd1fc0ff920aa9';font-size: 18px">用户信息</a></dd>
                 <dd>
                     <form id="logout" th:action="@{/logout}" method="post" style="text-align: center">
-                         <button class="layui-btn layui-btn-primary layui-btn-fluid" style="border: 0px">登出</button>
+                         <button class="layui-btn layui-btn-primary layui-btn-fluid" style="border: 0px; font-family:'ljsh1cd1fc0ff920aa9';font-size: 18px">登出</button>
                     </form>
                 </dd>
             </dl>
         </li>
         <li th:if="${#authorization.expression('hasRole(''ANONYMOUS'')')}" class="layui-nav-item">
-            <a th:href="@{/login}">登录</a>
+            <a th:href="@{/login}" style="font-family:'ljsh1cd1fc0ff920aa9';font-size: 18px">登录</a>
         </li>
-        <li th:if="${#authorization.expression('hasRole(''ANONYMOUS'')')}" class="layui-nav-item"><a th:href="@{/register}">注册</a></li>
+        <li th:if="${#authorization.expression('hasRole(''ANONYMOUS'')')}" class="layui-nav-item"><a th:href="@{/register}" style="font-family:'ljsh1cd1fc0ff920aa9';font-size: 18px">注册</a></li>
 
         <li th:if="${#authorization.expression('hasRole(''ADMIN_LEVEL1'')') ||
                     #authorization.expression('hasRole(''ADMIN_SUPER'')')}" class="layui-nav-item">
-            <a th:href="@{/admin}">后台管理</a>
+            <a th:href="@{/admin}" style="font-family:'ljsh1cd1fc0ff920aa9';font-size: 18px">后台管理</a>
         </li>
         <li class="layui-nav-item"><a href="">----</a></li>
     </ul>

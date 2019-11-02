@@ -10,10 +10,13 @@
     <!--Layui-->
     <link href="https://www.layuicdn.com/layui-v2.5.5/css/layui.css" rel="stylesheet">
     <script src="https://www.layuicdn.com/layui-v2.5.5/layui.js"></script>
+
+    <link href='https://cdn.repository.webfont.com/webfonts/nomal/133801/45837/5dbdae27f629d80b2c29cc4a.css' rel='stylesheet' type='text/css' />
+
 </head>
 <body>
 <div th:insert="~{footer :: head}"></div>
-<div class="layui-container" style="margin-top: 20px">
+<div class="layui-container" style="margin-top: 20px; font-family:'ljsh1cd219911220aa9'">
     <div class="layui-row">
         <table id="submit-code-list" lay-filter="submit-code-list"></table>
     </div>
@@ -34,7 +37,7 @@
             url: servletContent + '/submit_code_list',
             method: 'post',
             page: true,
-            limit: 20,
+            limit: 10,
             id: 'table',
             cols: [
                 [{field: 'userName', title: '用户', templet: function (d) {
