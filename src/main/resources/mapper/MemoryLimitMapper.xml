@@ -10,6 +10,8 @@
         <result column="problem_id" jdbcType="INTEGER" property="problemId"></result>
         <result column="c_cpp_memory_limit" jdbcType="INTEGER" property="c_cppMemoryLimit"></result>
         <result column="java_memory_limit" jdbcType="INTEGER" property="javaMemoryLimit"></result>
+        <result column="go_memory_limit" jdbcType="INTEGER" property="goMemoryLimit"></result>
+        <result column="python3_memory_limit" jdbcType="INTEGER" property="python3MemoryLimit"></result>
     </resultMap>
     <select id="selectMemoryLimit" resultMap="MemoryLimit">
         select * from memory_limit where problem_id = #{problemId};

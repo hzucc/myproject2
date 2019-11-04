@@ -10,6 +10,8 @@
         <result column="problem_id" jdbcType="INTEGER" property="problemId"></result>
         <result column="c_cpp_time_limit" jdbcType="INTEGER" property="c_cppTimeLimit"></result>
         <result column="java_time_limit" jdbcType="INTEGER" property="javaTimeLimit"></result>
+        <result column="go_time_limit" jdbcType="INTEGER" property="goTimeLimit"></result>
+        <result column="python3_time_limit" jdbcType="INTEGER" property="python3TimeLimit"></result>
     </resultMap>
     <select id="selectTimeLimit" resultMap="TimeLimit">
         select * from time_limit where problem_id = #{problemId};

@@ -14,6 +14,36 @@ public class TimeLimit {
     private int problemId;
     private short c_cppTimeLimit;
     private short javaTimeLimit;
+    private short goTimeLimit;
+    private short python3TimeLimit;
+
+    @Override
+    public String toString() {
+        return "TimeLimit{" +
+                "timeLimitId=" + timeLimitId +
+                ", problemId=" + problemId +
+                ", c_cppTimeLimit=" + c_cppTimeLimit +
+                ", javaTimeLimit=" + javaTimeLimit +
+                ", goTimeLimit=" + goTimeLimit +
+                ", python3TimeLimit=" + python3TimeLimit +
+                '}';
+    }
+
+    public short getGoTimeLimit() {
+        return goTimeLimit;
+    }
+
+    public void setGoTimeLimit(short goTimeLimit) {
+        this.goTimeLimit = goTimeLimit;
+    }
+
+    public short getPython3TimeLimit() {
+        return python3TimeLimit;
+    }
+
+    public void setPython3TimeLimit(short python3TimeLimit) {
+        this.python3TimeLimit = python3TimeLimit;
+    }
 
     public int getTimeLimitId() {
         return timeLimitId;
@@ -47,13 +77,4 @@ public class TimeLimit {
         this.javaTimeLimit = javaTimeLimit;
     }
 
-    @Override
-    public String toString() {
-        return "TimeLimit{" +
-                "timeLimitId=" + timeLimitId +
-                ", problemId=" + problemId +
-                ", c_cppTimeLimit=" + c_cppTimeLimit +
-                ", javaTimeLimit=" + javaTimeLimit +
-                '}';
-    }
 }

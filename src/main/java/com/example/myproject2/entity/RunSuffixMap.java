@@ -15,6 +15,8 @@ public class RunSuffixMap {
         put("c", "");
         put("c/c++", "");
         put("java", "class");
+        put("go", "");
+        put("python3", "pyc");
     }};
     public String handleType(String codeType) {
         return map.get(codeType);

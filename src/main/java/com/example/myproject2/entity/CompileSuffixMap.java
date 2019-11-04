@@ -15,6 +15,8 @@ public class CompileSuffixMap {
         put("c", ".c");
         put("c/c++", ".cpp");
         put("java", ".java");
+        put("go", ".go");
+        put("python3", ".py");
     }};
     public String handleType(String codeType) {
         return map.get(codeType);

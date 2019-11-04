@@ -117,6 +117,14 @@
                 a.java_time_limit as timeLimit,
                 b.java_memory_limit as memoryLimit
             </if>
+            <if test="codeType == 'go'.toString()">
+                a.go_time_limit as timeLimit,
+                b.go_memory_limit as memoryLimit
+            </if>
+            <if test="codeType == 'python3'.toString()">
+                a.python3_time_limit as timeLimit,
+                b.python3_memory_limit as memoryLimit
+            </if>
         from  time_limit a
         join memory_limit b on a.problem_id = b.problem_id
         where a.problem_id = #{problemId};

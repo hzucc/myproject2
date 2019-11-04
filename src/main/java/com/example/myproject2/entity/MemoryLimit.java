@@ -14,6 +14,8 @@ public class MemoryLimit {
     private int problemId;
     private int c_cppMemoryLimit;
     private int javaMemoryLimit;
+    private int goMemoryLimit;
+    private int python3MemoryLimit;
 
     @Override
     public String toString() {
@@ -22,7 +24,25 @@ public class MemoryLimit {
                 ", problemId=" + problemId +
                 ", c_cppMemoryLimit=" + c_cppMemoryLimit +
                 ", javaMemoryLimit=" + javaMemoryLimit +
+                ", goMemoryLimit=" + goMemoryLimit +
+                ", python3MemoryLimit=" + python3MemoryLimit +
                 '}';
+    }
+
+    public int getGoMemoryLimit() {
+        return goMemoryLimit;
+    }
+
+    public void setGoMemoryLimit(int goMemoryLimit) {
+        this.goMemoryLimit = goMemoryLimit;
+    }
+
+    public int getPython3MemoryLimit() {
+        return python3MemoryLimit;
+    }
+
+    public void setPython3MemoryLimit(int python3MemoryLimit) {
+        this.python3MemoryLimit = python3MemoryLimit;
     }
 
     public int getMemoryLimitId() {
