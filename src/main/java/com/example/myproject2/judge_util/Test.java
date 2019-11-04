@@ -13,7 +13,6 @@ public class Test {
     public static void main(String[] args) throws Exception {
         String codeType = "c/c++";
         JudgeCode judgeCode = new JudgeCode();
-
         CompileParam compileParam = new CompileParam();
         compileParam.setCompileFile(new File("/myproject2/compile/t2/Main.cpp"));
         compileParam.setCodeType(codeType);
