@@ -14,7 +14,6 @@ public class User {
     private String userName;
     private String userEmail;
     private String userPassword;
-    private short userRights;
 
     public int getUserId() {
         return userId;
@@ -48,14 +47,6 @@ public class User {
         this.userPassword = userPassword;
     }
 
-    public short getUserRights() {
-        return userRights;
-    }
-
-    public void setUserRights(short userRights) {
-        this.userRights = userRights;
-    }
-
     @Override
     public String toString() {
         return "User{" +
@@ -63,7 +54,6 @@ public class User {
                 ", userName='" + userName + '\'' +
                 ", userEmail='" + userEmail + '\'' +
                 ", userPassword='" + userPassword + '\'' +
-                ", userRights=" + userRights +
                 '}';
     }
 }

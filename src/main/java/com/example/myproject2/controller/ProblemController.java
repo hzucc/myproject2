@@ -4,7 +4,6 @@
  */
 package com.example.myproject2.controller;
 
-import com.example.myproject2.dao.ProblemDao;
 import com.example.myproject2.dao.SubmitCodeDao;
 import com.example.myproject2.dao.UserDao;
 import com.example.myproject2.entity.Problem;
@@ -65,6 +64,7 @@ public class ProblemController {
             UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             String userEmail = userDetails.getUsername();
             int userId = userDao.selectUserId(userEmail);
+
             List<VoProblem1> problem1s = new ArrayList<>();
             for (Problem problem: problems) {
                 VoProblem1 problem1 = new VoProblem1(problem);
@@ -84,14 +84,14 @@ public class ProblemController {
 class VoProblem1 {
     private int problemId;
     private String problemName;
-    private int acceptNumber;
-    private int submitNumber;
+    private int acceptNum;
+    private int submitNum;
     private String status;
     public VoProblem1(Problem problem) {
         problemId = problem.getProblemId();
         problemName = problem.getProblemName();
-        acceptNumber = problem.getAcceptNumber();
-        submitNumber = problem.getSubmitNumber();
+        acceptNum = problem.getAcceptNum();
+        submitNum = problem.getSubmitNum();
     }
     public void setStatus(String status) {
         this.status = status;

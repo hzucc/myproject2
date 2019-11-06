@@ -12,10 +12,10 @@ import org.springframework.stereotype.Component;
 public class MemoryLimit {
     private int memoryLimitId;
     private int problemId;
-    private int c_cppMemoryLimit;
-    private int javaMemoryLimit;
-    private int goMemoryLimit;
-    private int python3MemoryLimit;
+    private short c_cppMemoryLimit;
+    private short javaMemoryLimit;
+    private short goMemoryLimit;
+    private short python3MemoryLimit;
 
     @Override
     public String toString() {
@@ -27,22 +27,6 @@ public class MemoryLimit {
                 ", goMemoryLimit=" + goMemoryLimit +
                 ", python3MemoryLimit=" + python3MemoryLimit +
                 '}';
-    }
-
-    public int getGoMemoryLimit() {
-        return goMemoryLimit;
-    }
-
-    public void setGoMemoryLimit(int goMemoryLimit) {
-        this.goMemoryLimit = goMemoryLimit;
-    }
-
-    public int getPython3MemoryLimit() {
-        return python3MemoryLimit;
-    }
-
-    public void setPython3MemoryLimit(int python3MemoryLimit) {
-        this.python3MemoryLimit = python3MemoryLimit;
     }
 
     public int getMemoryLimitId() {
@@ -61,20 +45,35 @@ public class MemoryLimit {
         this.problemId = problemId;
     }
 
-    public int getC_cppMemoryLimit() {
+    public short getC_cppMemoryLimit() {
         return c_cppMemoryLimit;
     }
 
-    public void setC_cppMemoryLimit(int c_cppMemoryLimit) {
+    public void setC_cppMemoryLimit(short c_cppMemoryLimit) {
         this.c_cppMemoryLimit = c_cppMemoryLimit;
     }
 
-    public int getJavaMemoryLimit() {
+    public short getJavaMemoryLimit() {
         return javaMemoryLimit;
     }
 
-    public void setJavaMemoryLimit(int javaMemoryLimit) {
+    public void setJavaMemoryLimit(short javaMemoryLimit) {
         this.javaMemoryLimit = javaMemoryLimit;
     }
 
+    public short getGoMemoryLimit() {
+        return goMemoryLimit;
+    }
+
+    public void setGoMemoryLimit(short goMemoryLimit) {
+        this.goMemoryLimit = goMemoryLimit;
+    }
+
+    public short getPython3MemoryLimit() {
+        return python3MemoryLimit;
+    }
+
+    public void setPython3MemoryLimit(short python3MemoryLimit) {
+        this.python3MemoryLimit = python3MemoryLimit;
+    }
 }

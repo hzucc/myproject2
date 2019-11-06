@@ -6,15 +6,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.myproject2.dao.RunCodeDao">
     <resultMap id="RunCode" type="com.example.myproject2.entity.RunCode">
-        <result column="run_code_id" jdbcType="INTEGER" property="runCodeId"></result>
-        <result column="submit_code_id" jdbcType="INTEGER" property="submitCodeId"></result>
-        <result column="run_code_file" jdbcType="CHAR" property="runCodeFile"></result>
-        <result column="code_type" jdbcType="VARCHAR" property="codeType"></result>
-        <result column="test_data_path" jdbcType="CHAR" property="testDataPath"></result>
-        <result column="test_data_serial" jdbcType="SMALLINT" property="testDataSerial"></result>
-        <result column="status" jdbcType="VARCHAR" property="status"></result>
-        <result column="run_time" jdbcType="TINYINT" property="runTime"></result>
-        <result column="run_memory" jdbcType="INTEGER" property="runMemory"></result>
+        <result column="run_code_id" property="runCodeId"></result>
+        <result column="submit_code_id" property="submitCodeId"></result>
+        <result column="run_code_file" property="runCodeFile"></result>
+        <result column="code_type" property="codeType"></result>
+        <result column="test_data_path" property="testDataPath"></result>
+        <result column="test_data_serial" property="testDataSerial"></result>
+        <result column="status" property="status"></result>
+        <result column="run_time" property="runTime"></result>
+        <result column="run_memory" property="runMemory"></result>
     </resultMap>
     <insert id="insertRunCodes">
         insert into run_code(submit_code_id, run_code_file, code_type, test_data_path, test_data_serial)
@@ -26,6 +26,9 @@
     <update id="updateStatus">
         update run_code set status = #{status} where run_code_id = #{runCodeId};
     </update>
+    <update id="updateStatus_WaitingToRunning">
+        update run_code set status = 'running' where run_code_id = #{runCodeId} and status = 'waiting';
+    </update>
 
     <update id="updateJudgeStatus">
         update run_code
@@ -36,13 +39,21 @@
         where run_code_id = #{runCodeId};
     </update>
 
-    <select id="selectRunCodeList" resultType="java.util.HashMap">
-        select run_code_id as runCodeId, submit_code_id as submitCodeId, run_code_file as runCodeFile, code_type as codeType, test_data_path as testDataPath
-        from run_code where status = 'waiting' limit #{limit};
+    <select id="selectRunCodeInWaiting" resultMap="RunCode">
+        select
+        run_code_id,
+        submit_code_id,
+        run_code_file,
+        code_type,
+        test_data_path
+        from run_code where status = 'waiting' limit 1;
      </select>
 
-    <select id="selectRunCode" resultType="java.util.HashMap" useCache="false">
-        select run_code_id as runCodeId, submit_code_id as submitCodeId, run_code_file as, code_type, test_data_path
-        from run_code where status = 'waiting' limit 1;
-       </select>
+    <select id="selectJudgeResult" resultType="java.lang.String">
+        select
+        status
+        from run_code
+        where submit_code_id = #{submitCodeId} and status != 'AC'
+        limit 1;
+    </select>
 </mapper>

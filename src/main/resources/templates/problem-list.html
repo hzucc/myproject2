@@ -45,8 +45,8 @@
                 [{field: 'problemId', title: 'ID', sort: true},
                     {field: 'problemName', title: '题目名'},
                     {
-                        field: 'acceptNumber/submitNumber', title: '通过数/总提交数',
-                        templet: '<div>{{d.acceptNumber}}/{{d.submitNumber}} ({{d.submitNumber? Math.round(d.acceptNumber / d.submitNumber * 10000) / 100.00: 100 }}%)</div>'
+                        field: 'acceptNum/submitNum', title: '通过数/总提交数',
+                        templet: '<div>{{d.acceptNum}}/{{d.submitNum}} ({{d.submitNum? Math.round(d.acceptNum / d.submitNum * 10000) / 100.00: 100 }}%)</div>'
                     },
                     {field: 'status', title: '状态'}]
             ]

@@ -27,7 +27,6 @@ public class Docker {
         add("/dev/sda:50mb");
         add("--device-write-bps");
         add("/dev/sda:50mb");
-
     }};
     private String dockerId;
 

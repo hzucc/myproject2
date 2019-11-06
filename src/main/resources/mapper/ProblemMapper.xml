@@ -6,28 +6,23 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.myproject2.dao.ProblemDao">
     <resultMap id="Problem" type="com.example.myproject2.entity.Problem">
-        <result column="problem_id" jdbcType="INTEGER" property="problemId"/>
-        <result column="problem_name" jdbcType="CHAR" property="problemName"/>
-        <result column="accept_number" jdbcType="INTEGER" property="acceptNumber"/>
-        <result column="submit_number " jdbcType="INTEGER" property="submitNumber "/>
-        <result column="problem_content" jdbcType="VARCHAR" property="problemContent"/>
-        <result column="test_data_path" jdbcType="CHAR" property="testDataPath"/>
+        <result column="problem_id" property="problemId"/>
+        <result column="problem_name" property="problemName"/>
+        <result column="accept_num" property="acceptNum"/>
+        <result column="submit_num " property="submitNum "/>
+        <result column="problem_content" property="problemContent"/>
+        <result column="test_data_path" property="testDataPath"/>
         <association property="timeLimit" javaType="com.example.myproject2.entity.TimeLimit">
-            <result column="timeLimit_id" jdbcType="INTEGER" property="timeLimitId"></result>
-           <!-- <result column="problem_id" jdbcType="INTEGER" property="problemId"></result>-->
-            <result column="c_cpp_time_limit" jdbcType="SMALLINT" property="c_cppTimeLimit"></result>
-            <result column="java_time_limit" jdbcType="SMALLINT" property="javaTimeLimit"></result>
+            <result column="c_cpp_time_limit" property="c_cppTimeLimit"></result>
+            <result column="java_time_limit" property="javaTimeLimit"></result>
+            <result column="go_time_limit" property="goTimeLimit"></result>
+            <result column="python3_time_limit" property="python3_time_limit"></result>
         </association>
         <association property="memoryLimit" javaType="com.example.myproject2.entity.MemoryLimit">
-            <result column="memory_limit_id" jdbcType="INTEGER" property="memoryLimitId"></result>
-          <!--  <result column="problem_id" jdbcType="INTEGER" property="problemId"></result>-->
-            <result column="c_cpp_memory_limit" jdbcType="INTEGER" property="c_cppMemoryLimit"></result>
-            <result column="java_memory_limit" jdbcType="INTEGER" property="javaMemoryLimit"></result>
-        </association>
-        <association property="testData" javaType="com.example.myproject2.entity.TestData">
-            <result column="test_data_id" jdbcType="INTEGER" property="testDataId"></result>
-            <!--<result column="problem_id" jdbcType="INTEGER" property="problemId"></result>-->
-            <result column="data_path" jdbcType="CHAR" property="dataPath"></result>
+            <result column="c_cpp_memory_limit" property="c_cppMemoryLimit"></result>
+            <result column="java_memory_limit" property="javaMemoryLimit"></result>
+            <result column="go_memory_limit" property="goMemoryLimit"></result>
+            <result column="python3_memory_limit" property="python3MemoryLimit"></result>
         </association>
     </resultMap>
 
@@ -67,13 +62,13 @@
         where a.problem_id = #{problemId};
     </update>
 
-    <update id="addSubmitNumber">
-        update problem set submit_number = submit_number + 1
+    <update id="updateSubmitNum">
+        update problem set submit_num = submit_num + 1
         where problem_id = #{problemId};
     </update>
 
-    <update id="addAcceptNumber">
-        update problem set accept_number = accept_number + 1
+    <update id="updateAcceptNum">
+        update problem set accept_num = accept_num + 1
         where problem_id = #{problemId};
     </update>
 
@@ -86,52 +81,32 @@
     </select>
 
     <select id="selectProblemList" resultType="com.example.myproject2.entity.Problem">
-        select problem_id as problemId, problem_name as problemName, accept_number as acceptNumber, submit_number as submitNumber
+        select problem_id as problemId, problem_name as problemName, accept_num as acceptNum, submit_num as submitNum
         from problem limit #{page}, #{limit};
     </select>
 
     <select id="selectProblemByProblemId" resultMap="Problem">
-        select problem_name, problem_content,
-                c_cpp_time_limit, java_time_limit, c_cpp_memory_limit, java_memory_limit
-            from problem a
-            join memory_limit b on a.problem_id = b.problem_id
-            join time_limit c on a.problem_id = c.problem_id
-            where a.problem_id = #{problemId};
+        select
+        problem_name,
+        problem_content,
+        c_cpp_time_limit,
+        java_time_limit,
+        c_cpp_memory_limit,
+        java_memory_limit
+        from problem a
+        join memory_limit b on a.problem_id = b.problem_id
+        join time_limit c on a.problem_id = c.problem_id
+        where a.problem_id = #{problemId};
     </select>
 
     <select id="selectProblemIdByProblemName" resultType="java.lang.Integer">
         select problem_id from problem where problem_name = #{problemName};
     </select>
 
-    <select id="selectLimit" resultType="java.util.HashMap">
+    <select id="selectProblemIdAndProblemNameList" resultMap="Problem">
         select
-            <if test="codeType == 'c'.toString()">
-                a.c_cpp_time_limit as timeLimit,
-                b.c_cpp_memory_limit as memoryLimit
-            </if>
-            <if test="codeType == 'c/c++'.toString()">
-                a.c_cpp_time_limit as timeLimit,
-                b.c_cpp_memory_limit as memoryLimit
-            </if>
-            <if test="codeType == 'java'.toString()">
-                a.java_time_limit as timeLimit,
-                b.java_memory_limit as memoryLimit
-            </if>
-            <if test="codeType == 'go'.toString()">
-                a.go_time_limit as timeLimit,
-                b.go_memory_limit as memoryLimit
-            </if>
-            <if test="codeType == 'python3'.toString()">
-                a.python3_time_limit as timeLimit,
-                b.python3_memory_limit as memoryLimit
-            </if>
-        from  time_limit a
-        join memory_limit b on a.problem_id = b.problem_id
-        where a.problem_id = #{problemId};
-    </select>
-
-    <select id="selectProblemIdAndProblemNameList" resultType="java.util.HashMap">
-        select problem_id as problemId, problem_name as problemName
+        problem_id,
+        problem_name
         from problem limit #{page}, #{limit};
     </select>
 

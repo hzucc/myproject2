@@ -13,30 +13,26 @@ import org.springframework.stereotype.Component;
 public class Problem {
     private int problemId;
     private String problemName;
-    private int acceptNumber;
-    private int submitNumber;
+    private int acceptNum;
+    private int submitNum;
     private String problemContent;
     private String testDataPath;
-
     @Autowired
     private TimeLimit timeLimit;
     @Autowired
     private MemoryLimit memoryLimit;
-    @Autowired
-    private TestData testData;
 
     @Override
     public String toString() {
         return "Problem{" +
                 "problemId=" + problemId +
                 ", problemName='" + problemName + '\'' +
-                ", acceptNumber=" + acceptNumber +
-                ", submitNumber=" + submitNumber +
+                ", acceptNum=" + acceptNum +
+                ", submitNum=" + submitNum +
                 ", problemContent='" + problemContent + '\'' +
                 ", testDataPath='" + testDataPath + '\'' +
                 ", timeLimit=" + timeLimit +
                 ", memoryLimit=" + memoryLimit +
-                ", testData=" + testData +
                 '}';
     }
 
@@ -56,20 +52,20 @@ public class Problem {
         this.problemName = problemName;
     }
 
-    public int getAcceptNumber() {
-        return acceptNumber;
+    public int getAcceptNum() {
+        return acceptNum;
     }
 
-    public void setAcceptNumber(int acceptNumber) {
-        this.acceptNumber = acceptNumber;
+    public void setAcceptNum(int acceptNum) {
+        this.acceptNum = acceptNum;
     }
 
-    public int getSubmitNumber() {
-        return submitNumber;
+    public int getSubmitNum() {
+        return submitNum;
     }
 
-    public void setSubmitNumber(int submitNumber) {
-        this.submitNumber = submitNumber;
+    public void setSubmitNum(int submitNum) {
+        this.submitNum = submitNum;
     }
 
     public String getProblemContent() {
@@ -104,11 +100,5 @@ public class Problem {
         this.memoryLimit = memoryLimit;
     }
 
-    public TestData getTestData() {
-        return testData;
-    }
 
-    public void setTestData(TestData testData) {
-        this.testData = testData;
-    }
 }

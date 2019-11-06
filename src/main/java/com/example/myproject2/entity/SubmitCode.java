@@ -15,15 +15,33 @@ public class SubmitCode {
     private int submitCodeId;
     private int userId;
     private int problemId;
-    private Timestamp submit_time;
+    private Timestamp submitTime;
     private String codeValue;
     private String codeType;
     private short fontSize;
     private String theme;
-    private int judgeTestNumber;
-    private int testNumber;
-    private String judgeStatus;
+    private short judgeTestNum;
+    private short testNum;
+    private String status;
     private String compileMessage;
+
+    @Override
+    public String toString() {
+        return "SubmitCode{" +
+                "submitCodeId=" + submitCodeId +
+                ", userId=" + userId +
+                ", problemId=" + problemId +
+                ", submitTime=" + submitTime +
+                ", codeValue='" + codeValue + '\'' +
+                ", codeType='" + codeType + '\'' +
+                ", fontSize=" + fontSize +
+                ", theme='" + theme + '\'' +
+                ", judgeTestNum=" + judgeTestNum +
+                ", testNum=" + testNum +
+                ", status='" + status + '\'' +
+                ", compileMessage='" + compileMessage + '\'' +
+                '}';
+    }
 
     public int getSubmitCodeId() {
         return submitCodeId;
@@ -49,12 +67,12 @@ public class SubmitCode {
         this.problemId = problemId;
     }
 
-    public Timestamp getSubmit_time() {
-        return submit_time;
+    public Timestamp getSubmitTime() {
+        return submitTime;
     }
 
-    public void setSubmit_time(Timestamp submit_time) {
-        this.submit_time = submit_time;
+    public void setSubmitTime(Timestamp submitTime) {
+        this.submitTime = submitTime;
     }
 
     public String getCodeValue() {
@@ -89,28 +107,28 @@ public class SubmitCode {
         this.theme = theme;
     }
 
-    public String getJudgeStatus() {
-        return judgeStatus;
+    public short getJudgeTestNum() {
+        return judgeTestNum;
     }
 
-    public void setJudgeStatus(String judgeStatus) {
-        this.judgeStatus = judgeStatus;
+    public void setJudgeTestNum(short judgeTestNum) {
+        this.judgeTestNum = judgeTestNum;
     }
 
-    public int getJudgeTestNumber() {
-        return judgeTestNumber;
+    public short getTestNum() {
+        return testNum;
     }
 
-    public void setJudgeTestNumber(int judgeTestNumber) {
-        this.judgeTestNumber = judgeTestNumber;
+    public void setTestNum(short testNum) {
+        this.testNum = testNum;
     }
 
-    public int getTestNumber() {
-        return testNumber;
+    public String getStatus() {
+        return status;
     }
 
-    public void setTestNumber(int testNumber) {
-        this.testNumber = testNumber;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getCompileMessage() {
@@ -119,23 +137,5 @@ public class SubmitCode {
 
     public void setCompileMessage(String compileMessage) {
         this.compileMessage = compileMessage;
-    }
-
-    @Override
-    public String toString() {
-        return "SubmitCode{" +
-                "submitCodeId=" + submitCodeId +
-                ", userId=" + userId +
-                ", problemId=" + problemId +
-                ", submit_time=" + submit_time +
-                ", codeValue='" + codeValue + '\'' +
-                ", codeType='" + codeType + '\'' +
-                ", fontSize=" + fontSize +
-                ", theme='" + theme + '\'' +
-                ", judgeTestNumber=" + judgeTestNumber +
-                ", testNumber=" + testNumber +
-                ", judgeStatus='" + judgeStatus + '\'' +
-                ", compileMessage='" + compileMessage + '\'' +
-                '}';
     }
 }

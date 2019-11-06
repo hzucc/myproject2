@@ -24,6 +24,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -54,9 +56,8 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     @Override
-    public List<Map<String, Object>> getProblemList(int page, int limit) {
-        List<Map<String, Object>> maps = problemDao.selectProblemIdAndProblemNameList((page - 1) * limit, limit);
-        return maps;
+    public List<Problem> getProblemIdAndProblemNameList(int page, int limit) {
+        return problemDao.selectProblemIdAndProblemNameList((page - 1) * limit, limit);
     }
 
     @Override
@@ -226,6 +227,28 @@ public class ProblemServiceImpl implements ProblemService {
         map.put("javaTimeLimit", timeLimit.getJavaTimeLimit());
         map.put("javaMemoryLimit", memoryLimit.getJavaMemoryLimit());
         return map;
+    }
+
+    @Override
+    public List<Short> getProblemLimit(int problemId, String codeType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        List<Short> limits = new ArrayList<>(2);
+        if (codeType.equals("c") || codeType.equals("c/c++")) {
+            codeType = "c_cpp";
+        }
+        char[] chars = codeType.toCharArray();
+        chars[0] = Character.toUpperCase(chars[0]);
+        String codeType1 = String.valueOf(chars);
+        //获取 timeLimit
+        String getTimeLimitMethonName = "get" + codeType1 + "TimeLimit";
+        TimeLimit timeLimit = timeLimitDao.selectTimeLimit(problemId);
+        Method getTimeLimitMethon = TimeLimit.class.getMethod(getTimeLimitMethonName);
+        limits.add((Short) getTimeLimitMethon.invoke(timeLimit));
+        //获取 memoryLimit
+        String getMemoryLimitMethonName = "get" + codeType1 + "MemoryLimit";
+        MemoryLimit memoryLimit = memoryLimitDao.selectMemoryLimit(problemId);
+        Method getMemoryLimitMethon = MemoryLimit.class.getMethod(getMemoryLimitMethonName);
+        limits.add((Short) getMemoryLimitMethon.invoke(memoryLimit));
+        return limits;
     }
 
     @Override

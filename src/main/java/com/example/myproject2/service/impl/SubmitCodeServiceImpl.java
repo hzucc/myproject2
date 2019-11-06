@@ -4,22 +4,21 @@
  */
 package com.example.myproject2.service.impl;
 
-import com.example.myproject2.dao.ProblemDao;
-import com.example.myproject2.dao.SubmitCodeDao;
-import com.example.myproject2.dao.TableCountDao;
-import com.example.myproject2.dao.UserDao;
+import com.example.myproject2.dao.*;
+import com.example.myproject2.dao.SubmitCodeDaoResult.SubmitCode1;
 import com.example.myproject2.entity.CompileSuffixMap;
 import com.example.myproject2.entity.SubmitCode;
-import com.example.myproject2.entity.SubmitCodeListPage;
 import com.example.myproject2.service.SubmitCodeService;
+import com.example.myproject2.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -36,6 +35,10 @@ public class SubmitCodeServiceImpl implements SubmitCodeService {
     private UserDao userDao;
     @Autowired
     private ProblemDao problemDao;
+    @Autowired
+    private RunCodeDao runCodeDao;
+
+    @Transactional
     @Override
     public void addSubmitCode(SubmitCode submitCode) throws IOException {
         String codeValue = submitCode.getCodeValue();
@@ -48,13 +51,13 @@ public class SubmitCodeServiceImpl implements SubmitCodeService {
         printWriter.write(codeValue);
         printWriter.close();
         submitCode.setCodeValue(compileFile.getPath());
-        problemDao.addSubmitNumber(submitCode.getProblemId());
+        problemDao.updateSubmitNum(submitCode.getProblemId());
         submitCodeDao.insertSubmitCode(submitCode);
     }
 
     @Override
-    public List<Map<String, String>> getSubmitCodeList(int page, int limit) {
-        List<Map<String, String>> submitCodeListPages = submitCodeDao.selectSubmitCodeList((page - 1) * limit, limit);
+    public List<SubmitCode1> getSubmitCodeList(int page, int limit) {
+        List<SubmitCode1> submitCodeListPages = submitCodeDao.selectSubmitCodeList((page - 1) * limit, limit);
         return submitCodeListPages;
     }
 
@@ -64,12 +67,12 @@ public class SubmitCodeServiceImpl implements SubmitCodeService {
     }
 
     @Override
-    public Map<String, String> getSubmitCode(String userEmail, int problemId) throws IOException {
+    public SubmitCode getSubmitCode(String userEmail, int problemId) throws IOException {
         int userId = userDao.selectUserId(userEmail);
-        List<Map<String, String>> maps = submitCodeDao.selectSubmitCodeListOfUser(userId, problemId, 1);
-        if (!maps.isEmpty()) {
-            Map<String, String> map = maps.get(0);
-            String codeValue = map.get("codeValue");
+        List<SubmitCode> submitCodes = submitCodeDao.selectSubmitCodeListOfUser(userId, problemId, 1);
+        if (!submitCodes.isEmpty()) {
+            SubmitCode submitCode = submitCodes.get(0);
+            String codeValue = submitCode.getCodeValue();
             File file = new File(codeValue);
             BufferedReader buf = new BufferedReader(new FileReader(codeValue));
             StringBuilder res = new StringBuilder();
@@ -77,11 +80,45 @@ public class SubmitCodeServiceImpl implements SubmitCodeService {
             while ((str = buf.readLine()) != null) {
                 res.append(str + '\n');
             }
-            map.put("codeValue", res.toString());
-            return map;
+            submitCode.setCodeValue(res.toString());
+            return submitCode;
         } else {
             return null;
         }
     }
 
+    @Override
+    public SubmitCode submitCodePull() {
+        SubmitCode submitCode = submitCodeDao.selectSubmitCodeInWaiting();
+        if (submitCode != null) {
+            int submitCodeId = submitCode.getSubmitCodeId();
+            int num = submitCodeDao.updateStatus_WaitingToCompiling(submitCodeId);
+            boolean isUpdateStatus = num == 1? true: false;
+            if (!isUpdateStatus) {
+                submitCode = null;
+            }
+        }
+        return submitCode;
+    }
+
+    @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRES_NEW)
+    @Override
+    public String setJudgeTestNum(int submitCodeId, int runCodeId, String result, short runTime, short runMemory) {
+        runCodeDao.updateJudgeStatus(runCodeId, result, runTime, runMemory);
+        submitCodeDao.updateJudgeTestNum(submitCodeId);
+        SubmitCode submitCode = submitCodeDao.selectJudgeTestNumAndTestNum(submitCodeId);
+        int judgeNum = submitCode.getJudgeTestNum();
+        int testNum = submitCode.getTestNum();
+        boolean isJudgeCompletion = judgeNum == testNum;
+        String res;
+        if (isJudgeCompletion) {
+            res = runCodeDao.selectJudgeResult(submitCodeId);
+            if (res == null) {
+                res  = "AC";
+            }
+        } else {
+            res = "running";
+        }
+        return res;
+    }
 }

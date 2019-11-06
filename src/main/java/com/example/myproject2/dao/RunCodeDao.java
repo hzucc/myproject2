@@ -15,11 +15,14 @@ import java.util.Map;
 public interface RunCodeDao {
     public void insertRunCodes(@Param("runCodes") List<RunCode> runCodes);
 
-    public List<Map<String, String>> selectRunCodeList(int limit);
-
     public void updateStatus(int runCodeId, String status);
 
-    public void updateJudgeStatus(int runCodeId, String status, int runTime, int runMemory);
+    public int updateStatus_WaitingToRunning(int runCodeId);
 
+    public void updateJudgeStatus(int runCodeId, String status, short runTime, short runMemory);
+
+    public RunCode selectRunCodeInWaiting();
+
+    public String selectJudgeResult(int submitCodeId);
 
 }

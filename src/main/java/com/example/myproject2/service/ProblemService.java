@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.Part;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 
@@ -25,11 +26,13 @@ public interface ProblemService {
 
     public Map<String, Object> getProblemLimit(int problemId);
 
+    public List<Short> getProblemLimit(int problemId, String codeType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException;
+
     public int getProblemCount();
 
     public List<Problem> getProlemList(int page, int limit);
 
-    public List<Map<String, Object>> getProblemList(int page, int limit);
+    public List<Problem> getProblemIdAndProblemNameList(int page, int limit);
 
     public Problem getProblemByProblemId(int problemId);
 }

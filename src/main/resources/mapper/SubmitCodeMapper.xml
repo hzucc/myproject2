@@ -5,6 +5,31 @@
 -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.myproject2.dao.SubmitCodeDao">
+    <resultMap id="SubmitCode" type="com.example.myproject2.entity.SubmitCode">
+        <result column="submit_code_id" property="submitCodeId"></result>
+        <result column="user_id" property="userId"></result>
+        <result column="problem_id" property="problemId"/>
+        <result column="submit_time" property="submitTime"></result>
+        <result column="code_value" property="codeValue"></result>
+        <result column="code_type" property="codeType"></result>
+        <result column="font_size" property="fontSize"></result>
+        <result column="theme" property="theme"></result>
+        <result column="judge_test_num" property="judgeTestNum"></result>
+        <result column="test_num" property="testNum"></result>
+        <result column="status" property="status"></result>
+        <result column="code_value" property="compileMessage"></result>
+    </resultMap>
+
+    <resultMap id="SubmitCode1" type="com.example.myproject2.dao.SubmitCodeDaoResult.SubmitCode1">
+        <result column="problem_id" property="problemId"></result>
+        <result column="problem_name" property="problemName"></result>
+        <result column="code_type" property="codeType"></result>
+        <result column="user_name" property="userName"></result>
+        <result column="status" property="status"></result>
+        <result column="submit_time" property="submitTime"></result>
+        <result column="judge_test_num" property="judgeTestNum"></result>
+        <result column="test_num" property="testNum"></result>
+    </resultMap>
 
     <insert id="insertSubmitCode" parameterType="com.example.myproject2.entity.SubmitCode">
         insert into submit_code (user_id, problem_id, code_value, code_type, font_size, theme)
@@ -12,80 +37,97 @@
     </insert>
 
     <update id="updateStatus">
-        update submit_code set judge_status = #{status} where submit_code_id = #{submitCodeId};
+        update submit_code set status = #{status} where submit_code_id = #{submitCodeId};
     </update>
 
-    <update id="updateTestNumber">
-        update submit_code set test_number = #{testNumber} where submit_code_id = #{submitCodeId};
+    <update id="updateStatus_WaitingToCompiling">
+        update submit_code set status = 'compiling' where submit_code_id = #{submitCodeId} and status = 'waiting';
     </update>
 
-    <update id="updateJudgeTestNumber">
+    <update id="updateTestNum">
+        update submit_code set test_num = #{testNumber} where submit_code_id = #{submitCodeId};
+    </update>
+
+    <update id="updateJudgeTestNum">
         update submit_code
-        set judge_test_number = judge_test_number + 1
+        set judge_test_num = judge_test_num + 1
         where submit_code_id = #{submitCodeId};
-    </update>
-
-    <update id="updateJudgeStatus">
-        update submit_code
-        set judge_status = #{judgeStatus}
-        where submit_code_id = #{submitCodeId} and (judge_status = 'AC' or judge_status = 'running')
     </update>
 
     <update id="updateStatusAndCompileMessage">
         update submit_code
-        set judge_status = #{status} , compile_message = #{compileMessage}
+        set
+        status = #{status},
+        compile_message = #{compileMessage}
         where submit_code_id = #{submitCodeId};
     </update>
 
-    <select id="selectSubmitCodeList" resultType="java.util.HashMap">
+    <update id="updateStatusAndTestNum">
+        update submit_code
+        set
+        status = #{status},
+        test_num = #{testNum}
+        where submit_code_id = #{submitCodeId};
+    </update>
+
+    <select id="selectSubmitCodeList" resultMap="SubmitCode1">
         select
-        a.problem_id as problemId,
-        c.problem_name as problemName,
-        a.code_type as codeType,
-        b.user_name as userName,
-        a.judge_status as judgeStatus,
-        a.submit_time as submitTime,
-        a.judge_test_number as judgeTestNumber,
-        a.test_number as testNumber
+        a.problem_id,
+        problem_name,
+        code_type,
+        b.user_name,
+        status,
+        submit_time,
+        judge_test_num,
+        test_num
         from submit_code a
         left join user b on a.user_id = b.user_id
         left join problem c on a.problem_id = c.problem_id
         order BY a.submit_time desc limit #{page}, #{limit};
     </select>
 
-    <select id="selectSubmitCodeInWaitingList" resultType="java.util.HashMap">
+    <select id="selectSubmitCodeInWaiting" resultMap="SubmitCode">
         select
-        submit_code_id as submitCodeId,
-        code_type as codeType,
-        code_value as codeValue,
-        problem_id as problemId
-        from submit_code where judge_status = 'waiting' order by submit_time limit #{limit};
+        submit_code_id,
+        code_type,
+        code_value,
+        problem_id
+        from submit_code where status = 'waiting' order by submit_time limit 1;
     </select>
+
 
     <select id="selectProblemId" resultType="java.lang.Integer">
         select problem_id as problemId from submit_code where submit_code_id = #{submitCodeId};
     </select>
 
-    <select id="selectJudgeTestNumber" resultType="java.lang.Integer">
-        select judge_test_number from submit_code where submit_code_id = #{submitCodeId};
-    </select>
-
-    <select id="selectTestNumber" resultType="java.lang.Integer">
-        select test_number from submit_code where submit_code_id = #{submitCodeId};
+    <select id="selectJudgeTestNumAndTestNum" resultMap="SubmitCode">
+        select
+        judge_test_num,
+        test_num
+        from submit_code
+        where submit_code_id = #{submitCodeId};
     </select>
 
     <select id="selectJudgeStatus" resultType="java.lang.String">
         select status from run_code where submit_code_id = #{submitCodeId};
     </select>
 
-    <select id="selectSubmitCodeListOfUser" resultType="java.util.HashMap">
-        select code_value as codeValue, code_type as codeType, font_size as fontSize, theme from submit_code
-        where user_id = #{userId} and problem_id = #{problemId} order by submit_time desc limit #{limit};
+    <select id="selectSubmitCodeListOfUser" resultMap="SubmitCode">
+        select
+        code_value,
+        code_type,
+        font_size,
+        theme
+        from submit_code
+        where user_id = #{userId} and problem_id = #{problemId}
+        order by submit_time desc limit #{limit};
     </select>
 
     <select id="selectUserAcceptProblem">
         select count(1) from submit_code
-        where user_id = #{userId} and problem_id = #{problemId} and judge_status = 'AC';
+        where user_id = #{userId} and problem_id = #{problemId} and status = 'AC';
     </select>
+
+
 
 </mapper>

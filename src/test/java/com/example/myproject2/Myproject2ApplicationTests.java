@@ -1,32 +1,40 @@
 package com.example.myproject2;
 
-import com.example.myproject2.dao.*;
-import com.example.myproject2.entity.DockerFactory;
+import com.example.myproject2.dao.ProblemDao;
+import com.example.myproject2.dao.SubmitCodeDao;
+import com.example.myproject2.dao.SubmitCodeDaoResult.SubmitCode1;
+import com.example.myproject2.entity.Problem;
+import com.example.myproject2.service.JudgeCodeService;
+import com.example.myproject2.service.ProblemService;
+import com.example.myproject2.service.SubmitCodeService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import java.util.Map;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+
 public class Myproject2ApplicationTests {
     @Autowired
-    private DockerFactory dockerFactory;
+    private JudgeCodeService judgeCodeService;
     @Autowired
     private ApplicationContext applicationContext;
     @Autowired
-    private UserDao userDao;
+    private SubmitCodeService submitCodeService;
     @Autowired
     private SubmitCodeDao submitCodeDao;
+    @Autowired
+    private ProblemService problemService;
     @Test
-    public void contextLoads() {
+    public void contextLoads() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        List<Short> problemLimit = problemService.getProblemLimit(1041, "c/c++");
+        System.out.println(problemLimit);
     }
 
 }

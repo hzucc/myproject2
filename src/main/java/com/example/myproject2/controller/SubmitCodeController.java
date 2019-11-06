@@ -4,16 +4,12 @@
  */
 package com.example.myproject2.controller;
 
+import com.example.myproject2.dao.SubmitCodeDaoResult.SubmitCode1;
 import com.example.myproject2.entity.SubmitCode;
-import com.example.myproject2.entity.SubmitCodeListPage;
 import com.example.myproject2.service.SubmitCodeService;
-import com.sun.org.apache.bcel.internal.generic.ANEWARRAY;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,8 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
-import java.sql.Timestamp;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,13 +33,13 @@ public class SubmitCodeController {
     @PostMapping("/submit_code_list")
     public Map<String, Object> submitCodeList(int page, int limit) {
         Map<String, Object> map = new HashMap<>();
-        List<Map<String, String>> submitCodeList = submitCodeService.getSubmitCodeList(page, limit);
+        List<SubmitCode1> submitCodes = submitCodeService.getSubmitCodeList(page, limit);
         int count = submitCodeService.getSubmitCodeCount();
         map.put("page", page);
         map.put("code", 0);
         map.put("msg", null);
         map.put("count", count);
-        map.put("data", submitCodeList);
+        map.put("data", submitCodes);
         return map;
     }
 
@@ -55,7 +49,8 @@ public class SubmitCodeController {
         try {
             UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             String userName = userDetails.getUsername();
-            Map<String, String> submitCode = submitCodeService.getSubmitCode(userName, problemId);
+            SubmitCode submitCode = submitCodeService.getSubmitCode(userName, problemId);
+
             map.put("submitCode", submitCode);
             map.put("isLogin", true);
         } catch (Exception e) {

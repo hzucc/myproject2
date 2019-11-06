@@ -24,19 +24,17 @@ public interface ProblemDao {
 
     public void updateProbelm(Problem problem);
 
-    public void addSubmitNumber(int problemId);
+    public void updateSubmitNum(int problemId);
 
-    public void addAcceptNumber(int problemId);
+    public void updateAcceptNum(int problemId);
 
     public boolean selectProblemId(int problemId);
 
     public int selectProblemIdByProblemName(String problemName);
 
-    public Map<String, String> selectLimit(int problemId, String codeType);
-
     public List<Problem> selectProblemList(int page, int limit);
 
-    public List<Map<String, Object>> selectProblemIdAndProblemNameList(int page, int limit);
+    public List<Problem> selectProblemIdAndProblemNameList(int page, int limit);
 
     public Problem selectProblemByProblemId(int problemId);
 

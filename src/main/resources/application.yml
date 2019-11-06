@@ -26,8 +26,8 @@ server:
 #  configuration:
 #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
-
 myproject2:
   testDataPath: /myproject2/testdata
   compile: /myproject2/compile
   run: /myproject2/run
+

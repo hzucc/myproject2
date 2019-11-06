@@ -15,14 +15,14 @@ public class RunCode {
     private String runCodeFile;
     private String codeType;
     private String testDataPath;
-    private int testDataSerial;
+    private short testDataSerial;
     private String status;
     private short runTime;
     private int runMemory;
 
     public RunCode() {
     }
-    public RunCode(int submitCodeId, String runCodeFile, String codeType, String testDataPath, int testDataSerial) {
+    public RunCode(int submitCodeId, String runCodeFile, String codeType, String testDataPath, short testDataSerial) {
         this.runCodeId = runCodeId;
         this.submitCodeId = submitCodeId;
         this.runCodeFile = runCodeFile;
@@ -74,11 +74,11 @@ public class RunCode {
         this.testDataPath = testDataPath;
     }
 
-    public int getTestDataSerial() {
+    public short getTestDataSerial() {
         return testDataSerial;
     }
 
-    public void setTestDataSerial(int testDataSerial) {
+    public void setTestDataSerial(short testDataSerial) {
         this.testDataSerial = testDataSerial;
     }
 

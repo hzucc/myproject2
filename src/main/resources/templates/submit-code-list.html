@@ -60,9 +60,9 @@
                         return res;
                     }},
                 {field: 'judgeTests', title: '完成/总数', templet: function (d) {
-                        return d.judgeTestNumber + "/" + d.testNumber;
+                        return d.judgeTestNum + "/" + d.testNum;
                     }},
-                {field: 'judgeStatus', title: '评测状态'}]
+                {field: 'status', title: '评测状态'}]
             ],
             done: function (res) {
                 //do something after getted data
