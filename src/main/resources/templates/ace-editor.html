@@ -12,28 +12,28 @@
     <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
     <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
-  <!-- Ace editor主要文件-->
+    <!-- Ace editor主要文件-->
     <script src="https://cdn.bootcss.com/ace/1.4.6/ace.js"></script>
     <script src="https://cdn.bootcss.com/ace/1.4.6/ext-language_tools.js"></script>
 
 </head>
 <div th:insert="~{footer :: head}"></div>
 <!--problemId-->
-<input id="problem-id" type="hidden" th:value = "${problemId}">
+<input id="problem-id" type="hidden" th:value="${problemId}">
 
 <div class="container" style="margin-top: 15px;">
-    <div class="row" >
+    <div class="row">
         <!--语言选择-->
         <div id="language" class="dropdown">
             <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
                 语言选择
             </button>
             <div class="dropdown-menu">
-                <a class="dropdown-item" href="#">c</a>
-                <a class="dropdown-item" href="#">c/c++</a>
-                <a class="dropdown-item" href="#">java</a>
-                <a class="dropdown-item" href="#">go</a>
-                <a class="dropdown-item" href="#">python3</a>
+                <a class="dropdown-item" href="#">c (gcc Alpine 8.3.0)</a>
+                <a class="dropdown-item" href="#">c/c++ (g++ Alpine 8.3.0)</a>
+                <a class="dropdown-item" href="#">java (jdk 1.8)</a>
+                <a class="dropdown-item" href="#">go (go 1.13.3)</a>
+                <a class="dropdown-item" href="#">python3 (python 3.7.5)</a>
             </div>
         </div>
         <!--主题选择-->
@@ -83,7 +83,8 @@
     </div>
 
     <div class="row" style="margin-top: -5px">
-        <pre id="editor" class="ace_editor" style="min-height:600px;height: 500px; width: 99%"><textarea class="ace_text-input"></textarea></pre>
+        <pre id="editor" class="ace_editor" style="min-height:600px;height: 500px; width: 99%"><textarea
+                class="ace_text-input"></textarea></pre>
     </div>
 
     <div class="row">
@@ -95,9 +96,11 @@
     servletContent = servletContent.substring(0, servletContent.lastIndexOf("/"));
     var token = $("meta[name='_csrf']").attr("content");
     var header = $("meta[name='_csrf_header']").attr("content");
-    $(document).ajaxSend(function(e, xhr, options) {
+    $(document).ajaxSend(function (e, xhr, options) {
         xhr.setRequestHeader(header, token);
     });
+
+
 
     editor = ace.edit("editor");
     //设置只读(true时只读，用于展示代码)
@@ -119,25 +122,51 @@
         }
     }
     var codeType = {
+        /*@Result:
+         *codeType: 1.c, 2.c_cpp, 3.java, 4.go, 5.python3
+         *
+         * */
         getCodeType: function () {
-            return $("#code-type").text();
-        },
-        setCodeType: function(codeType) {
-            $("#code-type").text(codeType);
-            if(codeType == 'c' || codeType == 'c/c++') {
-                editor.getSession().setMode("ace/mode/c_cpp");
-            } else if(codeType == 'java'){
-                editor.getSession().setMode("ace/mode/java");
-            } else if(codeType == "go") {
-                editor.getSession().setMode("ace/mode/golang");
-            } else if(codeType == "python3") {
-                editor.getSession().setMode("ace/mode/python");
+            var codeType = $("#code-type").text()
+            if (codeType == "c/c++") {
+                codeType = "c_cpp";
             }
+            return codeType;
+        },
+
+        /*@Param:
+         *codeType: 1.c, 2.c_cpp, 3.java, 4.go, 5.python3
+         *
+         * */
+        setCodeType: function (codeType) {
+            $("#code-type").text(codeType == "c_cpp"? "c/c++": codeType);
+            var session = editor.getSession();
+            switch (codeType) {
+                case "c":
+                    session.setMode("ace/mode/c_cpp")
+                    break
+                case "c_cpp":
+                    session.setMode("ace/mode/c_cpp")
+                    break
+                case "java":
+                    session.setMode("ace/mode/java")
+                    break
+                case "go":
+                    session.setMode("ace/mode/golang")
+                    break
+                case "python3":
+                    session.setMode("ace/mode/python")
+                    break
+                default:
+                    break;
+            }
+            timeLimit.setTimeLimit(sessionStorage.getItem(codeType + "TimeLimit"))
+            memoryLimit.setMemoryLimit(sessionStorage.getItem(codeType + "MemoryLimit"))
         }
     }
     var theme = {
         getTheme: function () {
-            var theme =  editor.getTheme();
+            var theme = editor.getTheme();
             theme = theme.substring(theme.lastIndexOf("/") + 1);
             return theme;
         },
@@ -151,38 +180,6 @@
         },
         setFontSize: function (fontSize) {
             editor.setFontSize(fontSize);
-        }
-    }
-    var c_cppTimeLimit = {
-        getC_cppTimeLimit: function () {
-            return sessionStorage.getItem("c_cppTimeLimit");
-        },
-        setC_cppTimeLimit: function (c_cppTimeLimit) {
-            sessionStorage.setItem("c_cppTimeLimit", c_cppTimeLimit);
-        }
-    }
-    var c_cppMemoryLimit = {
-        getC_cppMemoryLimit: function () {
-            return sessionStorage.getItem("c_cppMemoryLimit");
-        },
-        setC_cppMemoryLimit: function (c_cppMemoryLimit) {
-            sessionStorage.setItem("c_cppMemoryLimit", c_cppMemoryLimit);
-        }
-    }
-    var javaTimeLimit = {
-        getJavaTimeLimit: function () {
-            return sessionStorage.getItem("javaTimeLimit");
-        },
-        setJavaTimeLimit: function (javaTimeLimit) {
-            sessionStorage.setItem("javaTimeLimit", javaTimeLimit);
-        }
-    }
-    var javaMemoryLimit = {
-        getJavaMemoryLimit: function () {
-            return sessionStorage.getItem("javaMemoryLimit");
-        },
-        setJavaMemoryLimit: function (javaMemoryLimit) {
-            sessionStorage.setItem("javaMemoryLimit", javaMemoryLimit);
         }
     }
     var timeLimit = {
@@ -201,44 +198,14 @@
             $("#memory-limit").text(memoryLimit);
         }
     }
-    //初始化设定
-    theme.setTheme("chrome");
-    fontSize.setFontSize(20);
-    codeType.setCodeType("c");
-    editor.setValue("#include<stdio.h>\n" +
-        "int main()\n" +
-        "{\n" +
-        "    int a,b;\n" +
-        "    scanf(\"%d%d\",&a,&b);\n" +
-        "    printf(\"%d\",a+b);\n" +
-        "    return 0;\n" +
-        "}"
-    );
-    //获取数据
-    if(problemId.getProblemId() != null) {
-        $.getJSON(servletContent + "/problem_limit/" + problemId.getProblemId(), function (res) {
-            c_cppTimeLimit.setC_cppTimeLimit(res.c_cppTimeLimit);
-            c_cppMemoryLimit.setC_cppMemoryLimit(res.c_cppMemoryLimit);
-            javaTimeLimit.setJavaTimeLimit(res.javaTimeLimit);
-            javaMemoryLimit.setJavaMemoryLimit(res.javaMemoryLimit);
-            timeLimit.setTimeLimit(res.c_cppTimeLimit);
-            memoryLimit.setMemoryLimit(res.c_cppMemoryLimit);
-        })
-    }
     //更换语言类型事件
     $("#language a").click(function () {
-        codeType.setCodeType(this.text);
-        if (this.text == 'c' || this.text == 'c/c++') {
-            timeLimit.setTimeLimit(c_cppTimeLimit.getC_cppTimeLimit());
-            memoryLimit.setMemoryLimit(c_cppMemoryLimit.getC_cppMemoryLimit());
-        } else if(this.text == 'java') {
-            timeLimit.setTimeLimit(javaTimeLimit.getJavaTimeLimit());
-            memoryLimit.setMemoryLimit(javaMemoryLimit.getJavaMemoryLimit());
-        } else if(this.text == 'go') {
-
-        } else if(this.text == 'python3') {
-
+        newCodeType = this.text
+        newCodeType = newCodeType.substring(0, newCodeType.indexOf(' '))
+        if (newCodeType == "c/c++") {
+            newCodeType = "c_cpp";
         }
+        codeType.setCodeType(newCodeType)
     });
     //更换主题事件
     $("#theme a").click(function () {
@@ -248,6 +215,55 @@
     $("#font-size a").click(function () {
         fontSize.setFontSize(Number(this.text));
     })
+    if (problemId.getProblemId() != null) {
+        //获取数据
+        $.getJSON(servletContent + "/problem_limit/" + problemId.getProblemId(), function (res) {
+            var timeLimit = res.timeLimit
+            for (it in timeLimit) {
+                if (typeof (timeLimit[it]) != "function" && it.endsWith("TimeLimit")) {
+                    sessionStorage.setItem(it, timeLimit[it])
+                }
+            }
+            var memoryLimit = res.memoryLimit
+            for (it in memoryLimit) {
+                if (typeof (timeLimit[it]) != "function" && it.endsWith("MemoryLimit")) {
+                    sessionStorage.setItem(it, memoryLimit[it])
+                }
+            }
+            //获取历史提交
+            $.get(servletContent + "/submit_code/" + problemId.getProblemId(), function (res) {
+                var hasOldSubmitCode = res.isLogin == true && res.submitCode != null;
+                if (hasOldSubmitCode) {
+                    editor.setValue(res.submitCode.codeValue)
+                    codeType.setCodeType(res.submitCode.codeType)
+                    window.theme.setTheme(res.submitCode.theme)
+                    editor.setFontSize(Number(res.submitCode.fontSize))
+                } else {
+                    //默认样式
+                    fontSize.setFontSize(20)
+                    codeType.setCodeType("c_cpp")
+                    editor.setValue("#include<iostream>\n" +
+                        "using namespace std;\n" +
+                        "int main()\n" +
+                        "{\n" +
+                        "    long long a, b;\n" +
+                        "    cin >> a >> b;\n" +
+                        "    cout << a + b;\n" +
+                        "    return 0;\n" +
+                        "}"
+                    )
+                    var length = $("#theme a").length
+                    var theme = "chrome";
+                    if(length > 0) {
+                        var random = Math.floor(Math.random() * length)
+                        theme = $("#theme a").get(random).text
+                    }
+                    window.theme.setTheme(theme)
+                }
+            })
+        })
+    }
+
     //提交代码事件
     $("#submit").click(function () {
         $.post(servletContent + "/submit_code", {
@@ -260,24 +276,7 @@
             window.location.href = servletContent + "/submit_code_list";
         })
     })
-
-    if (problemId.getProblemId() != null) {
-        $.get(servletContent + "/submit_code/" + problemId.getProblemId(), function (res) {
-            var isLogin = res.isLogin;
-            if (isLogin && res.submitCode != null) {
-                editor.setValue(res.submitCode.codeValue);
-                codeType.setCodeType(res.submitCode.codeType);
-                theme.setTheme(res.submitCode.theme);
-                var fontSize = res.submitCode.fontSize;
-                if (fontSize == 0) {
-                    fontSize = 18;
-                }
-                editor.setFontSize(fontSize);
-            }
-        })
-    }
 </script>
-
 </body>
 </html>
 

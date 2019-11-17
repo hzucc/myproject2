@@ -24,7 +24,7 @@ public interface ProblemService {
 
     public int updateProblem(Problem problem);
 
-    public Map<String, Object> getProblemLimit(int problemId);
+    public List<Object> getProblemLimit(int problemId);
 
     public List<Short> getProblemLimit(int problemId, String codeType) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException;
 
@@ -35,4 +35,11 @@ public interface ProblemService {
     public List<Problem> getProblemIdAndProblemNameList(int page, int limit);
 
     public Problem getProblemByProblemId(int problemId);
+
+    /**
+     * 根据题目id，获得problemName, problemContent, timeLimit, memoryLimit并包装进Problem
+     * @param problemId 题目id
+     * @return Problem
+     */
+    public Problem getProblem(int problemId);
 }

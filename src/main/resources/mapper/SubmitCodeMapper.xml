@@ -20,7 +20,7 @@
         <result column="code_value" property="compileMessage"></result>
     </resultMap>
 
-    <resultMap id="SubmitCode1" type="com.example.myproject2.dao.SubmitCodeDaoResult.SubmitCode1">
+    <resultMap id="SubmitCode1" type="com.example.myproject2.dao.ResultEntity.SubmitCode1">
         <result column="problem_id" property="problemId"></result>
         <result column="problem_name" property="problemName"></result>
         <result column="code_type" property="codeType"></result>

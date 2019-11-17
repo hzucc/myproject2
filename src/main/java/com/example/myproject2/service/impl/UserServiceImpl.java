@@ -7,6 +7,7 @@ package com.example.myproject2.service.impl;
 import com.example.myproject2.dao.TableCountDao;
 import com.example.myproject2.dao.UserDao;
 import com.example.myproject2.dao.User_RoleDao;
+import com.example.myproject2.entity.User;
 import com.example.myproject2.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,19 +55,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<Map<String, Object>> getUserList(int page, int limit) {
-        List<Map<String, Object>> maps = userDao.selectUsers((page - 1) * limit, limit);
-        List<Map<String, Object>> newMaps = new ArrayList<>();
-        for (Map<String, Object> map: maps) {
-            List<String> roles = userDao.selectRoleListByUserId(Integer.valueOf(String.valueOf(map.get("userId"))));
-            map.put("roles", roles);
-            newMaps.add(map);
-        }
-        return newMaps;
+    public List<User> getUserList(int page, int limit) {
+        List<User> users = userDao.selectUsers((page - 1) * limit, limit);
+        return users;
+
     }
 
     @Override
     public int getUserNumber() {
         return tableCountDao.selectTableCount("user");
     }
+
+    @Override
+    public List<String> getUserRoles(int userId) {
+        List<String> roles = userDao.selectRoleListByUserId(userId);
+        return roles;
+    }
 }
+
+
+

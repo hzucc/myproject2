@@ -52,7 +52,7 @@ public class JudgeCodeServiceImpl implements JudgeCodeService{
     private RunCodeService runCodeService;
 
     @Async
-    @Scheduled(fixedRate = 100)
+    //@Scheduled(fixedRate = 100)
     @Transactional
     @Override
     public void compilePL() throws IOException, InterruptedException {
@@ -82,7 +82,7 @@ public class JudgeCodeServiceImpl implements JudgeCodeService{
     }
 
     @Async
-    @Scheduled(fixedRate = 100)
+    //@Scheduled(fixedRate = 100)
     @Transactional
     @Override
     public void runPL() throws InterruptedException, IOException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
@@ -95,8 +95,8 @@ public class JudgeCodeServiceImpl implements JudgeCodeService{
             String testDataPath = runCode.getTestDataPath();
             int problemId = submitCodeDao.selectProblemId(submitCodeId);
             List<Short> problemLimit = problemService.getProblemLimit(problemId, codeType);
-            int timeLimit = problemLimit.get(0);
-            int memoryLimit = problemLimit.get(1);
+            short timeLimit = problemLimit.get(0);
+            short memoryLimit = problemLimit.get(1);
             RunParam runParam = new RunParam(codeType, new File(runCodeFile), new File(testDataPath, "test.in"),
                     new File(testDataPath, "test.out"), timeLimit, memoryLimit);
             RunResult runResult = judgeCode.run(runParam);

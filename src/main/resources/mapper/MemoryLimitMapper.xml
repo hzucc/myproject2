@@ -6,15 +6,30 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.myproject2.dao.MemoryLimitDao">
     <resultMap id="MemoryLimit" type="com.example.myproject2.entity.MemoryLimit">
-        <result column="memory_limit_id" jdbcType="INTEGER" property="memoryLimitId"></result>
-        <result column="problem_id" jdbcType="INTEGER" property="problemId"></result>
-        <result column="c_cpp_memory_limit" jdbcType="INTEGER" property="c_cppMemoryLimit"></result>
-        <result column="java_memory_limit" jdbcType="INTEGER" property="javaMemoryLimit"></result>
-        <result column="go_memory_limit" jdbcType="INTEGER" property="goMemoryLimit"></result>
-        <result column="python3_memory_limit" jdbcType="INTEGER" property="python3MemoryLimit"></result>
+        <result column="memory_limit_id" property="memoryLimitId"></result>
+        <result column="problem_id" property="problemId"></result>
+        <result column="c_memory_limit" property="cMemoryLimit"></result>
+        <result column="c_cpp_memory_limit" property="c_cppMemoryLimit"></result>
+        <result column="java_memory_limit" property="javaMemoryLimit"></result>
+        <result column="go_memory_limit" property="goMemoryLimit"></result>
+        <result column="python3_memory_limit" property="python3MemoryLimit"></result>
     </resultMap>
+
+    <update id="updateMemoryLimit">
+        update memory_limit
+        set
+        c_memory_limit = #{cMemoryLimit},
+        c_cpp_memory_limit = #{c_cppMemoryLimit},
+        java_memory_limit = #{javaMemoryLimit},
+        go_memory_limit = #{goMemoryLimit},
+        python3_memory_limit = #{python3MemoryLimit}
+        where problem_id = #{problemId};
+    </update>
+
     <select id="selectMemoryLimit" resultMap="MemoryLimit">
         select * from memory_limit where problem_id = #{problemId};
     </select>
+
+
 
 </mapper>

@@ -4,6 +4,7 @@
  */
 package com.example.myproject2.dao;
 
+import com.example.myproject2.entity.User;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.Map;
 
 @Repository
 public interface UserDao {
-    public List<Map<String, Object>> selectUsers(int page, int limit);
+    public List<User> selectUsers(int page, int limit);
 
     public List<String> selectRoleListByUserId(int userId);
 

@@ -22,7 +22,7 @@ public interface ProblemDao {
 
     public void updateTestDataPath(int problemId, String testDataPath);
 
-    public void updateProbelm(Problem problem);
+    public void updateProblem(Problem problem);
 
     public void updateSubmitNum(int problemId);
 
@@ -38,9 +38,13 @@ public interface ProblemDao {
 
     public Problem selectProblemByProblemId(int problemId);
 
-    public void setLimit(@Param("timeLimit") TimeLimit timeLimit,@Param("memoryLimit") MemoryLimit memoryLimit,@Param("problemId") int problemId);
+    /**
+     * 根据题目id，查询problemName, problemContent并包装进一个Problem
+     * @param problemId 题目id
+     * @return Probmem
+     */
+    public Problem selectProblem2ByProblemId(int problemId);
 
     public String selectTestDataPath(int problemId);
-
 
 }

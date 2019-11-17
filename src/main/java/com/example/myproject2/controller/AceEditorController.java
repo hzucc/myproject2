@@ -38,7 +38,7 @@ public class AceEditorController {
     }
 
     @PostMapping("/submit_code")
-    public void judgeCode(SubmitCode submitCode, HttpServletRequest request) throws IOException {
+    public void judgeCode(SubmitCode submitCode) throws IOException {
         try {
             UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             String userEmail = userDetails.getUsername();

@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MemoryLimitDao {
     public MemoryLimit selectMemoryLimit(int problemId);
+
+    public void updateMemoryLimit(MemoryLimit memoryLimit);
 }

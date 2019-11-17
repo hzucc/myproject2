@@ -13,7 +13,7 @@ import java.util.Map;
 public class RunSuffixMap {
     private static final Map<String, String> map = new HashMap<String, String>() {{
         put("c", "");
-        put("c/c++", "");
+        put("c_cpp", "");
         put("java", "class");
         put("go", "");
         put("python3", "pyc");

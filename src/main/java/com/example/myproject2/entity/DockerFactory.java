@@ -72,9 +72,8 @@ public class DockerFactory {
     * 每10秒最多删除50个
     * */
     @Scheduled(fixedRate = 10000)
-    @Async
     public void destroyDocker() throws IOException, InterruptedException {
-        int maxDestroyNum = 50;
+        int maxDestroyNum = 10;
         List<Docker> dockers = new ArrayList();
         try {
             dockerDestroys.drainTo(dockers, maxDestroyNum);

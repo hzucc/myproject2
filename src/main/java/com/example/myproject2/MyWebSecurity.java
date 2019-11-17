@@ -51,8 +51,8 @@ public class MyWebSecurity extends WebSecurityConfigurerAdapter {
                 .tokenRepository(persistentRememberMeToken())
                 .userDetailsService(userDetailsService)
                 .and()
-                .formLogin().loginPage("/login").defaultSuccessUrl("/index").failureUrl("/login?error=true");
-
+                .formLogin().loginPage("/login").defaultSuccessUrl("/index").failureUrl("/login?error=true")
+                .and()
+                .logout().logoutSuccessUrl("/index");
     }
-
 }

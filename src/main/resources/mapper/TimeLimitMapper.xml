@@ -6,13 +6,26 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.myproject2.dao.TimeLimitDao">
     <resultMap id="TimeLimit" type="com.example.myproject2.entity.TimeLimit">
-        <result column="time_limit_id" jdbcType="INTEGER" property="timeLimitId"></result>
-        <result column="problem_id" jdbcType="INTEGER" property="problemId"></result>
-        <result column="c_cpp_time_limit" jdbcType="INTEGER" property="c_cppTimeLimit"></result>
-        <result column="java_time_limit" jdbcType="INTEGER" property="javaTimeLimit"></result>
-        <result column="go_time_limit" jdbcType="INTEGER" property="goTimeLimit"></result>
-        <result column="python3_time_limit" jdbcType="INTEGER" property="python3TimeLimit"></result>
+        <result column="time_limit_id" property="timeLimitId"></result>
+        <result column="problem_id"  property="problemId"></result>
+        <result column="c_time_limit" property="cTimeLimit"></result>
+        <result column="c_cpp_time_limit" property="c_cppTimeLimit"></result>
+        <result column="java_time_limit" property="javaTimeLimit"></result>
+        <result column="go_time_limit" property="goTimeLimit"></result>
+        <result column="python3_time_limit" property="python3TimeLimit"></result>
     </resultMap>
+
+    <update id="updateTimeLimit">
+        update time_limit
+        set
+        c_time_limit = #{cTimeLimit},
+        c_cpp_time_limit = #{c_cppTimeLimit},
+        java_time_limit = #{javaTimeLimit},
+        go_time_limit = #{goTimeLimit},
+        python3_time_limit = #{python3TimeLimit}
+        where problem_id = #{problemId}
+    </update>
+
     <select id="selectTimeLimit" resultMap="TimeLimit">
         select * from time_limit where problem_id = #{problemId};
     </select>

@@ -2,7 +2,7 @@
  *@author ChenCheng
  *@date 2019/11/6
  */
-package com.example.myproject2.dao.SubmitCodeDaoResult;
+package com.example.myproject2.dao.ResultEntity;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;

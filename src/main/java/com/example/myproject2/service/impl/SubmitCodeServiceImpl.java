@@ -5,11 +5,10 @@
 package com.example.myproject2.service.impl;
 
 import com.example.myproject2.dao.*;
-import com.example.myproject2.dao.SubmitCodeDaoResult.SubmitCode1;
+import com.example.myproject2.dao.ResultEntity.SubmitCode1;
 import com.example.myproject2.entity.CompileSuffixMap;
 import com.example.myproject2.entity.SubmitCode;
 import com.example.myproject2.service.SubmitCodeService;
-import com.example.myproject2.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

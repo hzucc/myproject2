@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 public class MemoryLimit {
     private int memoryLimitId;
     private int problemId;
+    private short cMemoryLimit;
     private short c_cppMemoryLimit;
     private short javaMemoryLimit;
     private short goMemoryLimit;
@@ -22,11 +23,20 @@ public class MemoryLimit {
         return "MemoryLimit{" +
                 "memoryLimitId=" + memoryLimitId +
                 ", problemId=" + problemId +
+                ", cMemoryLimit=" + cMemoryLimit +
                 ", c_cppMemoryLimit=" + c_cppMemoryLimit +
                 ", javaMemoryLimit=" + javaMemoryLimit +
                 ", goMemoryLimit=" + goMemoryLimit +
                 ", python3MemoryLimit=" + python3MemoryLimit +
                 '}';
+    }
+
+    public short getcMemoryLimit() {
+        return cMemoryLimit;
+    }
+
+    public void setcMemoryLimit(short cMemoryLimit) {
+        this.cMemoryLimit = cMemoryLimit;
     }
 
     public int getMemoryLimitId() {

@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 public class Problem {
     private int problemId;
     private String problemName;
-    private int acceptNum;
-    private int submitNum;
+    private short acceptNum;
+    private short submitNum;
     private String problemContent;
     private String testDataPath;
     @Autowired
@@ -36,6 +36,7 @@ public class Problem {
                 '}';
     }
 
+
     public int getProblemId() {
         return problemId;
     }
@@ -52,19 +53,19 @@ public class Problem {
         this.problemName = problemName;
     }
 
-    public int getAcceptNum() {
+    public short getAcceptNum() {
         return acceptNum;
     }
 
-    public void setAcceptNum(int acceptNum) {
+    public void setAcceptNum(short acceptNum) {
         this.acceptNum = acceptNum;
     }
 
-    public int getSubmitNum() {
+    public short getSubmitNum() {
         return submitNum;
     }
 
-    public void setSubmitNum(int submitNum) {
+    public void setSubmitNum(short submitNum) {
         this.submitNum = submitNum;
     }
 
@@ -99,6 +100,4 @@ public class Problem {
     public void setMemoryLimit(MemoryLimit memoryLimit) {
         this.memoryLimit = memoryLimit;
     }
-
-
 }

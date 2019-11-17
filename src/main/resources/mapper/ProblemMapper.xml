@@ -13,12 +13,14 @@
         <result column="problem_content" property="problemContent"/>
         <result column="test_data_path" property="testDataPath"/>
         <association property="timeLimit" javaType="com.example.myproject2.entity.TimeLimit">
+            <result column="c_time_limit" property="cTimeLimit"></result>
             <result column="c_cpp_time_limit" property="c_cppTimeLimit"></result>
             <result column="java_time_limit" property="javaTimeLimit"></result>
             <result column="go_time_limit" property="goTimeLimit"></result>
-            <result column="python3_time_limit" property="python3_time_limit"></result>
+            <result column="python3_time_limit" property="python3TimeLimit"></result>
         </association>
         <association property="memoryLimit" javaType="com.example.myproject2.entity.MemoryLimit">
+            <result column="c_memory_limit" property="cMemoryLimit"></result>
             <result column="c_cpp_memory_limit" property="c_cppMemoryLimit"></result>
             <result column="java_memory_limit" property="javaMemoryLimit"></result>
             <result column="go_memory_limit" property="goMemoryLimit"></result>
@@ -34,65 +36,61 @@
     <delete id="deleteProblem">
         delete from problem where problem_id = #{problemId};
     </delete>
-    <update id="updateProbelm" parameterType="com.example.myproject2.entity.Problem">
-        update problem a
-        join time_limit b on a.problem_id = b.problem_id
-        join memory_limit c on a.problem_id = c.problem_id
+    <update id="updateProblem" parameterType="com.example.myproject2.entity.Problem">
+        update problem
         set
-        a.problem_name = #{problemName},
-        a.problem_content = #{problemContent},
-        b.c_cpp_time_limit = #{timeLimit.c_cppTimeLimit},
-        b.java_time_limit = #{timeLimit.javaTimeLimit},
-        c.c_cpp_memory_limit = #{memoryLimit.c_cppMemoryLimit},
-        c.java_memory_limit = #{memoryLimit.javaMemoryLimit}
-        where a.problem_id = #{problemId};
+        problem_name = #{problemName},
+        problem_content = #{problemContent}
+        where problem_id = #{problemId}
     </update>
 
     <update id="updateTestDataPath">
-        update problem set test_data_path = #{testDataPath} where problem_id = #{problemId};
-    </update>
-
-    <update id="setLimit">
-        update time_limit a
-        join memory_limit b on a.problem_id = b.problem_id set
-        a.c_cpp_time_limit = #{timeLimit.c_cppTimeLimit},
-        a.java_time_limit = #{timeLimit.javaTimeLimit},
-        b.c_cpp_memory_limit = #{memoryLimit.c_cppMemoryLimit},
-        b.java_memory_limit = #{memoryLimit.javaMemoryLimit}
-        where a.problem_id = #{problemId};
+        update problem
+        set
+        test_data_path = #{testDataPath}
+        where problem_id = #{problemId};
     </update>
 
     <update id="updateSubmitNum">
-        update problem set submit_num = submit_num + 1
+        update problem
+        set
+        submit_num = submit_num + 1
         where problem_id = #{problemId};
     </update>
 
     <update id="updateAcceptNum">
-        update problem set accept_num = accept_num + 1
+        update problem
+        set
+        accept_num = accept_num + 1
         where problem_id = #{problemId};
     </update>
 
     <select id="selectProblemId" resultType="java.lang.Boolean">
-        select count(1) from problem where problem_id = #{problemId};
+        select
+        count(1)
+        from problem
+        where problem_id = #{problemId};
     </select>
 
     <select id="selectTestDataPath" resultType="java.lang.String">
-        select test_data_path from problem where problem_id = #{problemId};
+        select
+        test_data_path
+        from problem
+        where problem_id = #{problemId};
     </select>
 
-    <select id="selectProblemList" resultType="com.example.myproject2.entity.Problem">
-        select problem_id as problemId, problem_name as problemName, accept_num as acceptNum, submit_num as submitNum
+    <select id="selectProblemList" resultMap="Problem">
+        select
+        problem_id,
+        problem_name,
+        accept_num,
+        submit_num
         from problem limit #{page}, #{limit};
     </select>
 
     <select id="selectProblemByProblemId" resultMap="Problem">
         select
-        problem_name,
-        problem_content,
-        c_cpp_time_limit,
-        java_time_limit,
-        c_cpp_memory_limit,
-        java_memory_limit
+        *
         from problem a
         join memory_limit b on a.problem_id = b.problem_id
         join time_limit c on a.problem_id = c.problem_id
@@ -100,7 +98,10 @@
     </select>
 
     <select id="selectProblemIdByProblemName" resultType="java.lang.Integer">
-        select problem_id from problem where problem_name = #{problemName};
+        select
+        problem_id
+        from problem
+        where problem_name = #{problemName};
     </select>
 
     <select id="selectProblemIdAndProblemNameList" resultMap="Problem">
@@ -110,5 +111,12 @@
         from problem limit #{page}, #{limit};
     </select>
 
+    <select id="selectProblem2ByProblemId" resultMap="Problem">
+        select
+        problem_name,
+        problem_content
+        from problem
+        where problem_id = #{problemId}
+    </select>
 
 </mapper>

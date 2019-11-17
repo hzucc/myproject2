@@ -4,7 +4,7 @@
  */
 package com.example.myproject2.controller;
 
-import com.example.myproject2.dao.SubmitCodeDaoResult.SubmitCode1;
+import com.example.myproject2.dao.ResultEntity.SubmitCode1;
 import com.example.myproject2.entity.SubmitCode;
 import com.example.myproject2.service.SubmitCodeService;
 import org.springframework.beans.factory.annotation.Autowired;

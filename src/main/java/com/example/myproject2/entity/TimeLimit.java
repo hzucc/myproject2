@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 public class TimeLimit {
     private int timeLimitId;
     private int problemId;
+    private short cTimeLimit;
     private short c_cppTimeLimit;
     private short javaTimeLimit;
     private short goTimeLimit;
@@ -22,11 +23,20 @@ public class TimeLimit {
         return "TimeLimit{" +
                 "timeLimitId=" + timeLimitId +
                 ", problemId=" + problemId +
+                ", cTimeLimit=" + cTimeLimit +
                 ", c_cppTimeLimit=" + c_cppTimeLimit +
                 ", javaTimeLimit=" + javaTimeLimit +
                 ", goTimeLimit=" + goTimeLimit +
                 ", python3TimeLimit=" + python3TimeLimit +
                 '}';
+    }
+
+    public short getcTimeLimit() {
+        return cTimeLimit;
+    }
+
+    public void setcTimeLimit(short cTimeLimit) {
+        this.cTimeLimit = cTimeLimit;
     }
 
     public short getGoTimeLimit() {

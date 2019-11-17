@@ -4,7 +4,7 @@
  */
 package com.example.myproject2.dao;
 
-import com.example.myproject2.dao.SubmitCodeDaoResult.SubmitCode1;
+import com.example.myproject2.dao.ResultEntity.SubmitCode1;
 import com.example.myproject2.entity.SubmitCode;
 import org.springframework.stereotype.Repository;
 

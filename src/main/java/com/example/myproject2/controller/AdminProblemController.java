@@ -4,9 +4,12 @@
  */
 package com.example.myproject2.controller;
 
+import com.example.myproject2.entity.MemoryLimit;
 import com.example.myproject2.entity.Problem;
+import com.example.myproject2.entity.TimeLimit;
 import com.example.myproject2.entity.UpdateTestDataMap;
 import com.example.myproject2.service.ProblemService;
+import com.example.myproject2.util.MyJsonObject;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +21,7 @@ import javax.servlet.http.Part;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,9 +39,10 @@ public class AdminProblemController {
     }
 
     @PostMapping("/admin/problem_update")
-    public int updateProblem(Problem problem) {
-        int problemId = problemService.updateProblem(problem);
-        return problemId;
+    public int updateProblem(String problem) throws NoSuchMethodException, MyJsonObject.NotSupportTypeException, IllegalAccessException, InstantiationException, MyJsonObject.JsonFormatException, InvocationTargetException {
+        MyJsonObject myJsonObject = new MyJsonObject();
+        Problem problem1 = (Problem) myJsonObject.toPojo(problem, Problem.class);
+        return problemService.updateProblem(problem1);
     }
 
     @PostMapping("/admin/test_data_update")

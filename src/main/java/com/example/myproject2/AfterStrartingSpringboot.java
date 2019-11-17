@@ -12,7 +12,7 @@ import java.io.File;
 import java.util.logging.Logger;
 
 @Component
-public class Init implements CommandLineRunner {
+public class AfterStrartingSpringboot implements CommandLineRunner {
     @Value("${myproject2.testDataPath}")
     private String testDataPath;
 
@@ -23,7 +23,9 @@ public class Init implements CommandLineRunner {
     private String runPath;
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
+        Logger logger = Logger.getLogger("AfterClosingSpringboot");
+        logger.info("执行springboot启动就绪时任务...");
         File testDataFile = new File(testDataPath);
         if (!testDataFile.exists()) {
             testDataFile.mkdirs();
@@ -36,7 +38,7 @@ public class Init implements CommandLineRunner {
         if (!runFile.exists()) {
             runFile.mkdirs();
         }
-        Logger.getLogger("Init-log").info("Init类初始化完毕");
+        logger.info("执行springboot启动就绪时任务--完毕！");
 
     }
 }

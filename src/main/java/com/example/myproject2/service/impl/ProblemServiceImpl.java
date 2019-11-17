@@ -11,11 +11,9 @@ import com.example.myproject2.entity.TimeLimit;
 import com.example.myproject2.entity.UpdateTestDataMap;
 import com.example.myproject2.service.ProblemService;
 import com.example.myproject2.util.FileUtil;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +27,6 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import java.util.zip.ZipOutputStream;
 
 @Service
 public class ProblemServiceImpl implements ProblemService {
@@ -103,25 +100,26 @@ public class ProblemServiceImpl implements ProblemService {
     @Override
     public void updateTestData(int problemId, Part part) throws IOException {
         updateTestDataMap.add(problemId);
+
         //1.删除旧数据
         String oldTestDataPath = problemDao.selectTestDataPath(problemId);
+
         if (oldTestDataPath != null) {
-            FileUtil.delete(new File(oldTestDataPath));
+            FileUtil.delete(new File(oldTestDataPath).getParentFile());
         }
         testDataDao.deleteTestData(problemId);
         //2.生成新记录
         File workFile = new File(testDataPath + "/problemId_" + problemId);
-        workFile.mkdirs();
+        workFile.mkdir();
         String zipFilePath = workFile.getPath() + "/problem_" + problemId + ".zip";
-        System.out.println(part.getSize());
         part.write(zipFilePath);
         problemDao.updateTestDataPath(problemId, zipFilePath);
 
         //3,处理分发样例点
         List<String> testDataPaths = new ArrayList<>();
-        List<ZipEntry> inputs = new ArrayList<>();
-        Map<String, ZipEntry> outputs = new HashMap<>();
-        List<String> test_data_paths = new ArrayList<>();
+        List<String> inputs = new ArrayList<>();
+        Set<String> outputs = new HashSet<>();
+
         ZipFile zipFile = new ZipFile(zipFilePath);
         Enumeration<? extends ZipEntry> entries = zipFile.entries();
         while (entries.hasMoreElements()) {
@@ -129,24 +127,25 @@ public class ProblemServiceImpl implements ProblemService {
             if (!zipEntry.isDirectory()) {
                 String name = zipEntry.getName();
                 if (name.endsWith(".in")) {
-                    inputs.add(zipEntry);
+                    inputs.add(name);
                 } else if (name.endsWith(".out")) {
-                    outputs.put(name, zipEntry);
+                    outputs.add(name);
                 }
             }
         }
         int count = 1;
         byte[] bytes = new byte[1 << 10];
-        for (ZipEntry input : inputs) {
-            String name = input.getName();
-            String prefixName = name.substring(0, name.lastIndexOf("."));
-            if (outputs.containsKey(prefixName + ".out")) {
-                ZipEntry output = outputs.get(prefixName + ".out");
-                File testWorkFile = new File(workFile.getPath() + "/t" + count);
+        for (String inputName : inputs) {
+            String prefixName = inputName.substring(0, inputName.lastIndexOf("."));
+            String outputName = prefixName + ".out";
+            boolean isPaired_InputAndOutput = outputs.contains(outputName);
+            if (isPaired_InputAndOutput) {
+                ZipEntry input = zipFile.getEntry(inputName);
+                ZipEntry output = zipFile.getEntry(outputName);
+                File testWorkFile = new File(workFile.getPath(), "t" + count);
                 testWorkFile.mkdir();
                 //test.in
-                File inputFile = new File(testWorkFile.getPath() + "/test.in");
-                inputFile.createNewFile();
+                File inputFile = new File(testWorkFile.getPath(), "test.in");
                 FileOutputStream fileOutputStream = new FileOutputStream(inputFile);
                 InputStream inputStream = zipFile.getInputStream(input);
                 int len = -1;
@@ -156,7 +155,7 @@ public class ProblemServiceImpl implements ProblemService {
                 fileOutputStream.close();
                 inputStream.close();
                 //test.out
-                File outputFile = new File(testWorkFile.getPath() + "/test.out");
+                File outputFile = new File(testWorkFile.getPath(),  "test.out");
                 outputFile.createNewFile();
                 fileOutputStream = new FileOutputStream(outputFile);
                 inputStream = zipFile.getInputStream(output);
@@ -172,7 +171,6 @@ public class ProblemServiceImpl implements ProblemService {
         }
         if (!testDataPaths.isEmpty()) {
             testDataDao.insertTestData(problemId, testDataPaths);
-
         }
         updateTestDataMap.remove(problemId);
     }
@@ -210,23 +208,26 @@ public class ProblemServiceImpl implements ProblemService {
             problemDao.insertProblem(problem);
             problemId = problemDao.selectProblemIdByProblemName(problem.getProblemName());
             problem.setProblemId(problemId);
-            problemDao.setLimit(problem.getTimeLimit(), problem.getMemoryLimit(), problem.getProblemId());
         } else {
-            problemDao.updateProbelm(problem);
+            problemDao.updateProblem(problem);
         }
+        TimeLimit timeLimit = problem.getTimeLimit();
+        timeLimit.setProblemId(problemId);
+        MemoryLimit memoryLimit = problem.getMemoryLimit();
+        memoryLimit.setProblemId(problemId);
+        memoryLimitDao.updateMemoryLimit(memoryLimit);
+        timeLimitDao.updateTimeLimit(timeLimit);
         return problemId;
     }
 
     @Override
-    public Map<String, Object> getProblemLimit(int problemId) {
-        Map<String, Object> map = new HashMap<>();
+    public List<Object> getProblemLimit(int problemId) {
+        List<Object> limits = new ArrayList<>(2);
         TimeLimit timeLimit = timeLimitDao.selectTimeLimit(problemId);
         MemoryLimit memoryLimit = memoryLimitDao.selectMemoryLimit(problemId);
-        map.put("c_cppTimeLimit", timeLimit.getC_cppTimeLimit());
-        map.put("c_cppMemoryLimit", memoryLimit.getC_cppMemoryLimit());
-        map.put("javaTimeLimit", timeLimit.getJavaTimeLimit());
-        map.put("javaMemoryLimit", memoryLimit.getJavaMemoryLimit());
-        return map;
+        limits.add(timeLimit);
+        limits.add(memoryLimit);
+        return limits;
     }
 
     @Override
@@ -255,5 +256,15 @@ public class ProblemServiceImpl implements ProblemService {
     public int getProblemCount() {
         int problemCount = tableCountDao.selectTableCount("problem");
         return problemCount;
+    }
+
+    @Override
+    public Problem getProblem(int problemId) {
+        Problem problem = problemDao.selectProblem2ByProblemId(problemId);
+        MemoryLimit memoryLimit = memoryLimitDao.selectMemoryLimit(problemId);
+        TimeLimit timeLimit = timeLimitDao.selectTimeLimit(problemId);
+        problem.setTimeLimit(timeLimit);
+        problem.setMemoryLimit(memoryLimit);
+        return problem;
     }
 }

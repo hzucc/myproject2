@@ -5,6 +5,8 @@
 package com.example.myproject2.service;
 
 
+import com.example.myproject2.entity.User;
+
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +19,9 @@ public interface UserService {
 
     public Boolean findUserEmailExist(String userEmail);
 
-    public List<Map<String, Object>> getUserList(int page, int limit);
+    public List<User> getUserList(int page, int limit);
 
     public int getUserNumber();
+
+    public List<String> getUserRoles(int userId);
 }

@@ -3,9 +3,6 @@ package com.example.myproject2.judge_util;/*
  *@date 2019/9/27
  */
 
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-
 import java.io.File;
 
 public class RunParam {
@@ -13,13 +10,13 @@ public class RunParam {
     private File runFile;
     private File input;
     private File output;
-    private int timeLimit;
-    private int memoryLimit;
+    private short timeLimit;
+    private short memoryLimit;
 
     public RunParam() {
     }
 
-    public RunParam(String codeType, File runFile, File input, File output, int timeLimit, int memoryLimit) {
+    public RunParam(String codeType, File runFile, File input, File output, short timeLimit, short memoryLimit) {
         this.codeType = codeType;
         this.runFile = runFile;
         this.input = input;
@@ -60,19 +57,19 @@ public class RunParam {
         this.output = output;
     }
 
-    public int getTimeLimit() {
+    public short getTimeLimit() {
         return timeLimit;
     }
 
-    public void setTimeLimit(int timeLimit) {
+    public void setTimeLimit(short timeLimit) {
         this.timeLimit = timeLimit;
     }
 
-    public int getMemoryLimit() {
+    public short getMemoryLimit() {
         return memoryLimit;
     }
 
-    public void setMemoryLimit(int memoryLimit) {
+    public void setMemoryLimit(short memoryLimit) {
         this.memoryLimit = memoryLimit;
     }
 }
