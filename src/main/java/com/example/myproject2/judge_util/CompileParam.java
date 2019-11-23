@@ -12,12 +12,6 @@ import java.util.Map;
 public class CompileParam {
     private String codeType;
     private File compileFile;
-    private static final Map<String, String> typeHandle = new HashMap<String, String>(){{
-        put("c", "C");
-        put("c/c++", "C_cpp");
-        put("java", "Java");
-    }};
-
     public CompileParam() {
     }
 
@@ -40,9 +34,5 @@ public class CompileParam {
 
     public void setCompileFile(File compileFile) {
         this.compileFile = compileFile;
-    }
-
-    public static String getTypeHandle(String codeType) {
-        return typeHandle.get(codeType);
     }
 }

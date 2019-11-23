@@ -9,7 +9,7 @@ import java.util.List;
 
 
 public class Docker {
-    private final List<String> commands = new ArrayList<String>(){{
+    private static List<String> commands = new ArrayList<String>(){{
         add("docker");
         add("run");
         add("-itd");
@@ -21,13 +21,23 @@ public class Docker {
         add("1024m");
         add("--memory-swap");
         add("1152m");
-
-        //设置OI,按本机是/dev/sda  ，  服务器是 /dev/vda
-        add("--device-read-bps");
-        add("/dev/sda:50mb");
-        add("--device-write-bps");
-        add("/dev/sda:50mb");
+        //设置cpu核心数为1
+        add("--cpus");
+        add("1");
     }};
+    static {
+        if (new File("/dev/sda").exists()) {
+            commands.add("--device-read-bps");
+            commands.add("/dev/sda:50mb");
+            commands.add("--device-write-bps");
+            commands.add("/dev/sda:50mb");
+        } else {
+            commands.add("--device-read-bps");
+            commands.add("/dev/vda:50mb");
+            commands.add("--device-write-bps");
+            commands.add("/dev/vda:50mb");
+        }
+    }
     private String dockerId;
 
     public String getDockerId() {
