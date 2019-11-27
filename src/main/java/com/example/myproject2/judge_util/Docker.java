@@ -3,6 +3,8 @@ package com.example.myproject2.judge_util;/*
  *@date 2019/9/27
  */
 
+import com.example.myproject2.entity.Problem;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,5 +63,15 @@ public class Docker {
         Runtime runtime = Runtime.getRuntime();
         runtime.exec("docker kill " + dockerId).waitFor();
         runtime.exec("docker rm " + dockerId);
+    }
+
+    public String getStatus() throws IOException, InterruptedException {
+        //docker inspect -f {{.State.Status}} 容器id
+        Process process = Runtime.getRuntime().exec("docker inspect -f {{.State.Status}} " + dockerId);
+        BufferedReader buf = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        String status = buf.readLine();
+        buf.close();
+        process.waitFor();
+        return status;
     }
 }

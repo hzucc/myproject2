@@ -52,7 +52,7 @@ public class JudgeCodeServiceImpl implements JudgeCodeService{
     private RunCodeService runCodeService;
 
     @Async
-    @Scheduled(fixedRate = 100)
+    @Scheduled(fixedRate = 500)
     @Transactional
     @Override
     public void compilePL() throws IOException, InterruptedException {
@@ -82,7 +82,7 @@ public class JudgeCodeServiceImpl implements JudgeCodeService{
     }
 
     @Async
-    @Scheduled(fixedRate = 100)
+    @Scheduled(fixedRate = 500)
     @Transactional
     @Override
     public void runPL() throws InterruptedException, IOException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {

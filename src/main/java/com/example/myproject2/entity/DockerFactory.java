@@ -8,13 +8,14 @@ import com.example.myproject2.judge_util.Docker;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import sun.plugin.javascript.navig4.Link;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 
 @Component
 public class DockerFactory {
@@ -46,22 +47,27 @@ public class DockerFactory {
     * [100%,100%] :   0个
     *
     * */
-    @Scheduled(fixedRate = 5000)
+    @Scheduled(fixedRate = 10000)
     @Async
     public void createDocker() throws IOException, InterruptedException {
         int currentNum = activeDockers.size();
-        int f = (int) ((double)currentNum / maxActiveDocker * 100);
-        int createNum = treeMap.floorEntry(f).getValue();
-        while(createNum-- > 0) {
-            Docker docker = new Docker();
-            boolean isOffer = false;
-            try {
-                isOffer = activeDockers.offer(docker);
-            } catch (Exception e) {
+        if (currentNum >= maxActiveDocker) {
+            Docker docker = activeDockers.take();
+            dockerDestroys.put(docker);
+        } else {
+            int f = (int) ((double)currentNum / maxActiveDocker * 100);
+            int createNum = treeMap.floorEntry(f).getValue();
+            while(createNum-- > 0) {
+                Docker docker = new Docker();
+                boolean isOffer = false;
+                try {
+                    isOffer = activeDockers.offer(docker);
+                } catch (Exception e) {
 
-            } finally {
-                if (!isOffer) {
-                    docker.delete();
+                } finally {
+                    if (!isOffer) {
+                        docker.delete();
+                    }
                 }
             }
         }
@@ -71,7 +77,7 @@ public class DockerFactory {
     * docker删除
     * 每10秒最多删除50个
     * */
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRate = 20000)
     public void destroyDocker() throws IOException, InterruptedException {
         int maxDestroyNum = 10;
         List<Docker> dockers = new ArrayList();
