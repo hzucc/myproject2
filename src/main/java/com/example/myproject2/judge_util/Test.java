@@ -11,7 +11,7 @@ import java.io.File;
  * */
 public class Test {
     public static void main(String[] args) throws Exception {
-        String codeType = "python3";
+        /*String codeType = "python3";
         JudgeCode judgeCode = new JudgeCode(true);
         CompileParam compileParam = new CompileParam();
         compileParam.setCodeType(codeType);
@@ -27,6 +27,6 @@ public class Test {
             runParam.setRunFile(compile.getRunFile());
             RunResult run = judgeCode.run(runParam);
             System.out.println(run.getResult());
-        }
+        }*/
     }
 }

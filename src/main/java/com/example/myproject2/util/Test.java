@@ -4,12 +4,21 @@
  */
 package com.example.myproject2.util;
 
-import java.lang.reflect.Method;
+import org.springframework.stereotype.Service;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
 public class Test {
-    public static void main(String[] args) throws InstantiationException, IllegalAccessException, NoSuchMethodException {
-        System.out.println(A.getS());
+    public static void main(String[] args) throws IOException, InterruptedException {
+
     }
 }
+/*
 class A{
     private static int s = 1;
     static {
@@ -25,4 +34,4 @@ class A{
     public static void setS(int s) {
         A.s = s;
     }
-}
+}*/
