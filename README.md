@@ -28,3 +28,12 @@
 代码运行环境docker，运行镜像:自搭建基于alpine镜像,dockerhub可拉取：hzucc/alpine-oj
 
 记录一些开发过程的的开发文档记录见->开发文档.doc
+
+
+OJ系统判题思路与代码实现：https://blog.csdn.net/qq_36335313/article/details/102675037
+
+hzucc/alpine-oj镜像源码：https://github.com/hzucc/hzucc_alpine_oj/tree/master/src
+
+
+
+
