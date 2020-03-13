@@ -58,6 +58,7 @@ public class AdminProblemController {
     @GetMapping("/admin/test_data_download/{problemId}")
     public void downloadTestData(@PathVariable("problemId") int problemId, HttpServletResponse response) throws IOException {
         String testDataPath = problemService.getTestDataPath(problemId);
+
         File file = new File(testDataPath);
         if (file.exists()) {
             response.addHeader("Content-Disposition", "attachment;fileName=" + file.getName());

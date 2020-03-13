@@ -4,37 +4,22 @@
  */
 package com.example.myproject2;
 
-import com.example.myproject2.service.UserService;
-import com.example.myproject2.util.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
 @Component
 public class AfterStrartingSpringboot implements CommandLineRunner {
-    @Value("${myproject2.testDataPath}")
-    private String testDataPath;
-
-    @Value("${myproject2.compile}")
-    private String compilePath;
-
-    @Value("${myproject2.run}")
-    private String runPath;
-
-    @Autowired
-    private ApplicationContext applicationContext;
+    @Value("${myproject2_data}")
+    private String myproject2_data;
 
     @Override
     public void run(String... args) throws IOException, InterruptedException {
@@ -42,19 +27,29 @@ public class AfterStrartingSpringboot implements CommandLineRunner {
         logger.info("执行springboot启动就绪时任务...");
         ProcessBuilder processBuilder = new ProcessBuilder();
 
-        //检测目录是否存在
-        File testDataFile = new File(testDataPath);
-        if (!testDataFile.exists()) {
-            testDataFile.mkdirs();
+        //软连接到资源目录下的/myproject2_data，或初始化
+        String path = getClass().getClassLoader().getResource("/").getPath();
+        List<String> commands;
+        if (myproject2_data != null && !myproject2_data.equals("")) {
+            String fromFilePath = myproject2_data;
+            String toFilePath = path + "/myproject2_data";
+            commands = new ArrayList<String>() {{
+                add("ln");
+                add("-s");
+                add(fromFilePath);
+                add(toFilePath);
+            }};
+        } else {
+            String fromFilePath = path + "/data/myproject2_data";
+            String toFilePath = path + "/myproject2_data";
+            commands = new ArrayList<String>() {{
+                add("cp");
+                add("-r");
+                add(fromFilePath);
+                add(toFilePath);
+            }};
         }
-        File compileFile = new File(compilePath);
-        if (!compileFile.exists()) {
-            compileFile.mkdirs();
-        }
-        File runFile = new File(runPath);
-        if (!runFile.exists()) {
-            runFile.mkdirs();
-        }
+        processBuilder.command(commands).start().waitFor();
         //检查是否配置docker
         Runtime runtime = Runtime.getRuntime();
         Process process = runtime.exec("docker images");
@@ -76,13 +71,14 @@ public class AfterStrartingSpringboot implements CommandLineRunner {
 
         //查询是否安装mysql
         processBuilder = new ProcessBuilder();
-        List<String> commands = new ArrayList<String>() {{
+        commands = new ArrayList<String>() {{
             add("mysql");
             add("-V");
         }};
         process = processBuilder.command(commands).start();
         buf = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        boolean hasMysql = buf.readLine() != null;
+        s = buf.readLine();
+        boolean hasMysql = s != null && s.contains("Ver");
         buf.close();
         process.waitFor();
         if (!hasMysql) {
@@ -126,13 +122,12 @@ public class AfterStrartingSpringboot implements CommandLineRunner {
                     add("-p123456");
                     add("myproject2");
                 }};
-                File sqlFile = new File(getClass().getClassLoader().getResource("/myproject2.sql").getFile());
+                File sqlFile = new File(getClass().getClassLoader().getResource("/data/myproject2.sql").getFile());
                 processBuilder.redirectInput(sqlFile);
                 processBuilder.command(commands).start().waitFor();
                 logger.info("导入数据库完毕");
             }
         }
         logger.info("执行springboot启动就绪时任务--完毕！");
-
     }
 }

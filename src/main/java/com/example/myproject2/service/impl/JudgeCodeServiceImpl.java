@@ -30,7 +30,6 @@ import java.util.*;
 
 @Service
 public class JudgeCodeServiceImpl implements JudgeCodeService{
-    @Value("${myproject2.compile}")
     private String compileWorkPath;
     @Autowired
     private ApplicationContext applicationContext;
@@ -51,6 +50,10 @@ public class JudgeCodeServiceImpl implements JudgeCodeService{
     @Autowired
     private RunCodeService runCodeService;
 
+    public JudgeCodeServiceImpl() {
+        compileWorkPath = getClass().getClassLoader().getResource("/") + "/myproject2_data/compile";
+    }
+
     @Async
     @Scheduled(fixedRate = 500)
     @Transactional
@@ -62,6 +65,7 @@ public class JudgeCodeServiceImpl implements JudgeCodeService{
             int problemId = submitCode.getProblemId();
             String codeType = submitCode.getCodeType();
             String codeValue = submitCode.getCodeValue();
+
             CompileParam compileParam = new CompileParam(codeType, new File(codeValue));
             CompileResult compileResult = judgeCode.compile(compileParam);
             if (compileResult.isCompileSuccess()) {
@@ -71,6 +75,8 @@ public class JudgeCodeServiceImpl implements JudgeCodeService{
                     List<RunCode> runCodes = new ArrayList<>();
                     for (int j = 0; j < testDataPaths.size(); j++) {
                         RunCode runCode = applicationContext.getBean(RunCode.class, submitCodeId, compileResult.getRunFile().getPath(), codeType, testDataPaths.get(j), (short)(j + 1));
+                        String s = runCode.getRunCodeFile();
+                        runCode.setRunCodeFile(s.substring(s.indexOf("/myproject2_data")));
                         runCodes.add(runCode);
                     }
                     runCodeDao.insertRunCodes(runCodes);

@@ -3,7 +3,6 @@ package com.example.myproject2.judge_util;/*
  *@date 2019/9/27
  */
 
-import com.example.myproject2.entity.Problem;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -11,6 +10,7 @@ import java.util.List;
 
 
 public class Docker {
+    private String myproject2_data;
     private static List<String> commands = new ArrayList<String>(){{
         add("docker");
         add("run");
@@ -47,10 +47,11 @@ public class Docker {
     }
 
     public Docker() throws IOException, InterruptedException {
+        myproject2_data = getClass().getClassLoader().getResource("/").getPath() + "myproject2_data";
         ProcessBuilder processBuilder = new ProcessBuilder();
         List<String> com = new ArrayList<>(commands);
         com.add("-v");
-        com.add("/myproject2:/myproject2:ro");
+        com.add(myproject2_data + ":/myproject2_data:ro");
         com.add("hzucc/alpine-oj");
         Process process = processBuilder.command(com).start();
         BufferedReader buf = new BufferedReader(new InputStreamReader(process.getInputStream()));

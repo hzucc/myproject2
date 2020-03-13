@@ -30,7 +30,6 @@ import java.util.zip.ZipFile;
 
 @Service
 public class ProblemServiceImpl implements ProblemService {
-    @Value("${myproject2.testDataPath}")
     private String testDataPath;
     @Autowired
     private ProblemDao problemDao;
@@ -44,8 +43,10 @@ public class ProblemServiceImpl implements ProblemService {
     private MemoryLimitDao memoryLimitDao;
     @Autowired
     private TableCountDao tableCountDao;
-    @Autowired
-    private ApplicationContext applicationContext;
+
+    public ProblemServiceImpl() {
+        testDataPath = getClass().getClassLoader().getResource("/").getPath() + "/myproject2_data/testdata";
+    }
 
     @Override
     public List<Problem> getProlemList(int page, int limit) {
@@ -70,7 +71,7 @@ public class ProblemServiceImpl implements ProblemService {
         try {
             if (problemIds != null) {
                 for (int problemId : problemIds) {
-                    String path = problemDao.selectTestDataPath(problemId);
+                    String path = getClass().getClassLoader().getResource("/") + "/" + problemDao.selectTestDataPath(problemId);
                     //删除压缩的测试数据.zip
                     if (path != null && path.equals("")) {
                         File file = new File(path);
@@ -113,7 +114,9 @@ public class ProblemServiceImpl implements ProblemService {
         workFile.mkdir();
         String zipFilePath = workFile.getPath() + "/problem_" + problemId + ".zip";
         part.write(zipFilePath);
-        problemDao.updateTestDataPath(problemId, zipFilePath);
+
+        String test_data_path = zipFilePath.substring(zipFilePath.indexOf("/myproject2_data"));
+        problemDao.updateTestDataPath(problemId, test_data_path);
 
         //3,处理分发样例点
         List<String> testDataPaths = new ArrayList<>();
@@ -165,7 +168,12 @@ public class ProblemServiceImpl implements ProblemService {
                 }
                 fileOutputStream.close();
                 inputStream.close();
-                testDataPaths.add(testWorkFile.getPath());
+
+                //testDataPaths.add(testWorkFile.getPath());
+
+                String path = testWorkFile.getPath().substring(testWorkFile.getPath().indexOf("/myproject2_data"));
+                testDataPaths.add(path);
+
                 ++count;
             }
         }
@@ -195,7 +203,7 @@ public class ProblemServiceImpl implements ProblemService {
 
     @Override
     public String getTestDataPath(int problemId) {
-        String path = problemDao.selectTestDataPath(problemId);
+        String path = getClass().getClassLoader().getResource("/").getPath() + problemDao.selectTestDataPath(problemId);
         return path;
     }
 

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.annotation.ApplicationScope;
 
 import java.io.*;
 import java.util.List;
@@ -22,7 +23,7 @@ import java.util.UUID;
 
 @Service
 public class SubmitCodeServiceImpl implements SubmitCodeService {
-    @Value("${myproject2.compile}")
+    //@Value("${myproject2.compile}")
     private String compileFilepath;
     @Autowired
     private SubmitCodeDao submitCodeDao;
@@ -37,10 +38,15 @@ public class SubmitCodeServiceImpl implements SubmitCodeService {
     @Autowired
     private RunCodeDao runCodeDao;
 
+    public SubmitCodeServiceImpl() {
+        compileFilepath = getClass().getClassLoader().getResource("/").getPath() + "/myproject2_data/compile";
+    }
+
     @Transactional
     @Override
     public void addSubmitCode(SubmitCode submitCode) throws IOException {
         String codeValue = submitCode.getCodeValue();
+
         String compileSuffixName = compileSuffixMap.handleType(submitCode.getCodeType());
         File workFile = new File(compileFilepath, UUID.randomUUID().toString());
         workFile.mkdir();
@@ -51,6 +57,8 @@ public class SubmitCodeServiceImpl implements SubmitCodeService {
         printWriter.close();
         submitCode.setCodeValue(compileFile.getPath());
         problemDao.updateSubmitNum(submitCode.getProblemId());
+        String s = submitCode.getCodeValue();
+        submitCode.setCodeValue(s.substring(s.indexOf("/myproject2_data")));
         submitCodeDao.insertSubmitCode(submitCode);
     }
 
@@ -71,7 +79,7 @@ public class SubmitCodeServiceImpl implements SubmitCodeService {
         List<SubmitCode> submitCodes = submitCodeDao.selectSubmitCodeListOfUser(userId, problemId, 1);
         if (!submitCodes.isEmpty()) {
             SubmitCode submitCode = submitCodes.get(0);
-            String codeValue = submitCode.getCodeValue();
+            String codeValue = getClass().getClassLoader().getResource("/").getPath() +  submitCode.getCodeValue();
             File file = new File(codeValue);
             BufferedReader buf = new BufferedReader(new FileReader(codeValue));
             StringBuilder res = new StringBuilder();
@@ -95,6 +103,8 @@ public class SubmitCodeServiceImpl implements SubmitCodeService {
             boolean isUpdateStatus = num == 1? true: false;
             if (!isUpdateStatus) {
                 submitCode = null;
+            } else {
+                submitCode.setCodeValue(getClass().getClassLoader().getResource("/").getPath() + submitCode.getCodeValue());
             }
         }
         return submitCode;
