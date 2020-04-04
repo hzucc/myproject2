@@ -15,6 +15,8 @@
         <li class="layui-nav-item"><a th:href="@{/index}" style="font-family:'ljsh1cd1fc0ff920aa9';font-size: 18px">首页</a></li>
         <li class="layui-nav-item"><a th:href="@{/problem_list}" style="font-family:'ljsh1cd1fc0ff920aa9';font-size: 18px">题库</a></li>
         <li class="layui-nav-item"><a th:href="@{/submit_code_list}" style="font-family:'ljsh1cd1fc0ff920aa9';font-size: 18px">评测榜</a></li>
+        <li class="layui-nav-item"><a th:href="@{/competition_list}" style="font-family:'ljsh1cd1fc0ff920aa9';font-size: 18px">竞赛</a></li>
+
         <!--用户-->
         <li th:unless="${#authorization.expression('hasRole(''ANONYMOUS'')')}" class="layui-nav-item">
             <a href="javascript:;" style="font-family:'ljsh1cd1fc0ff920aa9';font-size: 18px">用户</a>

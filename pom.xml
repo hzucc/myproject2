@@ -27,7 +27,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            去除内置tomcat
+            <!--去除内置tomcat-->
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework.boot</groupId>

@@ -26,4 +26,4 @@ server:
 #  configuration:
 #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
-myproject2_data: null
+myproject2_data: /myproject2

@@ -8,14 +8,11 @@ import com.example.myproject2.judge_util.Docker;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import sun.plugin.javascript.navig4.Link;
 
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingDeque;
 
 @Component
 public class DockerFactory {
@@ -38,7 +35,7 @@ public class DockerFactory {
     }};
     /*
     * docker生产
-    *  剩余容量     每5秒生产数量
+    *  剩余容量     每10秒生产数量
     * [0%,20%) :      5个
     * [20%,40%) :     4个
     * [40%,60%) :     3个
@@ -75,11 +72,11 @@ public class DockerFactory {
 
     /*
     * docker删除
-    * 每10秒最多删除50个
+    * 每10秒最多删除20个
     * */
-    @Scheduled(fixedRate = 20000)
+    @Scheduled(fixedRate = 10000)
     public void destroyDocker() throws IOException, InterruptedException {
-        int maxDestroyNum = 10;
+        int maxDestroyNum = 20;
         List<Docker> dockers = new ArrayList();
         try {
             dockerDestroys.drainTo(dockers, maxDestroyNum);

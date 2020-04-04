@@ -6,7 +6,6 @@ package com.example.myproject2.controller;
 
 import com.example.myproject2.dao.UserDao;
 import com.example.myproject2.entity.SubmitCode;
-import com.example.myproject2.entity.User;
 import com.example.myproject2.service.ProblemService;
 import com.example.myproject2.service.SubmitCodeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
+
 import java.io.IOException;
 
 @RestController

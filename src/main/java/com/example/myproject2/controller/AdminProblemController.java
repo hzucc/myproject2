@@ -74,7 +74,7 @@ public class AdminProblemController {
     }
 
     @GetMapping("/admin/test_data_message/{problemId}")
-    public Map<String, Object> getTestDataMessage(@PathVariable("problemId") int problemId) {
+    public Map<String, Object> getTestDataMessage(@PathVariable("problemId") int problemId) throws IOException {
         Map<String, Object> testDataMessage = problemService.getTestDataMessage(problemId);
         return testDataMessage;
     }

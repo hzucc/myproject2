@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title></title>
+    <!--Jq-->
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <!--Layui-->
+    <link href="https://www.layuicdn.com/layui-v2.5.5/css/layui.css" rel="stylesheet">
+    <script src="https://www.layuicdn.com/layui-v2.5.5/layui.js"></script>
+</head>
+<body>
+<div th:insert="~{footer :: head}"></div>
+<div class="layui-container" style="margin-top: 20px; font-family:'ljsh1cd2067dd520aa9'">
+    <div class="layui-row">
+        <table class="layui-hide" id="competition-list" lay-filter="table-row-event"></table>
+    </div>
+</div>
+<input id="authorities" type="hidden" th:value="${#authentication.Authorities}">
+
+</body>
+<script>
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
+    $(document).ajaxSend(function (e, xhr, options) {
+        xhr.setRequestHeader(header, token);
+    });
+    servletContent = "[[@{/}]]";
+    servletContent = servletContent.substring(0, servletContent.lastIndexOf("/"));
+
+    layui.use('table', function () {
+        var table = layui.table;
+        table.render({
+            elem: '#competition-list',
+            url: servletContent + '/competition_list',
+            method: 'post',
+            page: true,
+            limit: 10,
+            cols: [
+                [
+                    {field: 'competitionName', title: '竞赛'},
+                    {field: 'time', title: '比赛时间'},
+                    {field: 'competitionType', title: '赛制'},
+                    {field: 'number', title: '参赛人数'}
+                ]
+            ]
+        });
+        table.on('row(table-row-event)', function (obj) {
+            window.location.href = servletContent + "/competition/" + obj.data.competitionId;
+        });
+    });
+</script>
+</html>

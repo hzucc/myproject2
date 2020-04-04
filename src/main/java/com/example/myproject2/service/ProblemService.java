@@ -18,7 +18,7 @@ public interface ProblemService {
 
     public void updateTestData(int problemId, Part part) throws IOException;
 
-    public Map<String, Object> getTestDataMessage(int problemId);
+    public Map<String, Object> getTestDataMessage(int problemId) throws IOException;
 
     public String getTestDataPath(int problemId);
 

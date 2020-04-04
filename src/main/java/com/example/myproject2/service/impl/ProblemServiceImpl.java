@@ -184,7 +184,7 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     @Override
-    public Map<String, Object> getTestDataMessage(int problemId) {
+    public Map<String, Object> getTestDataMessage(int problemId) throws IOException {
         Map<String, Object> map = new HashMap<>();
         if (updateTestDataMap.contains(problemId)) {
             map.put("testDataStatus", "正在分发中");
@@ -194,7 +194,7 @@ public class ProblemServiceImpl implements ProblemService {
                 map.put("testDataStatus", "暂无");
             } else {
                 map.put("testDataStatus", "已上传");
-                File file = new File(path);
+                File file = new File(getClass().getClassLoader().getResource("/").getPath() + path);
                 map.put("fileSize", file.length() >> 10);
             }
         }
